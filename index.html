@@ -9,10 +9,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Scripts -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Use development versions of React for better error messages -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fix for lucide-react expecting lowercase window.react -->
+    <script>
+        window.react = window.React;
+        window.reactDOM = window.ReactDOM;
+    </script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/lucide-react@latest"></script>
     <script>
@@ -45,9 +51,10 @@
     <div id="root"></div>
 
     <script type="text/babel">
+        // LucideReact might be on window.LucideReact or window.lucide-react
         const { 
             Cpu, Zap, Eye, Move, Save, Settings, Trophy, Code, Info, Layout, CheckCircle, RefreshCw, Battery 
-        } = LucideReact;
+        } = window.LucideReact || {};
 
         // Función de resaltado de sintaxis ROBUSTA
         const highlightArduino = (code) => {
@@ -101,33 +108,38 @@
           </div>
         );
 
-        const Step = ({ icon: Icon, title, explanation, code, isLast, subtitle }) => (
-          <div className={`flex flex-col lg:flex-row gap-10 mb-20 pb-16 ${!isLast ? 'border-b border-slate-100' : ''}`}>
-            <div className="lg:w-1/2 order-2 lg:order-1">
-              <div className="sticky top-10">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-100">
-                    <Icon size={22} />
+        const Step = ({ icon: Icon, title, explanation, code, isLast, subtitle }) => {
+          // Fallback if icon is missing
+          const IconComponent = Icon || (() => <div className="w-5 h-5 bg-slate-200 rounded animate-pulse" />);
+          
+          return (
+            <div className={`flex flex-col lg:flex-row gap-10 mb-20 pb-16 ${!isLast ? 'border-b border-slate-100' : ''}`}>
+              <div className="lg:w-1/2 order-2 lg:order-1">
+                <div className="sticky top-10">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-100">
+                      <IconComponent size={22} />
+                    </div>
+                    <div>
+                      <span className="text-blue-500 font-bold text-[10px] uppercase tracking-[0.2em]">{subtitle}</span>
+                      <h2 className="text-2xl font-black text-slate-800 leading-tight">{title}</h2>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-blue-500 font-bold text-[10px] uppercase tracking-[0.2em]">{subtitle}</span>
-                    <h2 className="text-2xl font-black text-slate-800 leading-tight">{title}</h2>
+                  <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">
+                    {explanation}
                   </div>
-                </div>
-                <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">
-                  {explanation}
                 </div>
               </div>
-            </div>
 
-            <div className="lg:w-1/2 order-1 lg:order-2">
-              <div className="flex items-center gap-2 mb-3 text-slate-400 font-bold text-[10px] uppercase tracking-widest ml-1">
-                <Code size={14} /> Código Completo
+              <div className="lg:w-1/2 order-1 lg:order-2">
+                <div className="flex items-center gap-2 mb-3 text-slate-400 font-bold text-[10px] uppercase tracking-widest ml-1">
+                  <Code size={14} /> Código Completo
+                </div>
+                <CodeBlock code={code} />
               </div>
-              <CodeBlock code={code} />
             </div>
-          </div>
-        );
+          );
+        };
 
         const App = () => {
           return (
@@ -139,7 +151,7 @@
                     SVP STEAM CLUB
                   </div>
                   <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 tracking-tighter leading-none">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">
+                    <span className="text-transparent bg-clip-text bg-gradient-r from-blue-600 to-indigo-500">
                       SLC Aventura 3 sensores
                     </span>
                   </h1>
@@ -340,7 +352,7 @@
                     </div>
                   }
                   isLast={true}
-                  code={`int vel = 230;\nint velinv = 80;\nint ultimoDir = 2; // Memoria: 1:Izq, 2:Centro, 3:Der\n\nvoid setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n}\n\nvoid loop() {\n  // 1. CASO RECTO\n  if (digitalRead(3)) {\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, vel); analogWrite(10, 0);\n    ultimoDir = 2;\n  }\n  // 2. CASO IZQUIERDA\n  else if (digitalRead(2) == 1) {\n    analogWrite(5, 0);   analogWrite(6, velinv);\n    analogWrite(9, vel); analogWrite(10, 0);\n    ultimoDir = 1;\n  }\n  // 3. CASO DERECHA\n  else if (digitalRead(4) == 1) {\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, 0);   analogWrite(10, velinv);\n    ultimoDir = 3;\n  }\n  // 4. CASO PÉRDIDA DE LÍNEA (Uso de Memoria)\n  else if (digitalRead(2) == 0 && digitalRead(3) == 0 && digitalRead(4) == 0) {\n    if (ultimoDir == 1) {\n      // Sigue buscando a la izquierda\n      analogWrite(5, 0);   analogWrite(6, velinv);\n      analogWrite(9, vel); analogWrite(10, 0);\n    }\n    else if (ultimoDir == 3) {\n      // Sigue buscando a la derecha\n      analogWrite(5, vel); analogWrite(6, 0);\n      analogWrite(9, 0);   analogWrite(10, velinv);\n    }\n  }\n  delay(5);\n}`}
+                  code={`int vel = 230;\nint velinv = 80;\nint ultimoDir = 2; // Memoria: 1:Izq, 2:Centro, 3:Der\n\nvoid setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n}\n\nvoid loop() {\n  // 1. CASO RECTO\n  if (digitalRead(3)) {\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, vel); analogWrite(10, 0);\n    ultimoDir = 2;\n  }\n  // 2. CASO IZQUIERDA\n  else if (digitalRead(2)) {\n    analogWrite(5, 0);   analogWrite(6, velinv);\n    analogWrite(9, vel); analogWrite(10, 0);\n    ultimoDir = 1;\n  }\n  // 3. CASO DERECHA\n  else if (digitalRead(4)) {\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, 0);   analogWrite(10, velinv);\n    ultimoDir = 3;\n  }\n  // 4. CASO PÉRDIDA DE LÍNEA (Uso de Memoria)\n  else if (digitalRead(2) == 0 && digitalRead(3) == 0 && digitalRead(4) == 0) {\n    if (ultimoDir == 1) {\n      // Sigue buscando a la izquierda\n      analogWrite(5, 0);   analogWrite(6, velinv);\n      analogWrite(9, vel); analogWrite(10, 0);\n    }\n    else if (ultimoDir == 3) {\n      // Sigue buscando a la derecha\n      analogWrite(5, vel); analogWrite(6, 0);\n      analogWrite(9, 0);   analogWrite(10, velinv);\n    }\n  }\n  delay(5);\n}`}
                 />
 
               </main>
