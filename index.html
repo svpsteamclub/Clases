@@ -9,12 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Scripts -->
-    <!-- Use development versions of React for better error messages -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fix for lucide-react expecting lowercase window.react -->
     <script>
         window.react = window.React;
         window.reactDOM = window.ReactDOM;
@@ -35,15 +33,14 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fcfdfe;
-        }
-        h1, h2, h3 {
-            font-family: 'Outfit', sans-serif;
-        }
-        pre, code {
-            font-family: 'JetBrains Mono', monospace;
+        body { font-family: 'Inter', sans-serif; background-color: #fcfdfe; }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        pre, code { font-family: 'JetBrains Mono', monospace; }
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
     </style>
 </head>
@@ -51,42 +48,54 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        // LucideReact might be on window.LucideReact or window.lucide-react
         const { 
-            Cpu, Zap, Eye, Move, Save, Settings, Trophy, Code, Info, Layout, CheckCircle, RefreshCw, Battery 
+            Cpu, Zap, Eye, Move, Save, Settings, Trophy, Code, Info, Layout, CheckCircle, RefreshCw, Battery, ChevronRight 
         } = window.LucideReact || {};
 
-        // Función de resaltado de sintaxis ROBUSTA
+        const Nav = ({ activePage }) => {
+          const links = [
+            { id: 'index.html', label: 'SL 3 Sensores', icon: Cpu },
+            { id: 'placeholder.html', label: 'Guía Placeholder', icon: Layout },
+          ];
+
+          return (
+            <nav className="sticky top-0 z-50 nav-glass">
+              <div className="max-w-7xl mx-auto px-6">
+                <div className="flex items-center justify-between h-16">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-100">
+                      <Zap size={18} fill="currentColor" />
+                    </div>
+                    <span className="font-outfit font-black text-slate-900 tracking-tighter">SVP STEAM</span>
+                  </div>
+                  <div className="flex items-center gap-1 md:gap-4">
+                    {links.map((link) => (
+                      <a key={link.id} href={link.id} className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ${activePage === link.id ? 'bg-blue-50 text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
+                        <link.icon size={16} />
+                        <span className="hidden md:inline">{link.label}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </nav>
+          );
+        };
+
         const highlightArduino = (code) => {
           if (!code) return '';
-          
-          let text = code
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-
+          let text = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
           const tokens = [];
-          
           text = text.replace(/(\/\/.*)|("(.*?)")/g, (match) => {
             const isComment = match.startsWith('//');
             const color = isComment ? '#008000' : '#a31515';
             tokens.push(`<span style="color: ${color};">${match}</span>`);
             return `___TOKEN_${tokens.length - 1}___`;
           });
-
-          const keywords = /\b(if|else|void|int|return|for|while|setup|loop)\b/g;
-          text = text.replace(keywords, '<span style="color: #0000ff;">$1</span>');
-          
-          const arduinoTerms = /\b(pinMode|digitalRead|analogWrite|Serial|begin|print|println|delay|HIGH|LOW|INPUT|OUTPUT)\b/g;
-          text = text.replace(arduinoTerms, '<span style="color: #267f99;">$1</span>');
-          
-          const numbers = /\b(\d+)\b/g;
-          text = text.replace(numbers, '<span style="color: #098658;">$1</span>');
-
-          text = text.replace(/___TOKEN_(\d+)___/g, (match, index) => {
-            return tokens[parseInt(index)];
-          });
-
+          text = text.replace(/\b(if|else|void|int|return|for|while|setup|loop)\b/g, '<span style="color: #0000ff;">$1</span>');
+          text = text.replace(/\b(pinMode|digitalRead|analogWrite|Serial|begin|print|println|delay|HIGH|LOW|INPUT|OUTPUT)\b/g, '<span style="color: #267f99;">$1</span>');
+          text = text.replace(/\b(\d+)\b/g, '<span style="color: #098658;">$1</span>');
+          text = text.replace(/___TOKEN_(\d+)___/g, (match, index) => tokens[parseInt(index)]);
           return <code dangerouslySetInnerHTML={{ __html: text }} />;
         };
 
@@ -94,278 +103,73 @@
           <div className="bg-[#fffffe] border border-slate-300 rounded-lg shadow-sm overflow-hidden h-full flex flex-col font-mono text-[13px]">
             <div className="bg-[#f3f3f3] px-4 py-2 border-b border-slate-200 flex justify-between items-center">
               <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-slate-300"></div>
-                <div className="w-3 h-3 rounded-full bg-slate-300"></div>
-                <div className="w-3 h-3 rounded-full bg-slate-300"></div>
+                <div className="w-3 h-3 rounded-full bg-slate-300"></div><div className="w-3 h-3 rounded-full bg-slate-300"></div><div className="w-3 h-3 rounded-full bg-slate-300"></div>
               </div>
-              <span className="text-slate-400 text-[10px] font-bold tracking-widest uppercase">Arduino Editor - Monaco Light</span>
+              <span className="text-slate-400 text-[10px] font-bold tracking-widest uppercase">Arduino Editor</span>
             </div>
             <div className="p-6 overflow-x-auto leading-relaxed bg-white h-full">
-              <pre className="whitespace-pre">
-                {highlightArduino(code)}
-              </pre>
+              <pre className="whitespace-pre">{highlightArduino(code)}</pre>
             </div>
           </div>
         );
 
-        const Step = ({ icon: Icon, title, explanation, code, isLast, subtitle }) => {
-          // Fallback if icon is missing
-          const IconComponent = Icon || (() => <div className="w-5 h-5 bg-slate-200 rounded animate-pulse" />);
-          
-          return (
-            <div className={`flex flex-col lg:flex-row gap-10 mb-20 pb-16 ${!isLast ? 'border-b border-slate-100' : ''}`}>
-              <div className="lg:w-1/2 order-2 lg:order-1">
-                <div className="sticky top-10">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-100">
-                      <IconComponent size={22} />
-                    </div>
-                    <div>
-                      <span className="text-blue-500 font-bold text-[10px] uppercase tracking-[0.2em]">{subtitle}</span>
-                      <h2 className="text-2xl font-black text-slate-800 leading-tight">{title}</h2>
-                    </div>
-                  </div>
-                  <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">
-                    {explanation}
+        const Step = ({ icon: Icon, title, explanation, code, isLast, subtitle }) => (
+          <div className={`flex flex-col lg:flex-row gap-10 mb-20 pb-16 ${!isLast ? 'border-b border-slate-100' : ''}`}>
+            <div className="lg:w-1/2 order-2 lg:order-1">
+              <div className="sticky top-24">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-100"><Icon size={22} /></div>
+                  <div>
+                    <span className="text-blue-500 font-bold text-[10px] uppercase tracking-[0.2em]">{subtitle}</span>
+                    <h2 className="text-2xl font-black text-slate-800 leading-tight">{title}</h2>
                   </div>
                 </div>
-              </div>
-
-              <div className="lg:w-1/2 order-1 lg:order-2">
-                <div className="flex items-center gap-2 mb-3 text-slate-400 font-bold text-[10px] uppercase tracking-widest ml-1">
-                  <Code size={14} /> Código Completo
-                </div>
-                <CodeBlock code={code} />
+                <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">{explanation}</div>
               </div>
             </div>
-          );
-        };
-
-        const App = () => {
-          return (
-            <div className="min-h-screen bg-[#fcfdfe] font-sans text-slate-900">
-              <header className="bg-white border-b border-slate-200 py-24 px-6">
-                <div className="max-w-7xl mx-auto text-center lg:text-left">
-                  <div className="flex items-center justify-center lg:justify-start gap-2 text-blue-600 font-bold text-xs uppercase tracking-[0.3em] mb-4">
-                    <span className="w-8 h-[2px] bg-blue-600"></span>
-                    SVP STEAM CLUB
-                  </div>
-                  <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 tracking-tighter leading-none">
-                    <span className="text-transparent bg-clip-text bg-gradient-r from-blue-600 to-indigo-500">
-                      SLC Aventura 3 sensores
-                    </span>
-                  </h1>
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 max-w-4xl mx-auto lg:mx-0">
-                    <p className="text-blue-800 text-sm leading-relaxed text-left">
-                      <strong>Nota importante:</strong> Esta guía es para programar un robot con 3 sensores, pero es la misma idea para robots de 2, 4, 5, etc. Solo hay que ordenar por casos de sensores activados y hacer mover los motores según se necesite.
-                    </p>
-                  </div>
-                </div>
-              </header>
-
-              <main className="max-w-7xl mx-auto px-6 py-20">
-                
-                {/* PASO 1 */}
-                <Step 
-                  subtitle="Paso 1"
-                  icon={Settings}
-                  title="Configurando el Setup"
-                  explanation={
-                    <div className="space-y-4">
-                      <p>Todo programa de Arduino comienza con el <code>void setup()</code>. Aquí preparamos el hardware antes de empezar.</p>
-                      <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 text-sm">
-                        <p className="font-bold text-slate-800 mb-2 underline decoration-slate-300">Explicación técnica:</p>
-                        <ul className="space-y-2">
-                          <li><strong><code>pinMode(pin, modo)</code>:</strong> Define si el pin envía energía o recibe datos.</li>
-                          <li><strong><code>OUTPUT</code>:</strong> Pin de salida (Motores: pines 5, 6, 9, 10).</li>
-                          <li><strong><code>INPUT</code>:</strong> Pin de entrada (Sensores: pines 2, 3, 4).</li>
-                          <li><strong><code>Serial.begin(9600)</code>:</strong> Abre el Monitor Serial para ver qué piensa el robot.</li>
-                        </ul>
-                      </div>
-                    </div>
-                  }
-                  code={`void setup() {\n  // Configuración de Motores (Salidas)\n  pinMode(5, OUTPUT);\n  pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT);\n  pinMode(10, OUTPUT);\n  \n  // Configuración de Sensores (Entradas)\n  pinMode(2, INPUT); \n  pinMode(3, INPUT); \n  pinMode(4, INPUT);\n \n  // Iniciamos comunicación Serial\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  // El loop se repite infinitamente\n}`}
-                />
-
-                {/* PASO 2 */}
-                <Step 
-                  subtitle="Paso 2"
-                  icon={Move}
-                  title="¡A mover los motores!"
-                  explanation={
-                    <div className="space-y-6 text-[15px]">
-                      <section>
-                        <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2 mb-3 leading-tight underline decoration-blue-200">
-                          <Zap size={18} className="text-blue-600" />
-                          La Analogía de la Batería
-                        </h3>
-                        <p className="mb-4">Imagina que cada motor de tu robot es un motorcito normal con <strong>dos cables sueltos</strong>.</p>
-                        <ul className="space-y-3 mb-4">
-                          <li className="flex items-start gap-3">
-                            <CheckCircle size={18} className="text-blue-500 mt-1 flex-shrink-0" />
-                            <span>Si conectas un cable al <strong>Positivo (+)</strong> y otro al <strong>Negativo (-)</strong>, el motor gira hacia adelante.</span>
-                          </li>
-                          <li className="flex items-start gap-3">
-                            <RefreshCw size={18} className="text-red-500 mt-1 flex-shrink-0" />
-                            <span>Si <strong>inviertes los cables</strong> en la batería, el motor gira hacia atrás.</span>
-                          </li>
-                        </ul>
-                      </section>
-
-                      <section className="bg-slate-900 text-white p-5 rounded-xl shadow-lg border border-slate-700">
-                        <h4 className="text-blue-400 font-bold mb-3 flex items-center gap-2">
-                          <Cpu size={16} /> ¿Cómo le damos energía?
-                        </h4>
-                        <p className="text-slate-300 mb-3 text-sm">Usamos <code>analogWrite(pin, velocidad)</code>.</p>
-                        <ul className="space-y-2 mb-4 text-sm">
-                          <li className="flex items-center gap-2 font-mono">
-                            <span className="text-emerald-400 font-bold">0</span>: Conectarlo al Negativo (-).
-                          </li>
-                          <li className="flex items-center gap-2 font-mono">
-                            <span className="text-emerald-400 font-bold">180</span>: Conectarlo al Positivo (+) (max 255).
-                          </li>
-                        </ul>
-                        <div className="bg-slate-800 p-3 rounded-lg border border-slate-700">
-                          <p className="text-[10px] font-bold uppercase text-slate-500 mb-2">Ejemplo Avanzar:</p>
-                          <code className="text-emerald-400 text-xs font-mono">analogWrite(5, 100); analogWrite(6, 0);</code>
-                        </div>
-                      </section>
-                    </div>
-                  }
-                  code={`void setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  // Motor Izquierdo adelante\n  analogWrite(5, 100); \n  analogWrite(6, 0);\n  \n  // Motor Derecho adelante\n  analogWrite(9, 100); \n  analogWrite(10, 0);\n}`}
-                />
-
-                {/* PASO 3 */}
-                <Step 
-                  subtitle="Paso 3"
-                  icon={Eye}
-                  title="Leyendo la pista"
-                  explanation={
-                    <div className="space-y-4 text-[15px]">
-                      <p>El comando <code>digitalRead(pin)</code> lee el sensor. Nos da <code className="font-bold">1</code> si ve negro y <code className="font-bold">0</code> si ve blanco.</p>
-                      <p>Usamos <code>Serial.print</code> para escribir en el Monitor Serial y <code>delay(100)</code> para que no parpadee demasiado rápido.</p>
-                    </div>
-                  }
-                  code={`void setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  // Leemos y mostramos el valor de cada sensor\n  Serial.print("Izq: ");   Serial.print(digitalRead(2));\n  Serial.print(" | Centro: "); Serial.print(digitalRead(3));\n  Serial.print(" | Der: ");   Serial.println(digitalRead(4));\n  \n  // Detenemos los motores por ahora para probar lectura\n  analogWrite(5, 0); analogWrite(6, 0);\n  analogWrite(9, 0); analogWrite(10, 0);\n  \n  delay(100); \n}`}
-                />
-
-                {/* PASO 4 */}
-                <Step 
-                  subtitle="Paso 4"
-                  icon={Zap}
-                  title="La primera decisión (if)"
-                  explanation={
-                    <div className="space-y-4 text-[15px]">
-                      <p>Unimos lectura y movimiento. El comando <code>if</code> significa "Si pasa esto...".</p>
-                      <p>Lógica: <strong>Si</strong> el sensor 3 detecta línea negra, <strong>entonces</strong> avanza.</p>
-                    </div>
-                  }
-                  code={`void setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  // SI el sensor central ve la línea negra...\n  if (digitalRead(3)) {\n    // Avanzamos recto\n    analogWrite(5, 100); analogWrite(6, 0);\n    analogWrite(9, 100); analogWrite(10, 0);\n  } else {\n    // Si no la ve, nos detenemos\n    analogWrite(5, 0); analogWrite(6, 0);\n    analogWrite(9, 0); analogWrite(10, 0);\n  }\n}`}
-                />
-
-                {/* PASO 5 */}
-                <Step 
-                  subtitle="Paso 5"
-                  icon={Layout}
-                  title="Corrigiendo con else if"
-                  explanation={
-                    <div className="space-y-4 text-[15px]">
-                      <p>El <code>else if</code> significa "si no pasó lo anterior, intenta esto". Es la forma más eficiente de darle opciones al robot.</p>
-                      <p>Aquí el robot ya es capaz de seguir una línea curva básica.</p>
-                    </div>
-                  }
-                  code={`void setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n}\n\nvoid loop() {\n  if (digitalRead(3)) {\n    // Caso: Recto\n    analogWrite(5, 100); analogWrite(6, 0);\n    analogWrite(9, 100); analogWrite(10, 0);\n  }\n  else if (digitalRead(2)) {\n    // Caso: Girar Izquierda\n    analogWrite(5, 0);   analogWrite(6, 80);\n    analogWrite(9, 100); analogWrite(10, 0);\n  }\n  else if (digitalRead(4)) {\n    // Caso: Girar Derecha\n    analogWrite(5, 100); analogWrite(6, 0);\n    analogWrite(9, 0);   analogWrite(10, 80);\n  }\n}`}
-                />
-
-                {/* HITO DE ÉXITO */}
-                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 mb-20 shadow-sm relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <CheckCircle size={120} className="text-emerald-600" />
-                  </div>
-                  <div className="relative z-10">
-                    <h2 className="text-3xl font-black text-emerald-900 mb-4 flex items-center gap-2 leading-none">
-                      🏆 ¡EL ROBOT YA ES FUNCIONAL!
-                    </h2>
-                    <p className="text-emerald-800 leading-relaxed text-lg max-w-4xl font-medium">
-                      ¡Felicidades! Si has llegado hasta aquí, ya tienes un seguidor de líneas operativo.
-                    </p>
-                    <p className="text-emerald-700 mt-4 font-bold border-t border-emerald-200 pt-4">
-                      Lo que sigue son OPTIMIZACIONES de código y lógica para que sea un robot de competencia.
-                    </p>
-                  </div>
-                </div>
-
-                {/* PASO 6 */}
-                <Step 
-                  subtitle="Paso 6"
-                  icon={Save}
-                  title="Variables e Inteligencia"
-                  explanation={
-                    <div className="space-y-6 text-[15px]">
-                      <p>Para no cambiar números uno por uno, usamos <strong>Variables</strong>: "cajas" donde guardamos datos.</p>
-                      
-                      <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
-                        <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                          <Info size={16} className="text-blue-500" />
-                          ¿Cómo definirlas?
-                        </h4>
-                        <p className="text-sm">La estructura es: <code>tipo nombre = valor;</code></p>
-                        <ul className="text-sm space-y-3">
-                          <li>
-                            <strong className="text-blue-600">int (Integer):</strong> Es el tipo para <strong>números enteros</strong> (sin decimales, como 230 o 5). Es el más común en robótica.
-                          </li>
-                          <li>
-                            <strong>Ubicación:</strong> Se ponen al puro principio del código, fuera de las funciones. Así, todo el programa puede usarlas (se llaman variables globales).
-                          </li>
-                        </ul>
-                      </div>
-                      <p className="text-sm italic">¡Si quieres ir más rápido, ahora solo cambias el número de <code>vel</code> una sola vez!</p>
-                    </div>
-                  }
-                  code={`// Definición de variables globales (Tipo de dato: int)\nint vel = 230;     // Caja para la velocidad máxima\nint velinv = 80;   // Caja para la velocidad de giro\n\nvoid setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n}\n\nvoid loop() {\n  if (digitalRead(3)) {\n    // Usamos el nombre de la variable en vez del número\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, vel); analogWrite(10, 0);\n  }\n  else if (digitalRead(2)) {\n    analogWrite(5, 0);      analogWrite(6, velinv);\n    analogWrite(9, vel);    analogWrite(10, 0);\n  }\n  else if (digitalRead(4)) {\n    analogWrite(5, vel);    analogWrite(6, 0);\n    analogWrite(9, 0);      analogWrite(10, velinv);\n  }\n}`}
-                />
-
-                {/* PASO FINAL */}
-                <Step 
-                  subtitle="Paso final"
-                  icon={Trophy}
-                  title="Código Maestro con Memoria"
-                  explanation={
-                    <div className="space-y-4 text-[15px]">
-                      <h3 className="font-bold text-slate-800 flex items-center gap-2 underline decoration-blue-200">
-                        ¿Por qué necesitamos memoria?
-                      </h3>
-                      <p>A altas velocidades, el robot puede ser tan rápido que se sale de la pista antes de poder corregir. En ese instante, todos los sensores ven blanco (<code>0</code>) y el robot queda "ciego".</p>
-                      
-                      <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 space-y-3">
-                        <p className="font-bold text-blue-900 text-sm italic">La lógica de ultimoDir:</p>
-                        <ul className="text-sm space-y-2">
-                          <li><span className="font-bold text-blue-600">1. Guardar:</span> Cada vez que el robot gira, guarda un número en la variable <code>ultimoDir</code> (1 para Izq, 3 para Der).</li>
-                          <li><span className="font-bold text-blue-600">2. Recordar:</span> Si de pronto ve todo blanco, el robot no se detiene. Consulta su memoria: <em>"¿Hacia dónde giré por última vez?"</em></li>
-                          <li><span className="font-bold text-blue-600">3. Actuar:</span> El robot sigue girando fuerte en esa dirección hasta encontrar la línea negra de nuevo.</li>
-                        </ul>
-                      </div>
-                      
-                      <div className="bg-blue-600 text-white p-5 rounded-xl text-sm font-bold shadow-lg">
-                        ¡Este es el código final completo y optimizado para ganar!
-                      </div>
-                    </div>
-                  }
-                  isLast={true}
-                  code={`int vel = 230;\nint velinv = 80;\nint ultimoDir = 2; // Memoria: 1:Izq, 2:Centro, 3:Der\n\nvoid setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n}\n\nvoid loop() {\n  // 1. CASO RECTO\n  if (digitalRead(3)) {\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, vel); analogWrite(10, 0);\n    ultimoDir = 2;\n  }\n  // 2. CASO IZQUIERDA\n  else if (digitalRead(2)) {\n    analogWrite(5, 0);   analogWrite(6, velinv);\n    analogWrite(9, vel); analogWrite(10, 0);\n    ultimoDir = 1;\n  }\n  // 3. CASO DERECHA\n  else if (digitalRead(4)) {\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, 0);   analogWrite(10, velinv);\n    ultimoDir = 3;\n  }\n  // 4. CASO PÉRDIDA DE LÍNEA (Uso de Memoria)\n  else if (digitalRead(2) == 0 && digitalRead(3) == 0 && digitalRead(4) == 0) {\n    if (ultimoDir == 1) {\n      // Sigue buscando a la izquierda\n      analogWrite(5, 0);   analogWrite(6, velinv);\n      analogWrite(9, vel); analogWrite(10, 0);\n    }\n    else if (ultimoDir == 3) {\n      // Sigue buscando a la derecha\n      analogWrite(5, vel); analogWrite(6, 0);\n      analogWrite(9, 0);   analogWrite(10, velinv);\n    }\n  }\n  delay(5);\n}`}
-                />
-
-              </main>
-
-              <footer className="bg-white border-t border-slate-200 py-12 text-center">
-                <div className="max-w-7xl mx-auto px-6">
-                  <p className="text-slate-400 font-bold tracking-widest text-[10px] mb-2 uppercase">SVP STEAM CLUB</p>
-                  <p className="text-slate-500 text-sm font-medium tracking-tight">Entrenamiento de Robótica de Alta Competición</p>
-                </div>
-              </footer>
+            <div className="lg:w-1/2 order-1 lg:order-2">
+              <div className="flex items-center gap-2 mb-3 text-slate-400 font-bold text-[10px] uppercase tracking-widest ml-1"><Code size={14} /> Código Completo</div>
+              <CodeBlock code={code} />
             </div>
-          );
-        };
+          </div>
+        );
+
+        const App = () => (
+          <div className="min-h-screen bg-[#fcfdfe] font-sans text-slate-900">
+            <Nav activePage="index.html" />
+            <header className="bg-white border-b border-slate-200 py-24 px-6">
+              <div className="max-w-7xl mx-auto text-center lg:text-left">
+                <div className="flex items-center justify-center lg:justify-start gap-2 text-blue-600 font-bold text-xs uppercase tracking-[0.3em] mb-4">
+                  <span className="w-8 h-[2px] bg-blue-600"></span>SVP STEAM CLUB
+                </div>
+                <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 tracking-tighter leading-none">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">SLC Aventura 3 sensores</span>
+                </h1>
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 max-w-4xl mx-auto lg:mx-0 text-left">
+                  <p className="text-blue-800 text-sm leading-relaxed"><strong>Nota importante:</strong> Esta guía es para programar un robot con 3 sensores, pero es la misma idea para cualquier número de sensores.</p>
+                </div>
+              </div>
+            </header>
+
+            <main className="max-w-7xl mx-auto px-6 py-20">
+              <Step subtitle="Paso 1" icon={Settings} title="Configurando el Setup" explanation={<p>Todo programa de Arduino comienza con el <code>void setup()</code>.</p>} code={`void setup() {\n  pinMode(5, OUTPUT); pinMode(6, OUTPUT);\n  pinMode(9, OUTPUT); pinMode(10, OUTPUT);\n  pinMode(2, INPUT);  pinMode(3, INPUT);  pinMode(4, INPUT);\n  Serial.begin(9600);\n}`} />
+              
+              <Step subtitle="Paso 2" icon={Move} title="¡A mover los motores!" explanation={<p>Imagina que cada motor de tu robot es un motorcito normal con dos cables sueltos.</p>} code={`void loop() {\n  analogWrite(5, 100); analogWrite(6, 0);\n  analogWrite(9, 100); analogWrite(10, 0);\n}`} />
+
+              <Step subtitle="Paso 3" icon={Eye} title="Leyendo la pista" explanation={<p>El comando <code>digitalRead(pin)</code> lee el sensor.</p>} code={`void loop() {\n  Serial.print("Izq: ");   Serial.print(digitalRead(2));\n  Serial.print(" | Centro: "); Serial.print(digitalRead(3));\n  Serial.print(" | Der: ");   Serial.println(digitalRead(4));\n  delay(100); \n}`} />
+
+              <Step subtitle="Paso 4" icon={Zap} title="La primera decisión (if)" explanation={<p>Unimos lectura y movimiento.</p>} code={`void loop() {\n  if (digitalRead(3)) {\n    analogWrite(5, 100); analogWrite(6, 0);\n    analogWrite(9, 100); analogWrite(10, 0);\n  } else {\n    analogWrite(5, 0); analogWrite(6, 0);\n  }\n}`} />
+
+              <Step subtitle="Paso 5" icon={Layout} title="Corrigiendo con else if" explanation={<p>El <code>else if</code> significa "si no pasó lo anterior, intenta esto".</p>} code={`void loop() {\n  if (digitalRead(3)) { /* Recto */ }\n  else if (digitalRead(2)) { /* Izq */ }\n  else if (digitalRead(4)) { /* Der */ }\n}`} />
+
+              <Step subtitle="Paso 6" icon={Save} title="Variables e Inteligencia" explanation={<p>Para no cambiar números uno por uno, usamos Variables.</p>} code={`int vel = 230;\nint velinv = 80;\n\nvoid loop() {\n  if (digitalRead(3)) {\n    analogWrite(5, vel); analogWrite(6, 0);\n    analogWrite(9, vel); analogWrite(10, 0);\n  }\n}`} isLast={true} />
+            </main>
+
+            <footer className="bg-white border-t border-slate-200 py-12 text-center text-slate-400 font-bold tracking-widest text-[10px] uppercase">
+              SVP STEAM CLUB
+            </footer>
+          </div>
+        );
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);

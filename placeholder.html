@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVP STEAM CLUB - Nueva Guía</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.react = window.React;
+        window.reactDOM = window.ReactDOM;
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide-react@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+                        outfit: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fcfdfe; }
+        h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+        pre, code { font-family: 'JetBrains Mono', monospace; }
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { 
+            Cpu, Zap, Eye, Move, Save, Settings, Trophy, Code, Info, Layout, CheckCircle, RefreshCw, Battery, ChevronRight, PlusCircle 
+        } = window.LucideReact || {};
+
+        const Nav = ({ activePage }) => {
+          const links = [
+            { id: 'index.html', label: 'SL 3 Sensores', icon: Cpu },
+            { id: 'placeholder.html', label: 'Guía Placeholder', icon: Layout },
+          ];
+
+          return (
+            <nav className="sticky top-0 z-50 nav-glass">
+              <div className="max-w-7xl mx-auto px-6">
+                <div className="flex items-center justify-between h-16">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                      <Zap size={18} fill="currentColor" />
+                    </div>
+                    <span className="font-outfit font-black text-slate-900 tracking-tighter">SVP STEAM</span>
+                  </div>
+                  <div className="flex items-center gap-1 md:gap-4">
+                    {links.map((link) => (
+                      <a key={link.id} href={link.id} className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ${activePage === link.id ? 'bg-blue-50 text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
+                        <link.icon size={16} />
+                        <span className="hidden md:inline">{link.label}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </nav>
+          );
+        };
+
+        const App = () => (
+          <div className="min-h-screen bg-[#fcfdfe] font-sans text-slate-900">
+            <Nav activePage="placeholder.html" />
+            <header className="bg-white border-b border-slate-200 py-24 px-6">
+              <div className="max-w-7xl mx-auto text-center lg:text-left">
+                <div className="flex items-center justify-center lg:justify-start gap-2 text-blue-600 font-bold text-xs uppercase tracking-[0.3em] mb-4">
+                  <span className="w-8 h-[2px] bg-blue-600"></span>SVP STEAM CLUB
+                </div>
+                <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-8 tracking-tighter leading-none">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Nueva Guía Placeholder</span>
+                </h1>
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 max-w-4xl mx-auto lg:mx-0 text-left">
+                  <p className="text-blue-800 text-sm leading-relaxed"><strong>Instrucciones:</strong> Puedes usar este archivo como base para crear nuevas guías. Solo duplica el archivo, cámbiale el nombre y actualiza el contenido de los <code>Steps</code>.</p>
+                </div>
+              </div>
+            </header>
+
+            <main className="max-w-7xl mx-auto px-6 py-40">
+              <div className="text-center space-y-6">
+                <div className="bg-slate-100 w-20 h-20 rounded-3xl mx-auto flex items-center justify-center text-slate-400">
+                  <PlusCircle size={40} />
+                </div>
+                <h2 className="text-3xl font-black text-slate-800">Próximamente más contenido</h2>
+                <p className="max-w-md mx-auto text-slate-500">Aquí podrás pegar el código de nuevas lecciones siguiendo el mismo formato de pasos y bloques de código.</p>
+                
+                <div className="pt-10">
+                  <a href="index.html" className="inline-flex items-center gap-2 text-blue-600 font-bold hover:underline">
+                    Regresar a la guía principal <ChevronRight size={20} />
+                  </a>
+                </div>
+              </div>
+            </main>
+
+            <footer className="bg-white border-t border-slate-200 py-12 text-center text-slate-400 font-bold tracking-widest text-[10px] uppercase">
+              SVP STEAM CLUB
+            </footer>
+          </div>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
