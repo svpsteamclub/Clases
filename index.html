@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVP Steam Club - Contenido</title>
     
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +22,7 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script>window.react = window.React; // Fixing lucide-react UMD dependency</script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@0.284.0"></script>
     <script src="https://unpkg.com/lucide-react@0.284.0"></script>
@@ -327,6 +333,21 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
+    </script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('SW registered successfully:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('SW registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
