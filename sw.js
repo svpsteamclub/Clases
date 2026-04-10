@@ -1,4 +1,4 @@
-const CACHE_NAME = 'steamclub-cache-v1';
+const CACHE_NAME = 'steamclub-cache-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -43,29 +43,24 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Pass over non-GET requests
   if (event.request.method !== 'GET') return;
   
+  // Estrategia: Network First, falling back to cache
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        // Don't cache opaque responses or errors if not necessary, but standard cdns are fine to cache
-        // Actually for a simple offline strategy, caching dynamic requests helps
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type === 'opaque') {
-            return networkResponse;
+    fetch(event.request)
+      .then((networkResponse) => {
+        // Cachear respuesta exitosa
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
         }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
         return networkResponse;
-      }).catch(() => {
-        // If fetch fails and nothing in cache, maybe return offline page if handled here.
-        // In our case we cache almost everything upfront.
-      });
-    })
+      })
+      .catch(() => {
+        // Si falla la red, buscar en cache
+        return caches.match(event.request);
+      })
   );
 });

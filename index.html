@@ -134,6 +134,33 @@
           return <code dangerouslySetInnerHTML={{ __html: highlightedLines.join('') }} />;
         };
 
+        // Versión para PDF: devuelve HTML string con colores inline (sin React)
+        const highlightArduinoHtml = (code) => {
+          if (!code) return '';
+          return code.split('\n').map(line => {
+            let isNew = false;
+            if (line.trim().startsWith('++')) {
+              isNew = true;
+              line = line.replace('++', '');
+            }
+            let text = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const tokens = [];
+            text = text.replace(/(\/\/.*)|("(.*?)")/g, (match) => {
+              const color = match.startsWith('//') ? '#00b894' : '#d63031';
+              tokens.push(`<span style="color:${color};">${match}</span>`);
+              return `___T_${tokens.length - 1}___`;
+            });
+            text = text.replace(/\b(if|else|void|int|unsigned|long|return|for|while|setup|loop)\b/g,
+              '<span style="color:#0984e3;">$1</span>');
+            text = text.replace(/\b(pinMode|digitalRead|analogRead|analogWrite|Serial|begin|print|println|delay|HIGH|LOW|INPUT|OUTPUT|millis)\b/g,
+              '<span style="color:#6c5ce7;">$1</span>');
+            text = text.replace(/\b(\d+)\b/g, '<span style="color:#e67e22;">$1</span>');
+            text = text.replace(/___T_(\d+)___/g, (m, i) => tokens[parseInt(i)]);
+            const bg = isNew ? 'background:rgba(37,99,235,0.07);display:block;margin:0 -13px;padding:1px 13px;border-left:2px solid #2563eb;' : 'display:block;';
+            return `<span style="${bg}">${text || '&nbsp;'}</span>`;
+          }).join('');
+        };
+
         const CodeBlock = ({ code }) => (
           <div className="bg-[#f8fafc] border border-slate-200 rounded-xl overflow-hidden shadow-sm font-mono text-[13px]">
             <div className="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
@@ -203,65 +230,116 @@
 
         const generateCoursePDF = (course) => {
           const opt = {
-            margin:       10,
+            margin:       [12, 10, 12, 10],
             filename:     `Guia_${course.title.replace(/\s+/g, '_')}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
           };
 
+          // Helper: limpia clases CSS, imágenes y SVGs para el PDF
+          const cleanHtml = (html) => html
+            .replace(/class="[^"]*"/g, '')
+            .replace(/<img[^>]*>/g, '<span style="color:#94a3b8;font-style:italic;font-size:10px;">[imagen]</span>')
+            .replace(/<svg[\s\S]*?<\/svg>/g, '')
+            .replace(/<a\s[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g, '$2');
+
+          // Un card por paso: ancho completo, explicación izquierda | código derecha
+          const stepsHtml = course.classes.map((cls, index) => `
+            <div style="
+              width: 100%;
+              border: 1px solid #dde3ec;
+              border-radius: 8px;
+              background: #fff;
+              margin-bottom: 10px;
+              page-break-inside: avoid;
+              break-inside: avoid;
+            ">
+              <div style="
+                background: #f1f5f9;
+                border-bottom: 1px solid #dde3ec;
+                padding: 7px 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              ">
+                <div style="
+                  background: #2563eb;
+                  color: #fff;
+                  min-width: 20px;
+                  height: 20px;
+                  border-radius: 4px;
+                  font-size: 10px;
+                  font-weight: 900;
+                  text-align: center;
+                  line-height: 20px;
+                  padding: 0 4px;
+                ">${index + 1}</div>
+                <span style="font-size: 8px; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 1.5px;">${cls.subtitle}</span>
+                <span style="font-size: 12px; font-weight: 700; color: #0f172a;">${cls.title}</span>
+              </div>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="
+                    width: 46%;
+                    vertical-align: top;
+                    padding: 11px 13px;
+                    border-right: 1px solid #dde3ec;
+                    font-size: 10px;
+                    color: #475569;
+                    line-height: 1.55;
+                  ">
+                    ${cleanHtml(cls.explanation)}
+                  </td>
+                  <td style="
+                    width: 54%;
+                    vertical-align: top;
+                    padding: 11px 13px;
+                    background: #f8fafc;
+                  ">
+                    ${cls.code ? `<pre style="margin:0;font-family:'Courier New',Courier,monospace;font-size:8px;color:#334155;white-space:pre;line-height:1.6;overflow:visible;"><code style="font-family:inherit;">${highlightArduinoHtml(cls.code)}</code></pre>`
+                    : '<span style="color:#cbd5e1;font-size:9px;font-style:italic;">Sin código.</span>'}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          `).join('');
+
+          // Contenedor ghost: en el DOM pero invisible para el usuario
           const container = document.createElement('div');
-          container.className = 'pdf-export-container';
-          
-          let contentHtml = `
-            <div style="padding: 20px; font-family: 'Inter', sans-serif;">
-              <div style="border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                  <h1 style="font-size: 28px; font-weight: 900; color: #0f172a; margin: 0; font-family: 'Outfit', sans-serif;">SVP STEAM CLUB</h1>
-                  <h2 style="font-size: 18px; color: #2563eb; margin: 5px 0 0 0; font-weight: 700;">${course.title}</h2>
-                </div>
-                <div style="text-align: right; color: #64748b; font-size: 12px; font-weight: 600;">GUÍA DE ROBÓTICA 2026</div>
-              </div>
-              
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          `;
+          container.style.cssText = 'position:fixed;top:0;left:0;z-index:-9999;opacity:0;pointer-events:none;overflow:visible;';
 
-          course.classes.forEach((cls, index) => {
-            contentHtml += `
-              <div class="pdf-step" style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; break-inside: avoid; background: #fff; margin-bottom: 10px;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                  <div style="background: #2563eb; color: #fff; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900;">${index + 1}</div>
-                  <div style="font-size: 10px; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 1px;">${cls.subtitle}</div>
-                </div>
-                <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin: 0 0 10px 0;">${cls.title}</h3>
-                <div style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 15px;">
-                  ${cls.explanation.replace(/class="[^"]*"/g, '').replace(/style="[^"]*"/g, '')}
-                </div>
-                ${cls.code ? `
-                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; overflow: hidden;">
-                    <pre style="margin: 0; white-space: pre-wrap; color: #334155;">${cls.code.replace(/\+\+/g, '')}</pre>
-                  </div>
-                ` : ''}
+          const innerDiv = document.createElement('div');
+          innerDiv.style.cssText = 'width:740px;padding:16px 20px;font-family:Arial,Helvetica,sans-serif;background:white;';
+          innerDiv.innerHTML = `
+            <div style="border-bottom:2px solid #2563eb;padding-bottom:12px;margin-bottom:16px;display:flex;align-items:flex-end;justify-content:space-between;">
+              <div>
+                <div style="font-size:20px;font-weight:900;color:#0f172a;line-height:1;letter-spacing:-0.5px;">SVP STEAM CLUB</div>
+                <div style="font-size:14px;font-weight:700;color:#2563eb;margin-top:3px;">${course.title}</div>
               </div>
-            `;
-          });
-
-          contentHtml += `
+              <div style="font-size:9px;font-weight:600;color:#94a3b8;text-align:right;letter-spacing:1px;">
+                GUÍA DE ROBÓTICA 2026<br><span style="font-size:8px;">${course.classes.length} pasos</span>
               </div>
-              <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; color: #94a3b8; font-size: 10px; font-weight: 600; letter-spacing: 2px;">
-                SVP STEAM CLUB © 2026 - MATERIAL EDUCATIVO
-              </div>
+            </div>
+            ${stepsHtml}
+            <div style="margin-top:16px;border-top:1px solid #e2e8f0;padding-top:10px;text-align:center;color:#cbd5e1;font-size:8px;font-weight:600;letter-spacing:2px;">
+              SVP STEAM CLUB © 2026 · MATERIAL EDUCATIVO
             </div>
           `;
 
-          container.innerHTML = contentHtml;
-          
-          // Temporary append to DOM for style application if needed
+          container.appendChild(innerDiv);
           document.body.appendChild(container);
-          
-          // Generate PDF
-          html2pdf().from(container).set(opt).save().then(() => {
-            document.body.removeChild(container);
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              html2pdf().from(innerDiv).set(opt).save().then(() => {
+                document.body.removeChild(container);
+              }).catch(err => {
+                console.error('PDF Export Error:', err);
+                document.body.removeChild(container);
+              });
+            });
           });
         };
 

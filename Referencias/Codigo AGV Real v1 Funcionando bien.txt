@@ -1,0 +1,372 @@
+#include <SPI.h>
+#include <Wire.h>
+#include <MFRC522.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <EEPROM.h> // LIBRERÍA AÑADIDA PARA GUARDAR EN MEMORIA
+
+// ====================================================================
+// 1. CONFIGURACIÓN DE PINES (MEGA - HARDWARE REAL)
+// ====================================================================
+
+#define ANCHO_PANTALLA 128
+#define ALTO_PANTALLA 64
+#define OLED_RESET -1 
+#define DIRECCION_PANTALLA 0x3C 
+Adafruit_SSD1306 pantalla(ANCHO_PANTALLA, ALTO_PANTALLA, &Wire, OLED_RESET);
+
+// Lector RFID
+#define RST_PIN  5    
+#define SS_PIN   53   
+MFRC522 mfrc522(SS_PIN, RST_PIN); 
+
+// Motores MX1616 
+const int IN1 = 7; // Derecho ADELANTE
+const int IN2 = 6; // Derecho ATRÁS
+const int IN3 = 3; // Izquierdo ADELANTE
+const int IN4 = 2; // Izquierdo ATRÁS
+
+// Sensores
+const int S_A_IZQ = 38; const int S_A_CEN = 40; const int S_A_DER = 36;
+const int S_B_DER = 34; const int S_B_CEN = 32; const int S_B_IZQ = 30;
+
+// Botones e Interfaz
+const int BTN_SEL = 22; const int BTN_INC = 24; const int BTN_OK = 26; const int BTN_CLR = 28;
+const int LED_A = 44; const int LED_B = 45;
+
+// ====================================================================
+// 2. VARIABLES GLOBALES Y PARÁMETROS
+// ====================================================================
+int velBase = 45;        
+int velCorreccion = 30;  
+int velCorreccion2 = 10; 
+int velGiro = 45;        
+
+int pedidos[4] = {0, 0, 0, 0};
+String uidInicio = "";
+String uidPila[4] = {"", "", "", ""};
+String uidRetorno = "";
+bool caraA_Activa = true;
+bool enMenu = true;
+
+int memoriaLado = 0; 
+int menuSeleccion = 0; 
+unsigned long tiempoBloqueoRFID = 0;
+String ultimoUID = "";
+
+// ====================================================================
+// 3. FUNCIONES DE MEMORIA EEPROM
+// ====================================================================
+
+void cargarAjustes() {
+  byte firma;
+  EEPROM.get(0, firma);
+  
+  if (firma == 0xAA) {
+    // Si la firma existe, cargamos los datos guardados
+    EEPROM.get(1, velBase);
+    EEPROM.get(3, velCorreccion);
+    EEPROM.get(5, velCorreccion2);
+  } else {
+    // Si es la primera vez, guardamos los valores por defecto
+    EEPROM.put(0, (byte)0xAA); // Guardamos la firma
+    EEPROM.put(1, velBase);
+    EEPROM.put(3, velCorreccion);
+    EEPROM.put(5, velCorreccion2);
+  }
+}
+
+void guardarAjustes() {
+  // EEPROM.put solo escribe si el valor ha cambiado, protegiendo la memoria
+  EEPROM.put(1, velBase);
+  EEPROM.put(3, velCorreccion);
+  EEPROM.put(5, velCorreccion2);
+}
+
+// ====================================================================
+// 4. FUNCIONES BÁSICAS Y UTILIDADES
+// ====================================================================
+
+void mostrarPantalla(String l1, String l2) {
+  pantalla.clearDisplay();
+  pantalla.setTextSize(1);
+  pantalla.setTextColor(SSD1306_WHITE);
+  pantalla.setCursor(0, 0); pantalla.println(l1);
+  pantalla.setCursor(0, 30); pantalla.setTextSize(2); pantalla.println(l2);
+  pantalla.display();
+}
+
+void mostrarProgresoEscaneo(String tags[], int n) {
+  pantalla.clearDisplay();
+  pantalla.setTextSize(1);
+  pantalla.setTextColor(SSD1306_WHITE);
+  pantalla.setCursor(0, 0);
+  pantalla.println("=== MAPEANDO PISTA ===");
+
+  for (int i = 0; i < n; i++) {
+    if (i == 0) pantalla.print("INIC: ");
+    else pantalla.print("TAG" + String(i) + ": ");
+    pantalla.println(tags[i]);
+  }
+
+  pantalla.setCursor(110, 0);
+  if((millis() / 500) % 2 == 0) pantalla.print("[*]");
+  else pantalla.print("[ ]");
+  pantalla.display();
+}
+
+String leerTag() {
+  if (millis() - tiempoBloqueoRFID < 1500) return "";
+  if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) return "";
+  String uid = "";
+  for (byte i = 0; i < mfrc522.uid.size; i++) {
+    if(mfrc522.uid.uidByte[i] < 0x10) uid += "0";
+    uid += String(mfrc522.uid.uidByte[i], HEX);
+  }
+  uid.toUpperCase();
+  mfrc522.PICC_HaltA(); 
+  return uid;
+}
+
+void mover(int vI, int vD) {
+  int realI = caraA_Activa ? vI : -vD;
+  int realD = caraA_Activa ? vD : -vI;
+
+  if (realI >= 0) { analogWrite(IN3, constrain(realI, 0, 80)); analogWrite(IN4, 0); }
+  else { analogWrite(IN3, 0); analogWrite(IN4, constrain(abs(realI), 0, 80)); }
+
+  if (realD >= 0) { analogWrite(IN1, constrain(realD, 0, 80)); analogWrite(IN2, 0); }
+  else { analogWrite(IN1, 0); analogWrite(IN2, constrain(abs(realD), 0, 80)); }
+}
+
+void frenar() {
+  analogWrite(IN1, 255); analogWrite(IN2, 255); analogWrite(IN3, 255); analogWrite(IN4, 255);
+  delay(100);
+  analogWrite(IN1, 0); analogWrite(IN2, 0); analogWrite(IN3, 0); analogWrite(IN4, 0);
+}
+
+// ====================================================================
+// 5. LÓGICA DE NAVEGACIÓN Y COREOGRAFÍA
+// ====================================================================
+
+void navegacionBasica() {
+  int izq, cen, der;
+  if (caraA_Activa) { izq = digitalRead(S_A_IZQ); cen = digitalRead(S_A_CEN); der = digitalRead(S_A_DER); }
+  else { izq = digitalRead(S_B_IZQ); cen = digitalRead(S_B_CEN); der = digitalRead(S_B_DER); }
+
+  if (cen == 1) {
+    mover(velBase, velBase);
+    memoriaLado = 0;
+  } 
+  else if (izq == 1) {
+    mover(velCorreccion, velBase);
+    memoriaLado = 1;
+  } 
+  else if (der == 1) {
+    mover(velBase, velCorreccion);
+    memoriaLado = 2;
+  } 
+  else {
+    if (memoriaLado == 1) { mover(velCorreccion2, velBase); } 
+    else if (memoriaLado == 2) { mover(velBase, velCorreccion2); } 
+    else { mover(velBase, velBase); }
+  }
+}
+
+void girar(int grados) {
+  frenar();
+  if (grados == 180) {
+    mover(velGiro, -velGiro); delay(800);
+    while (digitalRead(S_A_CEN) == 0) mover(velGiro, -velGiro);
+  } else { 
+    mover(velGiro, -velGiro); delay(400);
+    while (digitalRead(caraA_Activa ? S_A_CEN : S_B_CEN) == 0) mover(velGiro, -velGiro);
+  }
+  frenar();
+}
+
+void secuenciaEntrega(int id) {
+  mostrarPantalla("ENTREGA", "TOLVA " + String(id + 1));
+  girar(90); 
+  while (pedidos[id] > 0) {
+    while (digitalRead(S_A_IZQ) == 0) mover(30, 30); 
+    frenar(); delay(1000); 
+    pedidos[id]--;
+    if (pedidos[id] > 0) { mover(-30, -30); delay(300); frenar(); }
+  }
+  caraA_Activa = !caraA_Activa; 
+  digitalWrite(LED_A, caraA_Activa); digitalWrite(LED_B, !caraA_Activa);
+  mover(35, 35); delay(500); 
+  while (digitalRead(caraA_Activa ? S_A_CEN : S_B_CEN) == 0) navegacionBasica();
+  girar(90);
+  tiempoBloqueoRFID = millis();
+}
+
+void iniciarEscaneo() {
+  String tags[10];
+  int n = 0;
+  mostrarPantalla("MODO ESCANEO", "Iniciando pista...");
+  delay(2000);
+  caraA_Activa = true;
+  ultimoUID = "";
+  unsigned long tiempoUltimaPantalla = 0;
+
+  while (true) {
+    // BOTÓN DE CANCELACIÓN DE EMERGENCIA
+    if (digitalRead(BTN_CLR) == LOW) {
+      frenar();
+      mostrarPantalla("ATENCION", "CANCELADO!");
+      delay(1500);
+      break; 
+    }
+
+    navegacionBasica();
+    
+    if (millis() - tiempoUltimaPantalla > 300) {
+       mostrarProgresoEscaneo(tags, n);
+       tiempoUltimaPantalla = millis();
+    }
+
+    String tag = leerTag();
+    if (tag != "" && tag != ultimoUID) {
+      ultimoUID = tag;
+      frenar();
+      bool repetido = false;
+      for (int i = 0; i < n; i++) if (tags[i] == tag) repetido = true;
+
+      if (!repetido) {
+        tags[n++] = tag;
+        mostrarProgresoEscaneo(tags, n); 
+        delay(1000);
+      } else if (tag == tags[0] && n > 1) {
+        mostrarPantalla("MAPA COMPLETO", "Guardando...");
+        uidInicio = tags[0];
+        uidRetorno = tags[n - 1];
+        for (int i = 0; i < 4; i++) {
+          if (i < (n - 2)) uidPila[i] = tags[i + 1];
+          else uidPila[i] = "";
+        }
+        delay(2000);
+        break;
+      }
+    }
+  }
+  enMenu = true;
+}
+
+// ====================================================================
+// 6. INTERFAZ DE USUARIO (MENÚ)
+// ====================================================================
+
+void ejecutarMenu() {
+  if (digitalRead(BTN_SEL) == LOW) { 
+    menuSeleccion++;
+    if(menuSeleccion > 8) menuSeleccion = 0;
+    delay(200); 
+  }
+  
+  if (digitalRead(BTN_INC) == LOW) { 
+    if(menuSeleccion < 4) { pedidos[menuSeleccion] = (pedidos[menuSeleccion] + 1) % 6; }
+    else if(menuSeleccion == 5) { velBase += 5; guardarAjustes(); }
+    else if(menuSeleccion == 6) { velCorreccion += 5; guardarAjustes(); }
+    else if(menuSeleccion == 7) { velCorreccion2 += 5; guardarAjustes(); }
+    delay(200); 
+  }
+  
+  if (digitalRead(BTN_CLR) == LOW) { 
+    if(menuSeleccion < 4) { 
+      for (int i = 0; i < 4; i++) pedidos[i] = 0;
+      mostrarPantalla("LISTA", "BORRADA"); delay(500);
+    } 
+    else if(menuSeleccion == 5) { velBase -= 5; if(velBase < 0) velBase = 0; guardarAjustes(); }
+    else if(menuSeleccion == 6) { velCorreccion -= 5; guardarAjustes(); } 
+    else if(menuSeleccion == 7) { velCorreccion2 -= 5; guardarAjustes(); }
+    delay(200); 
+  }
+  
+  if (digitalRead(BTN_OK) == LOW) {
+    if (menuSeleccion == 4) iniciarEscaneo();
+    else if (menuSeleccion == 8 || menuSeleccion < 4) { 
+      if (uidInicio != "") { enMenu = false; mostrarPantalla("AGV", "GO!"); delay(1000); }
+      else { mostrarPantalla("ERROR", "ESCANEAR!"); delay(1000); }
+    }
+    return;
+  }
+
+  pantalla.clearDisplay();
+  pantalla.setTextSize(1);
+  pantalla.setTextColor(SSD1306_WHITE);
+  pantalla.setCursor(0, 0); 
+  
+  if (menuSeleccion < 5) {
+    pantalla.println("== PEDIDOS (PAG 1) ==");
+    for (int i = 0; i < 4; i++) {
+      if (i == menuSeleccion) pantalla.print("> "); else pantalla.print("  ");
+      pantalla.print("TOLVA "); pantalla.print(i + 1); pantalla.print(": "); pantalla.println(pedidos[i]);
+    }
+    if (menuSeleccion == 4) pantalla.println("> MODO ESCANEO"); else pantalla.println("  MODO ESCANEO");
+  } else {
+    pantalla.println("== AJUSTES (PAG 2) ==");
+    
+    if (menuSeleccion == 5) pantalla.print("> "); else pantalla.print("  ");
+    pantalla.print("VelBase: "); pantalla.println(velBase);
+    
+    if (menuSeleccion == 6) pantalla.print("> "); else pantalla.print("  ");
+    pantalla.print("V.Corr1: "); pantalla.println(velCorreccion);
+    
+    if (menuSeleccion == 7) pantalla.print("> "); else pantalla.print("  ");
+    pantalla.print("V.Corr2: "); pantalla.println(velCorreccion2);
+    
+    pantalla.println(""); 
+    if (menuSeleccion == 8) pantalla.println("> INICIAR MISION!"); else pantalla.println("  INICIAR MISION!");
+  }
+  pantalla.display();
+}
+
+// ====================================================================
+// 7. SETUP Y LOOP PRINCIPAL
+// ====================================================================
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT); pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(S_A_IZQ, INPUT); pinMode(S_A_CEN, INPUT); pinMode(S_A_DER, INPUT);
+  pinMode(S_B_IZQ, INPUT); pinMode(S_B_CEN, INPUT); pinMode(S_B_DER, INPUT);
+  pinMode(BTN_SEL, INPUT_PULLUP); pinMode(BTN_INC, INPUT_PULLUP); 
+  pinMode(BTN_OK, INPUT_PULLUP); pinMode(BTN_CLR, INPUT_PULLUP);
+  pinMode(LED_A, OUTPUT); pinMode(LED_B, OUTPUT);
+
+  // Leer valores de EEPROM al encender
+  cargarAjustes();
+
+  SPI.begin();          
+  mfrc522.PCD_Init();   
+  mfrc522.PCD_SetAntennaGain(mfrc522.RxGain_max); 
+  
+  Wire.begin();
+  if(!pantalla.begin(SSD1306_SWITCHCAPVCC, DIRECCION_PANTALLA)) { for(;;); }
+  
+  digitalWrite(LED_A, HIGH);
+  mostrarPantalla("SVP STEAM", "Larense listo");
+  delay(2000);
+}
+
+void loop() {
+  if (enMenu) { ejecutarMenu(); return; }
+
+  navegacionBasica();
+  String tag = leerTag();
+  
+  if (tag != "") {
+    if (tag == uidInicio) { 
+       frenar(); mostrarPantalla("FIN", "MISION OK"); 
+       for(int i=0; i<4; i++) pedidos[i]=0; 
+       delay(3000); enMenu = true; 
+    }
+    else if (tag == uidRetorno && !caraA_Activa) { girar(180); caraA_Activa = true; }
+    else {
+      for (int i = 0; i < 4; i++) {
+        if (tag == uidPila[i] && pedidos[i] > 0) secuenciaEntrega(i);
+      }
+    }
+  }
+}
