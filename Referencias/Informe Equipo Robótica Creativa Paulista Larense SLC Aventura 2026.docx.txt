@@ -1,0 +1,308 @@
+﻿Olimpiadas de Robótica Creativa (ORC 2026)
+INFORME DE CONCEPTO PARTES Y PIEZAS 
+COMPETENCIA SIGUE LÍNEAS CREATIVAS
+
+
+U.E. Colegio San Vicente de Paul
+  
+
+
+
+SVP STEAM Club, Equipo: Robótica Creativa Paulista Larense
+
+
+Integrantes:
+Juan Ferrer
+V 36.636.281
+Roberth Sanz
+V 36.706.853
+Fabian Briceño
+V 34.884.014
+Mentor: 
+Ing. Luis Fernando Corado
+V18.972.270
+Barquisimeto 25 de Marzo de 2026
+________________
+1.- Presentación del Robot Sigue Líneas Creativas
+
+
+Presentamos nuestro proyecto para la competencia Sigue Líneas Creativas 2026 en categoría Aventura: un robot seguidor de línea diseñado, construido y programado por nosotros. Este robot combina ingeniería, electrónica y programación para seguir de manera autónoma una línea negra en un fondo blanco. A continuación, les explicaremos cómo lo diseñamos, cómo funciona y cuáles componentes utilizamos.
+Diseño del Robot
+El diseño de nuestro está basado en un chasis personalizado, el cual fabricamos con impresión 3D. El  robot tiene un aspecto moderno y limpio, usamos componentes pequeños para lograr un robot compacto y ágil. Nuestra principal referencia fue el robot de un equipo del club que gano la categoría Aventura en 2025, tomamos ese modelo y le realizamos mejoras. En la parte delantera, usamos una base para 3 sensores TCRT5000 para detectar la línea, la base es ajustable en el chasis y seguimos usando túneles para mejorar el funcionamiento de los sensores. Utilizamos un arduino nano y el driver MX1616 para ahorrar espacio, mientras que entre ejes montamos el portabaterias de  2 18650. Usamos dos motores DC con engranajes estándar conectados a ruedas a través de engranajes. Todos los componentes fueron soldados para evitar desconexiones en competencia y además, le diseñamos un seguro para el portabaterias para evitar que se abra, un problema que tuvo el robot del 2025. Además, diseñamos el robot para ser de fácil desarmado y accesibilidad a sus componentes internos usando pocos tornillos.
+
+
+Funcionamiento
+El robot utiliza 3 sensores infrarrojos TRCT5000 que detectan el contraste entre la línea negra y el fondo blanco. Estos sensores envían señales al Arduino NANO, que procesa los datos y ajusta la velocidad de los motores a través del controlador MX1616. Si el sensor central detecta la línea, ambos motores avanzan a cierta velocidad y si algún sensor lateral detecta la línea el motor correspondiente se detiene, disminuye o inverte según programemos dependiendo de la pista. No hay caso para todos los sensores en blanco para lograr una memoria de estado. Este proceso ocurre en tiempo real, permitiendo al robot seguir curvas, líneas y líneas segmentadas.
+
+
+Componentes Principales (Resumen):
+1. Arduino NANO: procesa las señales de los sensores y controla los motores.
+2. MX1616 Driver: Controla la dirección y velocidad de los motores.
+3. 3x TRCT500: Detectan la línea negra mediante luz infrarroja.
+4. Motores DC con engranajes: Proporciona movimiento al robot.
+5. Chasis impreso en 3D: Ofrece soporte estructural y espacio para todos los componentes.
+6. Porta Baterías 2x 18650: Para sostener la batería y además cuenta con interruptor de apagado.
+Mejoras Futuras
+Para mejorar su rendimiento, planeamos implementar un algoritmo más complejo, haciendo que los sensores se solapen para tener más estados de lógica e implementar una memoria usando variables.
+.
+En resumen, este proyecto nos permitió aprender sobre robótica, sino también trabajar en equipo y aplicar conocimientos STEAM a un desafío real.
+
+
+2.- Integrantes del equipo de Robot Sigue Líneas Creativas
+El equipo SVP STEAM Club Equipo 1 está conformado por alumnos pertenecientes al SVP STEAM Club. Este proyecto es un proyecto integral del club para el segundo momento de 2025.
+
+
+Integrantes:
+Juan Ferrer: Electronica y Programacion
+Fabian Briceño: Diseño y Estrategia.
+Roberth Sanz: Mecánica y Fabricación
+
+
+Nombre
+	Edad
+	Email
+	Juan Ferrer
+	11
+	Mirsilva611@gmail.com
+	Roberth Sanz
+	11
+	rsanz.robotica@gmail.com
+	Fabian Briceño
+	11
+	fabian21022015@gmail.com
+	
+
+
+
+________________
+
+
+3.- Identificación de componentes del Robot Sigue Líneas Creativas
+3.1.- Inicio
+Como Club de Educación STEAM estamos activamente en búsqueda de participar en competencias y desarrollar proyectos que nos permitan aplicar los conocimientos aprendidos y utilizar las herramientas con las que contamos. Tenemos como meta para 2026 continuar participando y tener buenos resultados en las Olimpiadas de Robótica y la competencia Sigue Líneas Creativas. Nos hemos concentrado en los robots sigue líneas para  continuar mejorando, construimos una pista parecida a las de la competencia  2025 para  practicar  en nuestra sede:
+  
+
+
+
+
+
+Imagen 1
+
+
+También hemos usado un simulador web (https://svpsteamclub.github.io/Sim/) para  practicar y afinar el diseño y  programación de nuestro robot.
+
+Nuestra referencia principal ha sido el robot con el que compito en 2025 otro equipo del club que resultaron ganadores en la categoría aventura:
+  
+
+Imagen 2
+
+
+Pero realizando mejoras en estos aspectos:
+* Usar componentes más pequeños.
+* Soldar componentes para mejorar su fiabilidad.
+* Tener un soporte para las baterias para evitar que se abran.
+* Usar una metra como rueda loca para hacer que ruede mejor el robot.
+* Seguir usando túneles para mejorar el funcionamiento de los sensores IR.
+
+
+El diseño final lo presentamos en TinkerCAD (con apoyo de Fusion 360) (Imagen 6).
+  
+
+Imagen 3
+Utilizando impresión 3D fabricamos el chasis y la base de los sensores. (Imagen 7).
+  
+
+Imagen 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+En equipo hemos montado el robot final (Imagen 5, 6 y 7).
+  
+
+Imagen 5
+  
+
+Imagen 6
+  
+
+Imagen 7
+Y actualmente estamos realizando pruebas, en este momento el robot está programado con un código base sencillo directo. Luego de las  pruebas personalizamos el robot con pintura y accesorios adicionales. Como la electornica es pequena y la parte de arriba del robot es plana, podemos diseñarle carrocerías.
+  
+
+3.2.- Componentes mecánicos
+Chasis impreso en 3D: Diseñado por nosotros, impreso en nuestra impresora 3D. Cuenta con agujeros y formas justas diseñadas para sostener los componentes, está formado  por tres piezas solamente logrando ser muy simple.
+
+
+  
+
+Imagen 8
+La parte inferior integra la metra como rueda  loca y los túneles de  los sensores, así como el soporte de la tapa de las baterías.
+
+  
+Imagen 9
+
+
+
+
+La parte  trasera se puede ver el switch de on off y el soporte del portabaterias, asi como el puerto USB C del arduino NANO que queda expuesto para fácil conexión.
+  
+
+Imagen 10
+
+
+Motores Dc con caja de engranajes y ruedas: Un motor de corriente continua combinado con una caja de engranajes que reduce la velocidad de salida del motor e incrementa su torque (fuerza de rotación), haciéndolo más adecuado para aplicaciones que requieren movimiento controlado y potencia.
+
+
+  
+
+Imagen 11
+
+
+
+
+
+
+
+
+
+
+
+
+Rueda loca usamos una metra que nos da 360 grados de giro y sirve como tercer apoyo del robot
+
+
+  
+
+Imagen 13
+
+
+Los componentes mecánicos están armados utilizando tornillos.
+
+
+3.3.- Componentes electrónicos
+* 1x Arduino NANO: Una placa compacta de desarrollo de microcontroladores de código abierto basada en el microcontrolador ATmega328P, ampliamente utilizada en proyectos de electrónica y robótica para prototipado y control de dispositivos (Imagen 14).
+
+
+  
+
+Imagen 14
+
+
+
+
+* 1x MX1616 Motor Driver: Un circuito integrado que actúa como un controlador de motor dual de alta eficiencia y compacto, permitiendo controlar la velocidad y la dirección de dos motores DC de forma independiente, proporcionando la corriente necesaria que el microcontrolador no puede suministrar directamente (Imagen 15).
+
+
+  
+
+Imagen 15
+
+
+* 3 sensores TRCT500 Infrared Sensor: Un sensor óptico que consta de un diodo emisor de infrarrojos (LED IR) y un fototransistor receptor. Se utiliza para detectar la presencia de objetos o la reflectividad de una superficie midiendo la luz infrarroja reflejada (Imagen 16). Usamos 3 sensores.
+
+
+  
+
+Imagen 16
+
+
+
+
+* Los componentes están soldados con cables para asegurar que no se desconecten en competencia.
+  
+
+Imagen 17
+
+
+1x Base para 2 baterías 18650: Base con interruptor para dos baterías según requerimientos de la competencia (Imagen 18).
+  
+
+Imagen 18
+Diagrama Electronico y de  Flujo de energía:
+  
+
+Diagrama I.
+3.4.- Lenguaje de programación
+Para la programación de nuestro robot seguidor de línea utilizamos el Arduino IDE, una herramienta versátil y accesible que nos permite escribir, compilar y cargar código en el microcontrolador Arduino Uno. El lenguaje empleado es C++, ideal para proyectos de robótica debido a su capacidad para manejar hardware directamente y su estructura eficiente. Actualmente, nuestro robot utiliza un algoritmo sencillo basado en el control directo de la velocidad de los motores, con 3 estados, que responde de manera inmediata a las señales de los sensores infrarrojos. Este enfoque permite al robot avanzar cuando el sensor central detecta la línea negra y girar hacia la izquierda o derecha cuando los sensores laterales identifican desviaciones. 
+
+
+Algoritmo Actual: Control directo de velocidad según estado de sensores.
+El algoritmo se ejecuta en un Arduino NANO, que actúa como el cerebro del sistema leyendo continuamente los 3 sensores infrarrojos TCRT5000. Estos sensores funcionan emitiendo luz infrarroja y midiendo cuánta rebota; como el color blanco refleja la luz y el negro la absorbe, el robot puede "ver" el contraste de la pista.
+Una vez que el NANO procesa esta lectura, envía instrucciones de potencia al controlador de motores MX1616, dictando el comportamiento de las ruedas de tracción.
+Lógica de Corrección Escalonada
+El proceso ocurre en un ciclo continuo y en tiempo real, evaluando las siguientes condiciones:
+* Alineación Perfecta (Sensor Central): Cuando solo el sensor del medio detecta la línea negra, el robot sabe que está en la trayectoria ideal. El controlador ordena a ambos motores avanzar a su velocidad base (100%).
+* Desviación Crítica (Sensores Izquierdo/Derecho): Cuando un sensor de los lados detecta la línea, significa que el robot está en una curva muy cerrada o a punto de salirse de la pista. El algoritmo responde: el motor de ese lado se detiene por completo (0%), o reduce velocidad, dependiendo de la pista, forzando al chasis a pivotar rápidamente para corregir la trayectoria antes de perder la línea.
+La Memoria de Estado
+No existe una instrucción programada para el caso en el que los 3 sensores lean "blanco" simultáneamente. Al no haber una orden nueva, el Arduino NANO retiene y sigue ejecutando la última instrucción válida recibida. Esta memoria de estado es vital para superar curvas muy cerradas o al perder la línea.
+
+
+	
+
+	Este es  el código actual:
+
+  
+
+
+3.5.- Fotos y Medidas generales del robot seguidor de líneas creativas
+El Robot tiene unas medidas de 190mm de largo, 70mm de alto y 145mm de ancho, entrando en las limitaciones de las normas de la competencia.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Imágenes del Robot Final:
++  
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+Página  de

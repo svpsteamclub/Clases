@@ -92,3 +92,17 @@ h1, h2, h3, h4, h5, h6 {
 .bg-accent { background-color: var(--accent); }
 .text-accent { color: var(--accent); }
 .border-accent { border-color: var(--accent); }
+
+/* Code line highlighting */
+.code-line {
+  display: block;
+  padding: 0 1.25rem;
+  margin: 0 -1.25rem;
+  min-height: 1.25rem;
+}
+
+.new-line {
+  background-color: #f0fdf4;
+  border-left: 4px solid #22c55e;
+  font-weight: 500;
+}

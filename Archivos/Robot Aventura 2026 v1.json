@@ -1,0 +1,68 @@
+{
+  "geometry": {
+    "width_m": 0.125,
+    "sensorOffset_m": 0.125,
+    "sensorSpread_m": 0.019,
+    "sensorDiameter_m": 0.018,
+    "sensorCount": 3,
+    "robotMass_kg": 0.25,
+    "comOffset_m": 0.045,
+    "tireGrip": 0.8,
+    "customWheels": null,
+    "customSensors": [],
+    "connections": {
+      "sensorPins": {
+        "fullFarLeft": "",
+        "farLeft": "",
+        "left": "2",
+        "center": "3",
+        "centerLeft": "",
+        "centerRight": "",
+        "right": "4",
+        "farRight": "",
+        "fullFarRight": ""
+      },
+      "driverType": "mx1616",
+      "motorPins": {
+        "leftIn1": "5",
+        "leftIn2": "6",
+        "rightIn3": "9",
+        "rightIn4": "10"
+      }
+    }
+  },
+  "parts": [
+    {
+      "id": "custom_body_1775823531800",
+      "name": "Cuerpo Custom",
+      "x": 0,
+      "y": -0.04,
+      "rotation": 0,
+      "isParametric": true,
+      "width_mm": 80,
+      "length_mm": 140,
+      "color": "#868788"
+    },
+    {
+      "id": "sensor",
+      "name": "Sensor",
+      "x": -0.019,
+      "y": -0.115,
+      "rotation": -1.5707963267948966
+    },
+    {
+      "id": "sensor",
+      "name": "Sensor",
+      "x": 0,
+      "y": -0.115,
+      "rotation": -1.5707963267948966
+    },
+    {
+      "id": "sensor",
+      "name": "Sensor",
+      "x": 0.019,
+      "y": -0.115,
+      "rotation": -1.5707963267948966
+    }
+  ]
+}

@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="styles.css">
     
     <!-- Scripts -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script>window.react = window.React; // Fixing lucide-react UMD dependency</script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@0.284.0"></script>
@@ -58,7 +58,7 @@
         };
 
         const { 
-            Zap, Settings, Move, Trophy, Cpu, Code, Info, Layout, CheckCircle, RefreshCw, ChevronLeft, ChevronRight, Search, Menu, X
+            Zap, Settings, Move, Trophy, Cpu, Code, Info, Layout, CheckCircle, RefreshCw, ChevronLeft, ChevronRight, Search, Menu, X, Clock, Timer, RotateCcw
         } = Lucide;
 
         const Nav = ({ onGoHome, courseTitle, classTitle }) => (
@@ -101,22 +101,36 @@
 
         const highlightArduino = (code) => {
           if (!code) return '';
-          let text = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-          const tokens = [];
-          text = text.replace(/(\/\/.*)|("(.*?)")/g, (match) => {
-            const isComment = match.startsWith('//');
-            const color = isComment ? '#00b894' : '#d63031';
-            tokens.push(`<span style="color: ${color};">${match}</span>`);
-            return `___TOKEN_${tokens.length - 1}___`;
+          let lines = code.split('\n');
+          let highlightedLines = lines.map(line => {
+              let isNew = false;
+              // Detects ++ anywhere before the code starts in that line
+              if (line.trim().startsWith('++')) {
+                  isNew = true;
+                  line = line.replace('++', '');
+              }
+              let text = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+              const tokens = [];
+              text = text.replace(/(\/\/.*)|("(.*?)")/g, (match) => {
+                const isComment = match.startsWith('//');
+                const color = isComment ? '#00b894' : '#d63031';
+                tokens.push(`<span style="color: ${color};">${match}</span>`);
+                return `___TOKEN_${tokens.length - 1}___`;
+              });
+              const keywords = /\b(if|else|void|int|unsigned|long|return|for|while|setup|loop)\b/g;
+              text = text.replace(keywords, '<span style="color: #0984e3;">$1</span>');
+              const arduinoTerms = /\b(pinMode|digitalRead|analogWrite|Serial|begin|print|println|delay|HIGH|LOW|INPUT|OUTPUT|millis)\b/g;
+              text = text.replace(arduinoTerms, '<span style="color: #6c5ce7;">$1</span>');
+              const numbers = /\b(\d+)\b/g;
+              text = text.replace(numbers, '<span style="color: #e67e22;">$1</span>');
+              text = text.replace(/___TOKEN_(\d+)___/g, (match, index) => tokens[parseInt(index)]);
+              
+              if (isNew) {
+                  return `<span class="code-line new-line">${text}</span>`;
+              }
+              return `<span class="code-line">${text || ' '}</span>`;
           });
-          const keywords = /\b(if|else|void|int|return|for|while|setup|loop)\b/g;
-          text = text.replace(keywords, '<span style="color: #0984e3;">$1</span>');
-          const arduinoTerms = /\b(pinMode|digitalRead|analogWrite|Serial|begin|print|println|delay|HIGH|LOW|INPUT|OUTPUT)\b/g;
-          text = text.replace(arduinoTerms, '<span style="color: #6c5ce7;">$1</span>');
-          const numbers = /\b(\d+)\b/g;
-          text = text.replace(numbers, '<span style="color: #e67e22;">$1</span>');
-          text = text.replace(/___TOKEN_(\d+)___/g, (match, index) => tokens[parseInt(index)]);
-          return <code dangerouslySetInnerHTML={{ __html: text }} />;
+          return <code dangerouslySetInnerHTML={{ __html: highlightedLines.join('') }} />;
         };
 
         const CodeBlock = ({ code }) => (
@@ -218,8 +232,149 @@
             </div>
         );
 
-        const ClassPage = ({ classData, onGoBack }) => (
+        const ImageModal = ({ src, onClose }) => {
+            const [scale, setScale] = React.useState(1);
+            const [pos, setPos] = React.useState({ x: 0, y: 0 });
+            const isDragging = React.useRef(false);
+            const dragStart = React.useRef({ x: 0, y: 0 });
+            const initialDist = React.useRef(0);
+
+            const onTouchStart = (e) => {
+                if (e.touches.length === 2) {
+                    const dist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    initialDist.current = dist;
+                    isDragging.current = false;
+                } else if (e.touches.length === 1) {
+                    isDragging.current = true;
+                    dragStart.current = {
+                        x: e.touches[0].clientX - pos.x,
+                        y: e.touches[0].clientY - pos.y
+                    };
+                }
+            };
+            
+            const onTouchMove = (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault(); // prevent native scroll
+                    const dist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const delta = dist / initialDist.current;
+                    setScale(prev => Math.min(Math.max(0.5, prev * delta), 5));
+                    initialDist.current = dist;
+                } else if (e.touches.length === 1 && isDragging.current) {
+                    setPos({
+                        x: e.touches[0].clientX - dragStart.current.x,
+                        y: e.touches[0].clientY - dragStart.current.y
+                    });
+                }
+            };
+            
+            const onTouchEnd = () => {
+                isDragging.current = false;
+                if (scale < 1) {
+                    setScale(1);
+                    setPos({x: 0, y: 0});
+                }
+            };
+
+            const onMouseDown = (e) => {
+                isDragging.current = true;
+                dragStart.current = {
+                    x: e.clientX - pos.x,
+                    y: e.clientY - pos.y
+                };
+            };
+            
+            const onMouseMove = (e) => {
+                if (!isDragging.current) return;
+                setPos({
+                    x: e.clientX - dragStart.current.x,
+                    y: e.clientY - dragStart.current.y
+                });
+            };
+            
+            const onMouseUp = () => {
+                isDragging.current = false;
+            };
+
+            const handleWheel = (e) => {
+                e.preventDefault();
+                const delta = e.deltaY * -0.01;
+                const newScale = Math.min(Math.max(0.5, scale + delta), 5);
+                setScale(newScale);
+                if(newScale === 1) setPos({x:0, y:0});
+            };
+
+            React.useEffect(() => {
+                document.body.style.overflow = 'hidden';
+                return () => { document.body.style.overflow = 'auto'; };
+            }, []);
+
+            return (
+                <div 
+                    className="fixed inset-0 z-[100] bg-slate-900/95 flex items-center justify-center touch-none"
+                    onClick={onClose}
+                    onWheel={handleWheel}
+                >
+                    <button 
+                        onClick={onClose} 
+                        className="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white/80 hover:bg-white/20 hover:text-white transition-all z-50 backdrop-blur-md"
+                    >
+                        <X size={24} />
+                    </button>
+                    <div 
+                        className="w-full h-full flex items-center justify-center overflow-hidden relative"
+                        onClick={e => e.stopPropagation()}
+                        onTouchStart={onTouchStart}
+                        onTouchMove={onTouchMove}
+                        onTouchEnd={onTouchEnd}
+                        onMouseDown={onMouseDown}
+                        onMouseMove={onMouseMove}
+                        onMouseUp={onMouseUp}
+                        onMouseLeave={onMouseUp}
+                    >
+                        <div 
+                            style={{ 
+                                transform: `translate(${pos.x}px, ${pos.y}px) scale(${scale})`, 
+                                transition: isDragging.current ? 'none' : 'transform 0.1s ease-out'
+                            }}
+                            className="w-full h-full origin-center cursor-grab active:cursor-grabbing flex items-center justify-center select-none"
+                        >
+                            <img 
+                                src={src} 
+                                alt="Zoomed Reference" 
+                                className="max-w-full max-h-full object-contain pointer-events-none" 
+                                draggable="false"
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full text-white/80 pointer-events-none">
+                        <Search size={16} />
+                        <span className="text-[10px] font-bold tracking-widest uppercase">Pellizcar o Arrastrar</span>
+                    </div>
+                </div>
+            );
+        };
+
+        const ClassPage = ({ classData, onGoBack, onNext, onPrev, hasNext, hasPrev }) => {
+            const [modalImage, setModalImage] = React.useState(null);
+
+            const handleContentClick = (e) => {
+                if (e.target.tagName === 'IMG') {
+                    setModalImage(e.target.src);
+                }
+            };
+
+            return (
             <div className="fade-in max-w-7xl mx-auto px-6 py-12 md:py-20">
+                {modalImage && <ImageModal src={modalImage} onClose={() => setModalImage(null)} />}
+                
                 <button 
                     onClick={onGoBack}
                     className="flex items-center gap-2 p-2 -ml-2 text-slate-400 hover:text-blue-600 font-bold text-xs uppercase tracking-widest transition-colors mb-12"
@@ -243,6 +398,7 @@
                             <div 
                                 className="explanation-content text-slate-600 text-[16px] leading-relaxed"
                                 dangerouslySetInnerHTML={{ __html: classData.explanation }}
+                                onClick={handleContentClick}
                             />
                         </div>
                     </div>
@@ -258,10 +414,29 @@
                         </div>
                     </div>
                 </div>
+
+                <div className="mt-16 pt-8 border-t border-slate-100 flex items-center justify-between">
+                    {hasPrev ? (
+                        <button onClick={onPrev} className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
+                            <ChevronLeft size={20} /> Paso Anterior
+                        </button>
+                    ) : <div></div>}
+                    
+                    {hasNext ? (
+                        <button onClick={onNext} className="flex items-center gap-2 px-6 py-3 bg-blue-600 rounded-xl font-bold text-white hover:bg-blue-700 transition-all shadow-md shadow-blue-200">
+                            Siguiente Paso <ChevronRight size={20} />
+                        </button>
+                    ) : (
+                        <button onClick={onGoBack} className="flex items-center gap-2 px-6 py-3 bg-emerald-500 rounded-xl font-bold text-white hover:bg-emerald-600 transition-all shadow-md shadow-emerald-200">
+                            Finalizar <CheckCircle size={20} />
+                        </button>
+                    )}
+                </div>
             </div>
         );
+    };
 
-        const App = () => {
+    const App = () => {
             const [view, setView] = React.useState('landing'); // landing, course, class
             const [selectedCourse, setSelectedCourse] = React.useState(null);
             const [selectedClass, setSelectedClass] = React.useState(null);
@@ -275,16 +450,37 @@
             const handleSelectCourse = (course) => {
                 setSelectedCourse(course);
                 setView('course');
+                window.scrollTo(0, 0);
             };
 
             const handleSelectClass = (cls) => {
                 setSelectedClass(cls);
                 setView('class');
+                window.scrollTo(0, 0);
             };
 
             const handleGoBackToCourse = () => {
                 setView('course');
                 setSelectedClass(null);
+                window.scrollTo(0, 0);
+            };
+
+            const currentIndex = selectedCourse?.classes.findIndex(c => c.id === selectedClass?.id);
+            const hasNext = currentIndex !== undefined && currentIndex !== -1 && currentIndex < (selectedCourse?.classes.length - 1);
+            const hasPrev = currentIndex !== undefined && currentIndex > 0;
+
+            const handleNextClass = () => {
+                if (hasNext) {
+                    setSelectedClass(selectedCourse.classes[currentIndex + 1]);
+                    window.scrollTo(0, 0);
+                }
+            };
+
+            const handlePrevClass = () => {
+                if (hasPrev) {
+                    setSelectedClass(selectedCourse.classes[currentIndex - 1]);
+                    window.scrollTo(0, 0);
+                }
             };
 
             return (
@@ -313,6 +509,10 @@
                             <ClassPage 
                                 classData={selectedClass} 
                                 onGoBack={handleGoBackToCourse}
+                                onNext={handleNextClass}
+                                onPrev={handlePrevClass}
+                                hasNext={hasNext}
+                                hasPrev={hasPrev}
                             />
                         )}
                     </main>
