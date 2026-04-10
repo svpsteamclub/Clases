@@ -106,3 +106,10 @@ h1, h2, h3, h4, h5, h6 {
   border-left: 4px solid #22c55e;
   font-weight: 500;
 }
+
+.pdf-export-container {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 800px; /* Base width for calculation */
+}

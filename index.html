@@ -26,6 +26,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@0.284.0"></script>
     <script src="https://unpkg.com/lucide-react@0.284.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="content.js"></script>
 
     <script>
@@ -177,8 +178,21 @@
                                 </div>
                                 <h3 className="text-2xl font-black text-slate-800 mb-4 group-hover:text-blue-600 transition-colors">{course.title}</h3>
                                 <p className="text-slate-500 mb-8 font-medium leading-relaxed">{course.description}</p>
-                                <div className="mt-auto flex items-center gap-2 text-sm font-bold text-blue-600">
-                                    Ver Curso <ChevronRight size={16} />
+                                <div className="mt-auto flex items-center justify-between">
+                                    <div className="flex items-center gap-2 text-sm font-bold text-blue-600">
+                                        Ver Curso <ChevronRight size={16} />
+                                    </div>
+                                    <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            generateCoursePDF(course);
+                                        }}
+                                        className="p-2 bg-slate-50 hover:bg-blue-50 text-slate-400 hover:text-blue-600 rounded-xl transition-colors group/btn flex items-center gap-2"
+                                        title="Descargar PDF para imprimir"
+                                    >
+                                        <Icon name="FileDown" size={18} />
+                                        <span className="text-[10px] font-black uppercase tracking-wider hidden sm:inline">PDF</span>
+                                    </button>
                                 </div>
                             </div>
                         );
@@ -186,6 +200,70 @@
                 </div>
             </div>
         );
+
+        const generateCoursePDF = (course) => {
+          const opt = {
+            margin:       10,
+            filename:     `Guia_${course.title.replace(/\s+/g, '_')}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          const container = document.createElement('div');
+          container.className = 'pdf-export-container';
+          
+          let contentHtml = `
+            <div style="padding: 20px; font-family: 'Inter', sans-serif;">
+              <div style="border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <h1 style="font-size: 28px; font-weight: 900; color: #0f172a; margin: 0; font-family: 'Outfit', sans-serif;">SVP STEAM CLUB</h1>
+                  <h2 style="font-size: 18px; color: #2563eb; margin: 5px 0 0 0; font-weight: 700;">${course.title}</h2>
+                </div>
+                <div style="text-align: right; color: #64748b; font-size: 12px; font-weight: 600;">GUÍA DE ROBÓTICA 2026</div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          `;
+
+          course.classes.forEach((cls, index) => {
+            contentHtml += `
+              <div class="pdf-step" style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; break-inside: avoid; background: #fff; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                  <div style="background: #2563eb; color: #fff; width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900;">${index + 1}</div>
+                  <div style="font-size: 10px; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 1px;">${cls.subtitle}</div>
+                </div>
+                <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin: 0 0 10px 0;">${cls.title}</h3>
+                <div style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 15px;">
+                  ${cls.explanation.replace(/class="[^"]*"/g, '').replace(/style="[^"]*"/g, '')}
+                </div>
+                ${cls.code ? `
+                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; overflow: hidden;">
+                    <pre style="margin: 0; white-space: pre-wrap; color: #334155;">${cls.code.replace(/\+\+/g, '')}</pre>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          });
+
+          contentHtml += `
+              </div>
+              <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; color: #94a3b8; font-size: 10px; font-weight: 600; letter-spacing: 2px;">
+                SVP STEAM CLUB © 2026 - MATERIAL EDUCATIVO
+              </div>
+            </div>
+          `;
+
+          container.innerHTML = contentHtml;
+          
+          // Temporary append to DOM for style application if needed
+          document.body.appendChild(container);
+          
+          // Generate PDF
+          html2pdf().from(container).set(opt).save().then(() => {
+            document.body.removeChild(container);
+          });
+        };
 
         const CoursePage = ({ course, onSelectClass, onGoBack }) => (
             <div className="fade-in max-w-7xl mx-auto px-6 py-12 md:py-20">
