@@ -534,7 +534,9 @@ void loop() {
   }
 }`
         },
-        {
+      ]
+    },
+    {
       id: "sl-desafio-2026",
       title: "Robot Sigue Líneas Desafío 2026",
       description: "Dominio y escalabilidad analógica a través de un cerebro pentasensorial.",
