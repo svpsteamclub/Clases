@@ -1015,32 +1015,72 @@ void setup() {
 
 void loop() {
   if (analogRead(A5) > umbral) { 
-    analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMax);
+    analogWrite(9, velocidadMin);
 ++     ultimaDir = 5;
   }
   else if (analogRead(A6) > umbral) { 
-    analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMedia);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMax);
+    analogWrite(9, velocidadMin);
 ++     ultimaDir = 6;
   }
   else if (analogRead(A4) > umbral) { 
-    analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMedia);
+    analogWrite(9, velocidadMin);
 ++     ultimaDir = 4;
   }
   else if (analogRead(A7) > umbral) {
-    analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMin);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMax);
+    analogWrite(9, velocidadMin);
 ++     ultimaDir = 7;
   }
   else if (analogRead(A3) > umbral) {
-    analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMin);
+    analogWrite(9, velocidadMin);
 ++     ultimaDir = 3;
   }
 ++   // 6. PÉRDIDA DE LÍNEA (Todos los sensores en blanco)
 ++   else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-++     if (ultimaDir == 5) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-++     else if (ultimaDir == 6) { analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-++     else if (ultimaDir == 4) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin); }
-++     else if (ultimaDir == 7) { analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-++     else if (ultimaDir == 3) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin); }
+++     if (ultimaDir == 5) {
+++       analogWrite(5, velocidadMax);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(3, velocidadMax);
+++       analogWrite(9, velocidadMin);
+++     }
+++     else if (ultimaDir == 6) {
+++       analogWrite(5, velocidadMedia);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(3, velocidadMax);
+++       analogWrite(9, velocidadMin);
+++     }
+++     else if (ultimaDir == 4) {
+++       analogWrite(5, velocidadMax);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(3, velocidadMedia);
+++       analogWrite(9, velocidadMin);
+++     }
+++     else if (ultimaDir == 7) {
+++       analogWrite(5, velocidadMin);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(3, velocidadMax);
+++       analogWrite(9, velocidadMin);
+++     }
+++     else if (ultimaDir == 3) {
+++       analogWrite(5, velocidadMax);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(3, velocidadMin);
+++       analogWrite(9, velocidadMin);
+++     }
 ++   }
 }`
         },
@@ -1070,31 +1110,71 @@ void loop() {
 ++   unsigned long tiempoActual = millis();
 
   if (analogRead(A5) > umbral) { 
-    analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMax);
+    analogWrite(9, velocidadMin);
     ultimaDir = 5;
   }
   else if (analogRead(A6) > umbral) { 
-    analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMedia);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMax);
+    analogWrite(9, velocidadMin);
     ultimaDir = 6;
   }
   else if (analogRead(A4) > umbral) { 
-    analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMedia);
+    analogWrite(9, velocidadMin);
     ultimaDir = 4;
   }
   else if (analogRead(A7) > umbral) {
-    analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMin);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMax);
+    analogWrite(9, velocidadMin);
     ultimaDir = 7;
   }
   else if (analogRead(A3) > umbral) {
-    analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(3, velocidadMin);
+    analogWrite(9, velocidadMin);
     ultimaDir = 3;
   }
   else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-    if (ultimaDir == 5) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-    else if (ultimaDir == 6) { analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-    else if (ultimaDir == 4) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin); }
-    else if (ultimaDir == 7) { analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-    else if (ultimaDir == 3) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin); }
+    if (ultimaDir == 5) {
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
+    }
+    else if (ultimaDir == 6) {
+      analogWrite(5, velocidadMedia);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
+    }
+    else if (ultimaDir == 4) {
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMedia);
+      analogWrite(9, velocidadMin);
+    }
+    else if (ultimaDir == 7) {
+      analogWrite(5, velocidadMin);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
+    }
+    else if (ultimaDir == 3) {
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMin);
+      analogWrite(9, velocidadMin);
+    }
   }
 }`
         },
@@ -1124,35 +1204,78 @@ void loop() {
   unsigned long tiempoActual = millis();
 
 ++   if (tiempoActual > 5000 && tiempoActual < 7000) {
-++     analogWrite(5, 0); analogWrite(6, 0); analogWrite(3, 0); analogWrite(9, 0);
+++     analogWrite(5, 0);
+++     analogWrite(6, 0);
+++     analogWrite(3, 0);
+++     analogWrite(9, 0);
 ++   }
 ++   else {
     if (analogRead(A5) > umbral) { 
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
       ultimaDir = 5;
     }
     else if (analogRead(A6) > umbral) { 
-      analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMedia);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
       ultimaDir = 6;
     }
     else if (analogRead(A4) > umbral) { 
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMedia);
+      analogWrite(9, velocidadMin);
       ultimaDir = 4;
     }
     else if (analogRead(A7) > umbral) {
-      analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMin);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
       ultimaDir = 7;
     }
     else if (analogRead(A3) > umbral) {
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMin);
+      analogWrite(9, velocidadMin);
       ultimaDir = 3;
     }
     else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-      if (ultimaDir == 5) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 6) { analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 4) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 7) { analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 3) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin); }
+      if (ultimaDir == 5) {
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMax);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 6) {
+        analogWrite(5, velocidadMedia);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMax);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 4) {
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMedia);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 7) {
+        analogWrite(5, velocidadMin);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMax);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 3) {
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMin);
+        analogWrite(9, velocidadMin);
+      }
     }
 ++   }
 }`
@@ -1183,39 +1306,85 @@ void loop() {
   unsigned long tiempoActual = millis();
 
   if (tiempoActual > 5000 && tiempoActual < 7000) {
-    analogWrite(5, 0); analogWrite(6, 0); analogWrite(3, 0); analogWrite(9, 0);
+    analogWrite(5, 0);
+    analogWrite(6, 0);
+    analogWrite(3, 0);
+    analogWrite(9, 0);
   }
 ++   else if (tiempoActual > 10000 && tiempoActual < 10300) {
 ++     // Giro ciego a la izquierda por 300ms
-++     analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+++     analogWrite(5, velocidadMin);
+++     analogWrite(6, velocidadMin);
+++     analogWrite(3, velocidadMax);
+++     analogWrite(9, velocidadMin);
 ++   }
   else {
     if (analogRead(A5) > umbral) { 
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
       ultimaDir = 5;
     }
     else if (analogRead(A6) > umbral) { 
-      analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMedia);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
       ultimaDir = 6;
     }
     else if (analogRead(A4) > umbral) { 
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMedia);
+      analogWrite(9, velocidadMin);
       ultimaDir = 4;
     }
     else if (analogRead(A7) > umbral) {
-      analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMin);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMax);
+      analogWrite(9, velocidadMin);
       ultimaDir = 7;
     }
     else if (analogRead(A3) > umbral) {
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(3, velocidadMin);
+      analogWrite(9, velocidadMin);
       ultimaDir = 3;
     }
     else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-      if (ultimaDir == 5) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 6) { analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 4) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 7) { analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(3, velocidadMax); analogWrite(9, velocidadMin); }
-      else if (ultimaDir == 3) { analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(3, velocidadMin); analogWrite(9, velocidadMin); }
+      if (ultimaDir == 5) {
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMax);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 6) {
+        analogWrite(5, velocidadMedia);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMax);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 4) {
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMedia);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 7) {
+        analogWrite(5, velocidadMin);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMax);
+        analogWrite(9, velocidadMin);
+      }
+      else if (ultimaDir == 3) {
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(3, velocidadMin);
+        analogWrite(9, velocidadMin);
+      }
     }
   }
 }`
@@ -1252,17 +1421,42 @@ void loop() {
     girarRapidoIzq();
   }
   else {
-    if (analogRead(A5) > umbral) { avanzar(); ultimaDir = 5; }
-    else if (analogRead(A6) > umbral) { curvaSuaveIzq(); ultimaDir = 6; }
-    else if (analogRead(A4) > umbral) { curvaSuaveDer(); ultimaDir = 4; }
-    else if (analogRead(A7) > umbral) { girarRapidoIzq(); ultimaDir = 7; }
-    else if (analogRead(A3) > umbral) { girarRapidoDer(); ultimaDir = 3; }
+    if (analogRead(A5) > umbral) {
+      avanzar();
+      ultimaDir = 5;
+    }
+    else if (analogRead(A6) > umbral) {
+      curvaSuaveIzq();
+      ultimaDir = 6;
+    }
+    else if (analogRead(A4) > umbral) {
+      curvaSuaveDer();
+      ultimaDir = 4;
+    }
+    else if (analogRead(A7) > umbral) {
+      girarRapidoIzq();
+      ultimaDir = 7;
+    }
+    else if (analogRead(A3) > umbral) {
+      girarRapidoDer();
+      ultimaDir = 3;
+    }
     else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-      if (ultimaDir == 5) avanzar();
-      else if (ultimaDir == 6) curvaSuaveIzq();
-      else if (ultimaDir == 4) curvaSuaveDer();
-      else if (ultimaDir == 7) girarRapidoIzq();
-      else if (ultimaDir == 3) girarRapidoDer();
+if (ultimaDir == 5) {
+        avanzar();
+      }
+else if (ultimaDir == 6) {
+        curvaSuaveIzq();
+      }
+else if (ultimaDir == 4) {
+        curvaSuaveDer();
+      }
+else if (ultimaDir == 7) {
+        girarRapidoIzq();
+      }
+else if (ultimaDir == 3) {
+        girarRapidoDer();
+      }
     }
   }
 }
@@ -1270,33 +1464,45 @@ void loop() {
 // === FUNCIONES DE CONTROL DE MOTORES ===
 
 void detenerse() {
-  analogWrite(5, velocidadMin); analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMin); analogWrite(9, velocidadMin);
+  analogWrite(5, velocidadMin);
+  analogWrite(6, velocidadMin);
+  analogWrite(3, velocidadMin);
+  analogWrite(9, velocidadMin);
 }
 
 void avanzar() {
-  analogWrite(5, velocidadMax); analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+  analogWrite(5, velocidadMax);
+  analogWrite(6, velocidadMin);
+  analogWrite(3, velocidadMax);
+  analogWrite(9, velocidadMin);
 }
 
 void curvaSuaveIzq() {
-  analogWrite(5, velocidadMedia); analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+  analogWrite(5, velocidadMedia);
+  analogWrite(6, velocidadMin);
+  analogWrite(3, velocidadMax);
+  analogWrite(9, velocidadMin);
 }
 
 void curvaSuaveDer() {
-  analogWrite(5, velocidadMax); analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMedia); analogWrite(9, velocidadMin);
+  analogWrite(5, velocidadMax);
+  analogWrite(6, velocidadMin);
+  analogWrite(3, velocidadMedia);
+  analogWrite(9, velocidadMin);
 }
 
 void girarRapidoIzq() {
-  analogWrite(5, velocidadMin); analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMax); analogWrite(9, velocidadMin);
+  analogWrite(5, velocidadMin);
+  analogWrite(6, velocidadMin);
+  analogWrite(3, velocidadMax);
+  analogWrite(9, velocidadMin);
 }
 
 void girarRapidoDer() {
-  analogWrite(5, velocidadMax); analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMin); analogWrite(9, velocidadMin);
+  analogWrite(5, velocidadMax);
+  analogWrite(6, velocidadMin);
+  analogWrite(3, velocidadMin);
+  analogWrite(9, velocidadMin);
 }`
         }
       ]
