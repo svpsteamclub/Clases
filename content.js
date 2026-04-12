@@ -213,13 +213,17 @@ void loop() {
               <li>Si el <strong>sensor derecho</strong> se activa (detecta la línea), el motor derecho se detiene para corregir el rumbo.</li>
               <li>Si el <strong>sensor izquierdo</strong> se activa (detecta la línea), el motor izquierdo se detiene para corregir el rumbo.</li>
             </ul>
-            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl mt-4">
-              <h4 class="font-bold text-amber-800 mb-2 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                Memoria de Estado
-              </h4>
-              <p class="text-sm text-amber-700 leading-relaxed">
-                Como no escribimos un código para cuando los tres sensores están sobre fondo blanco, el Arduino <strong>conservará el último estado ejecutado</strong>. Esto funciona como una "memoria": si el robot se sale de la línea en una curva, seguirá girando en la misma dirección hasta encontrar la línea nuevamente.
+            <div class="bg-emerald-50 border-emerald-500 border-l-4 p-4 mt-6 rounded-r-xl">
+              <h4 class="font-bold text-emerald-800 mb-2">🎉 ¡Código Mínimo Funcional!</h4>
+              <p class="text-emerald-900 text-sm leading-relaxed">
+                Hasta este <strong>Paso 5</strong>, tienes el código mínimo indispensable para un seguidor de líneas básico. Lo que viene a continuación son módulos adicionales (memoria, temporizador, rutinas avanzadas, etc.) para hacerlo más robusto y de competición.
+              </p>
+            </div>
+
+            <div class="bg-orange-50 border-l-4 border-orange-500 p-4 mt-6 rounded-r-xl">
+              <h4 class="font-bold text-orange-800 mb-2">⚠️ Limitaciones de la Persistencia de Estado</h4>
+              <p class="text-orange-900 text-sm leading-relaxed">
+                Hasta este paso, el robot cuenta con una "memoria" que es la persistencia de estado: aun si se sale de la línea, los motores seguirán ejecutando su último estado ordenado de manera indefinida. El <strong>problema crucial</strong> es que para resolver esquinas de 90 grados, ejecutar paradas y configurar giros ciegos, esto no nos sirve de mucho. Necesitamos control absoluto con una memoria explícita.
               </p>
             </div>
           </div>`,
@@ -255,16 +259,154 @@ void loop() {
 }`
         },
         {
+          id: "paso-variables",
+          title: "Incorporación de Variables de Velocidad",
+          subtitle: "Paso 6",
+          icon: "Settings",
+          explanation: `<div class="space-y-4">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2 underline decoration-blue-200">
+              ¿Por qué usar variables para la velocidad?
+            </h3>
+            <p>En lugar de escribir "180" o "0" todas las veces, vamos a crear dos variables: <code>velocidadMax</code> y <code>velocidadMin</code>.</p>
+            <p>Hacemos esto para <strong>poder modificar y probar velocidades distintas de manera rápida.</strong> Si en competencia el robot patina de largo, sólo bajamos <code>velocidadMax</code> en la parte superior y automáticamente los cuatro casos de la pista actualizarán sus giros y avances.</p>
+          </div>`,
+          code: `++ int velocidadMax = 180;
+++ int velocidadMin = 0;
+
+void setup() {
+  pinMode(2, INPUT);
+  pinMode(3, INPUT);
+  pinMode(4, INPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+}
+
+void loop() {
+  // 1. CASO RECTO (Sensor central en pin 3)
+  if (digitalRead(3) == HIGH) { 
+++     analogWrite(5, velocidadMax);
+++     analogWrite(6, velocidadMin);
+++     analogWrite(9, velocidadMax);
+++     analogWrite(10, velocidadMin);
+  }
+  // 2. CASO IZQUIERDA (Sensor izq en pin 2)
+  else if (digitalRead(2) == HIGH) { 
+++     analogWrite(5, velocidadMin);
+++     analogWrite(6, velocidadMin);
+++     analogWrite(9, velocidadMax);
+++     analogWrite(10, velocidadMin);
+  }
+  // 3. CASO DERECHA (Sensor der en pin 4)
+  else if (digitalRead(4) == HIGH) { 
+++     analogWrite(5, velocidadMax);
+++     analogWrite(6, velocidadMin);
+++     analogWrite(9, velocidadMin);
+++     analogWrite(10, velocidadMin);
+  }
+}`
+        },
+        {
+          id: "paso-memoria",
+          title: "Incorporar Memoria de Estado",
+          subtitle: "Paso 7",
+          icon: "Trophy",
+          explanation: `<div class="space-y-4">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2 underline decoration-blue-200">
+              ¿Cómo recordamos dónde estábamos?
+            </h3>
+            <p>Para solucionar el problema anterior, vamos a incorporar una memoria de estado explícita usando una variable llamada <code>ultimaDir</code>.</p>
+            
+            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 space-y-3">
+              <p class="font-bold text-blue-900 text-sm italic">La lógica de ultimaDir:</p>
+              <ul class="text-sm space-y-2">
+                <li><span class="font-bold text-blue-600">1. Guardar:</span> En cada estado de la línea guardamos el número del sensor que se encendió (2 izq, 3 centro, 4 der) en <code>ultimaDir</code>.</li>
+                <li><span class="font-bold text-blue-600">2. Recordar:</span> Creamos un estado adicional para "si todos los sensores están en blanco".</li>
+                <li><span class="font-bold text-blue-600">3. Actuar:</span> Si el estado es "todo blanco", consultamos qué número está en <code>ultimaDir</code> y hacemos lo mismo que se hacía cuando ese sensor fue el último en ver la línea.</li>
+              </ul>
+            </div>
+          </div>`,
+          code: `int velocidadMax = 180;
+int velocidadMin = 0;
+++ int ultimaDir = 3; // Memoria guarda el pin: 2(Izquierda), 3(Centro), 4(Derecha)
+
+void setup() {
+  pinMode(2, INPUT);
+  pinMode(3, INPUT);
+  pinMode(4, INPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+}
+
+void loop() {
+  // 1. CASO RECTO (Sensor central en pin 3)
+  if (digitalRead(3) == HIGH) { 
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(9, velocidadMax);
+    analogWrite(10, velocidadMin);
+++     ultimaDir = 3;
+  }
+  // 2. CASO IZQUIERDA (Sensor izq en pin 2)
+  else if (digitalRead(2) == HIGH) { 
+    analogWrite(5, velocidadMin);
+    analogWrite(6, velocidadMin);
+    analogWrite(9, velocidadMax);
+    analogWrite(10, velocidadMin);
+++     ultimaDir = 2;
+  }
+  // 3. CASO DERECHA (Sensor der en pin 4)
+  else if (digitalRead(4) == HIGH) { 
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(9, velocidadMin);
+    analogWrite(10, velocidadMin);
+++     ultimaDir = 4;
+  }
+++   // 4. CASO PÉRDIDA DE LÍNEA (Todos los sensores en blanco)
+++   else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
+++     if (ultimaDir == 2) { 
+++       // Hacer mismo movimiento que sensor izquierdo
+++       analogWrite(5, velocidadMin);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(9, velocidadMax);
+++       analogWrite(10, velocidadMin);
+++     } 
+++     else if (ultimaDir == 4) {
+++       // Hacer mismo movimiento que sensor derecho
+++       analogWrite(5, velocidadMax);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(9, velocidadMin);
+++       analogWrite(10, velocidadMin);
+++     }
+++     else if (ultimaDir == 3) {
+++       // Hacer mismo movimiento que sensor central
+++       analogWrite(5, velocidadMax);
+++       analogWrite(6, velocidadMin);
+++       analogWrite(9, velocidadMax);
+++       analogWrite(10, velocidadMin);
+++     }
+++   }
+}`
+        },
+        {
           id: "paso-3-timer",
           title: "Incorporación del Temporizador",
-          subtitle: "Paso 6",
+          subtitle: "Paso 8",
           icon: "Clock",
           explanation: `<div class="space-y-4">
             <p class="font-medium text-slate-800">Usamos una variable para medir el tiempo transcurrido desde que se encendió el robot.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">En las competencias, a veces necesitamos que el robot realice acciones en un momento exacto (como detenerse o girar después de unos segundos). El Arduino tiene un reloj interno que cuenta los milisegundos transcurridos, y podemos consultar este tiempo con la función <code>millis()</code>.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Al guardar este valor en la variable <code>tiempoActual</code>, el robot sabe cuánto tiempo lleva corriendo. Esto nos permitirá programar eventos especiales sin dejar de leer los sensores.</p>
           </div>`,
-          code: `void setup() {
+          code: `int velocidadMax = 180;
+int velocidadMin = 0;
+int ultimaDir = 3;
+
+void setup() {
   pinMode(2, INPUT);
   pinMode(3, INPUT);
   pinMode(4, INPUT);
@@ -278,36 +420,52 @@ void loop() {
 ++   unsigned long tiempoActual = millis(); // Inicia el cronómetro
 
   if (digitalRead(3) == HIGH) { 
-    analogWrite(5, 180);
-    analogWrite(6, 0);
-    analogWrite(9, 180);
-    analogWrite(10, 0);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(9, velocidadMax);
+    analogWrite(10, velocidadMin);
+    ultimaDir = 3;
   }
   else if (digitalRead(2) == HIGH) { 
-    analogWrite(5, 0);
-    analogWrite(6, 0);
-    analogWrite(9, 180);
-    analogWrite(10, 0);
+    analogWrite(5, velocidadMin);
+    analogWrite(6, velocidadMin);
+    analogWrite(9, velocidadMax);
+    analogWrite(10, velocidadMin);
+    ultimaDir = 2;
   }
   else if (digitalRead(4) == HIGH) { 
-    analogWrite(5, 180);
-    analogWrite(6, 0);
-    analogWrite(9, 0);
-    analogWrite(10, 0);
+    analogWrite(5, velocidadMax);
+    analogWrite(6, velocidadMin);
+    analogWrite(9, velocidadMin);
+    analogWrite(10, velocidadMin);
+    ultimaDir = 4;
+  }
+  else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
+    if (ultimaDir == 2) { 
+      analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+    } else if (ultimaDir == 4) {
+      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMin); analogWrite(10, velocidadMin);
+    } else if (ultimaDir == 3) {
+      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+    }
   }
 }`
         },
         {
           id: "paso-4-pausa",
           title: "El Primer Evento Especial (Pausa)",
-          subtitle: "Paso 7",
+          subtitle: "Paso 9",
           icon: "Timer",
           explanation: `<div class="space-y-4">
             <p class="font-medium text-slate-800">Programamos el robot para que se detenga por completo entre los 5 y 7 segundos de la carrera.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Algunos desafíos requieren que el robot haga una pausa obligatoria. Al usar una condición de tiempo (<code>if</code>), podemos ordenar al robot que ignore los sensores y se detenga cuando el cronómetro esté en una ventana específica.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">En este código, si <code>tiempoActual</code> está entre 5000 y 7000 milisegundos (2 segundos), los motores se apagan. Cuando pase ese tiempo, el robot volverá automáticamente a seguir la línea.</p>
           </div>`,
-          code: `void setup() {
+          code: `int velocidadMax = 180;
+int velocidadMin = 0;
+int ultimaDir = 3;
+
+void setup() {
   pinMode(2, INPUT);
   pinMode(3, INPUT);
   pinMode(4, INPUT);
@@ -322,29 +480,41 @@ void loop() {
 
 ++   // Detenerse por 2 segundos a los 5 segundos de carrera
 ++   if (tiempoActual > 5000 && tiempoActual < 7000) {
-++     analogWrite(5, 0);
-++     analogWrite(6, 0);
-++     analogWrite(9, 0);
-++     analogWrite(10, 0);
+++     analogWrite(5, velocidadMin);
+++     analogWrite(6, velocidadMin);
+++     analogWrite(9, velocidadMin);
+++     analogWrite(10, velocidadMin);
 ++   } 
 ++   else {
     if (digitalRead(3) == HIGH) { 
-      analogWrite(5, 180);
-      analogWrite(6, 0);
-      analogWrite(9, 180);
-      analogWrite(10, 0);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMax);
+      analogWrite(10, velocidadMin);
+      ultimaDir = 3;
     }
     else if (digitalRead(2) == HIGH) { 
-      analogWrite(5, 0);
-      analogWrite(6, 0);
-      analogWrite(9, 180);
-      analogWrite(10, 0);
+      analogWrite(5, velocidadMin);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMax);
+      analogWrite(10, velocidadMin);
+      ultimaDir = 2;
     }
     else if (digitalRead(4) == HIGH) { 
-      analogWrite(5, 180);
-      analogWrite(6, 0);
-      analogWrite(9, 0);
-      analogWrite(10, 0);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMin);
+      analogWrite(10, velocidadMin);
+      ultimaDir = 4;
+    }
+    else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
+      if (ultimaDir == 2) { 
+        analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+      } else if (ultimaDir == 4) {
+        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMin); analogWrite(10, velocidadMin);
+      } else if (ultimaDir == 3) {
+        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+      }
     }
 ++   }
 }`
@@ -352,14 +522,18 @@ void loop() {
         {
           id: "paso-5-giro",
           title: "Código Final con Giro Ciego",
-          subtitle: "Paso 8",
+          subtitle: "Paso 10",
           icon: "RotateCcw",
           explanation: `<div class="space-y-4">
             <p class="font-medium text-slate-800">Agregamos un giro automático (giro ciego) a los 10 segundos para realizar una maniobra especial.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Un "giro ciego" es cuando el robot gira por un tiempo determinado sin usar los sensores. Esto es útil para superar partes de la pista donde la línea desaparece o para tomar atajos programados.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">En este ejemplo, a los 10 segundos el robot girará a la izquierda durante 300 milisegundos. Después de ese tiempo, la lógica de los sensores se activará de nuevo para que el robot encuentre la línea y continúe el recorrido.</p>
           </div>`,
-          code: `void setup() {
+          code: `int velocidadMax = 180;
+int velocidadMin = 0;
+int ultimaDir = 3;
+
+void setup() {
   pinMode(2, INPUT);
   pinMode(3, INPUT);
   pinMode(4, INPUT);
@@ -373,36 +547,48 @@ void loop() {
   unsigned long tiempoActual = millis();
 
   if (tiempoActual > 5000 && tiempoActual < 7000) {
-    analogWrite(5, 0);
-    analogWrite(6, 0);
-    analogWrite(9, 0);
-    analogWrite(10, 0);
+    analogWrite(5, velocidadMin);
+    analogWrite(6, velocidadMin);
+    analogWrite(9, velocidadMin);
+    analogWrite(10, velocidadMin);
   } 
 ++   else if (tiempoActual > 10000 && tiempoActual < 10300) {
 ++     // Giro ciego a la izquierda por 300 milisegundos
-++     analogWrite(5, 0);
-++     analogWrite(6, 0);
-++     analogWrite(9, 180);
-++     analogWrite(10, 0);
+++     analogWrite(5, velocidadMin);
+++     analogWrite(6, velocidadMin);
+++     analogWrite(9, velocidadMax);
+++     analogWrite(10, velocidadMin);
 ++   }
   else {
     if (digitalRead(3) == HIGH) { 
-      analogWrite(5, 180);
-      analogWrite(6, 0);
-      analogWrite(9, 180);
-      analogWrite(10, 0);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMax);
+      analogWrite(10, velocidadMin);
+      ultimaDir = 3;
     }
     else if (digitalRead(2) == HIGH) { 
-      analogWrite(5, 0);
-      analogWrite(6, 0);
-      analogWrite(9, 180);
-      analogWrite(10, 0);
+      analogWrite(5, velocidadMin);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMax);
+      analogWrite(10, velocidadMin);
+      ultimaDir = 2;
     }
     else if (digitalRead(4) == HIGH) { 
-      analogWrite(5, 180);
-      analogWrite(6, 0);
-      analogWrite(9, 0);
-      analogWrite(10, 0);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMin);
+      analogWrite(10, velocidadMin);
+      ultimaDir = 4;
+    }
+    else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
+      if (ultimaDir == 2) { 
+        analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+      } else if (ultimaDir == 4) {
+        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMin); analogWrite(10, velocidadMin);
+      } else if (ultimaDir == 3) {
+        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+      }
     }
   }
 }`
@@ -410,14 +596,18 @@ void loop() {
         {
           id: "paso-6-funciones",
           title: "Organización Profesional con Funciones",
-          subtitle: "Paso 9",
+          subtitle: "Paso 11",
           icon: "Code",
           explanation: `<div class="space-y-4">
             <p class="font-medium text-slate-800">Organizamos el código usando funciones para que sea mucho más ordenado y fácil de leer.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Cuando el código se vuelve largo, es difícil encontrar errores. Usar funciones nos permite agrupar instrucciones de movimiento bajo un nombre simple como <code>avanzar()</code> o <code>detenerse()</code>.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">De esta manera, el bucle principal (<code>loop</code>) solo contiene los nombres de las acciones, mientras que los detalles técnicos de cada movimiento se escriben aparte. Esto hace que sea más fácil de entender y de corregir en plena competencia.</p>
           </div>`,
-          code: `void setup() {
+          code: `int velocidadMax = 180;
+int velocidadMin = 0;
+int ultimaDir = 3;
+
+void setup() {
   pinMode(2, INPUT);
   pinMode(3, INPUT);
   pinMode(4, INPUT);
@@ -439,12 +629,20 @@ void loop() {
   else {
     if (digitalRead(3) == HIGH) {
       avanzar();
+      ultimaDir = 3;
     }
     else if (digitalRead(2) == HIGH) {
       girarIzquierda();
+      ultimaDir = 2;
     }
     else if (digitalRead(4) == HIGH) {
       girarDerecha();
+      ultimaDir = 4;
+    }
+    else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
+      if (ultimaDir == 2) girarIzquierda();
+      else if (ultimaDir == 4) girarDerecha();
+      else if (ultimaDir == 3) avanzar();
     }
   }
 }
@@ -452,31 +650,31 @@ void loop() {
 // --- DEFINICIÓN DE NUESTROS COMANDOS ---
 
 void detenerse() {
-  analogWrite(5, 0);
-  analogWrite(6, 0);
-  analogWrite(9, 0);
-  analogWrite(10, 0);
+  analogWrite(5, velocidadMin);
+  analogWrite(6, velocidadMin);
+  analogWrite(9, velocidadMin);
+  analogWrite(10, velocidadMin);
 }
 
 void avanzar() {
-  analogWrite(5, 180);
-  analogWrite(6, 0);
-  analogWrite(9, 180);
-  analogWrite(10, 0);
+  analogWrite(5, velocidadMax);
+  analogWrite(6, velocidadMin);
+  analogWrite(9, velocidadMax);
+  analogWrite(10, velocidadMin);
 }
 
 void girarIzquierda() {
-  analogWrite(5, 0);
-  analogWrite(6, 0);
-  analogWrite(9, 180);
-  analogWrite(10, 0);
+  analogWrite(5, velocidadMin);
+  analogWrite(6, velocidadMin);
+  analogWrite(9, velocidadMax);
+  analogWrite(10, velocidadMin);
 }
 
 void girarDerecha() {
-  analogWrite(5, 180);
-  analogWrite(6, 0);
-  analogWrite(9, 0);
-  analogWrite(10, 0);
+  analogWrite(5, velocidadMax);
+  analogWrite(6, velocidadMin);
+  analogWrite(9, velocidadMin);
+  analogWrite(10, velocidadMin);
 }`
         }
       ]

@@ -146,17 +146,17 @@
             let text = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             const tokens = [];
             text = text.replace(/(\/\/.*)|("(.*?)")/g, (match) => {
-              const color = match.startsWith('//') ? '#00b894' : '#d63031';
-              tokens.push(`<span style="color:${color};">${match}</span>`);
+              const color = match.startsWith('//') ? '#065f46' : '#991b1b';
+              tokens.push(`<span style="color:${color};font-weight:bold;">${match}</span>`);
               return `___T_${tokens.length - 1}___`;
             });
             text = text.replace(/\b(if|else|void|int|unsigned|long|return|for|while|setup|loop)\b/g,
-              '<span style="color:#0984e3;">$1</span>');
+              '<span style="color:#1d4ed8;font-weight:bold;">$1</span>');
             text = text.replace(/\b(pinMode|digitalRead|analogRead|analogWrite|Serial|begin|print|println|delay|HIGH|LOW|INPUT|OUTPUT|millis)\b/g,
-              '<span style="color:#6c5ce7;">$1</span>');
-            text = text.replace(/\b(\d+)\b/g, '<span style="color:#e67e22;">$1</span>');
+              '<span style="color:#4338ca;font-weight:bold;">$1</span>');
+            text = text.replace(/\b(\d+)\b/g, '<span style="color:#9a3412;font-weight:bold;">$1</span>');
             text = text.replace(/___T_(\d+)___/g, (m, i) => tokens[parseInt(i)]);
-            const bg = isNew ? 'background:rgba(37,99,235,0.07);display:block;margin:0 -13px;padding:1px 13px;border-left:2px solid #2563eb;' : 'display:block;';
+            const bg = isNew ? 'background:#f1f5f9;display:block;margin:0 -13px;padding:1px 13px;border-left:3px solid #000000;font-weight:900;' : 'display:block;';
             return `<span style="${bg}">${text || '&nbsp;'}</span>`;
           }).join('');
         };
@@ -230,18 +230,20 @@
 
         const generateCoursePDF = (course) => {
           const opt = {
-            margin:       [12, 10, 12, 10],
+            margin:       [4, 4, 4, 4],
             filename:     `Guia_${course.title.replace(/\s+/g, '_')}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true, logging: false },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            pagebreak:    { mode: ['css', 'legacy'] }
           };
 
           // Helper: limpia clases CSS, imágenes y SVGs para el PDF
           const cleanHtml = (html) => html
             .replace(/class="[^"]*"/g, '')
-            .replace(/<img[^>]*>/g, '<span style="color:#94a3b8;font-style:italic;font-size:10px;">[imagen]</span>')
+            .replace(/<strong>/g, '<strong style="color:#000000;font-weight:900;">')
+            .replace(/<code>/g, '<code style="font-family:monospace;font-weight:bold;color:#111827;">')
+            .replace(/<img[^>]*>/g, '<span style="color:#000000;font-style:italic;font-weight:bold;font-size:10px;">[IMAGEN OMITIDA EN IMPRESIÓN]</span>')
             .replace(/<svg[\s\S]*?<\/svg>/g, '')
             .replace(/<a\s[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g, '$2');
 
@@ -249,7 +251,7 @@
           const stepsHtml = course.classes.map((cls, index) => `
             <div style="
               width: 100%;
-              border: 1px solid #dde3ec;
+              border: 1.5px solid #475569;
               border-radius: 8px;
               background: #fff;
               margin-bottom: 10px;
@@ -257,27 +259,27 @@
               break-inside: avoid;
             ">
               <div style="
-                background: #f1f5f9;
-                border-bottom: 1px solid #dde3ec;
+                background: #ffffff;
+                border-bottom: 1.5px solid #475569;
                 padding: 7px 12px;
                 display: flex;
                 align-items: center;
                 gap: 8px;
               ">
                 <div style="
-                  background: #2563eb;
+                  background: #000000;
                   color: #fff;
                   min-width: 20px;
                   height: 20px;
                   border-radius: 4px;
-                  font-size: 10px;
+                  font-size: 11px;
                   font-weight: 900;
                   text-align: center;
                   line-height: 20px;
                   padding: 0 4px;
                 ">${index + 1}</div>
-                <span style="font-size: 8px; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 1.5px;">${cls.subtitle}</span>
-                <span style="font-size: 12px; font-weight: 700; color: #0f172a;">${cls.title}</span>
+                <span style="font-size: 9px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: 1.5px;">${cls.subtitle}</span>
+                <span style="font-size: 13px; font-weight: 900; color: #000000;">${cls.title}</span>
               </div>
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
@@ -285,9 +287,10 @@
                     width: 46%;
                     vertical-align: top;
                     padding: 11px 13px;
-                    border-right: 1px solid #dde3ec;
+                    border-right: 1.5px solid #475569;
                     font-size: 10px;
-                    color: #475569;
+                    color: #000000;
+                    font-weight: 500;
                     line-height: 1.55;
                   ">
                     ${cleanHtml(cls.explanation)}
@@ -296,10 +299,10 @@
                     width: 54%;
                     vertical-align: top;
                     padding: 11px 13px;
-                    background: #f8fafc;
+                    background: #ffffff;
                   ">
-                    ${cls.code ? `<pre style="margin:0;font-family:'Courier New',Courier,monospace;font-size:8px;color:#334155;white-space:pre;line-height:1.6;overflow:visible;"><code style="font-family:inherit;">${highlightArduinoHtml(cls.code)}</code></pre>`
-                    : '<span style="color:#cbd5e1;font-size:9px;font-style:italic;">Sin código.</span>'}
+                    ${cls.code ? `<pre style="margin:0;font-family:'Courier New',Courier,monospace;font-size:8.5px;color:#000000;font-weight:bold;white-space:pre;line-height:1.6;overflow:visible;"><code style="font-family:inherit;">${highlightArduinoHtml(cls.code)}</code></pre>`
+                    : '<span style="color:#000000;font-size:10px;font-weight:bold;font-style:italic;">Sin código.</span>'}
                   </td>
                 </tr>
               </table>
