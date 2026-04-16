@@ -755,9 +755,9 @@ void girarDerecha() {
                 <li>Abre el simulador en <a href="https://svpsteamclub.github.io/Sim/" target="_blank" class="font-black text-purple-600 underline hover:text-purple-900 transition-colors">svpsteamclub.github.io/Sim/</a></li>
                 <li>Ve a <strong>"Editor de Robot"</strong>, presiona <strong>"Cargar Robot"</strong> y selecciona el archivo <code>.json</code>.</li>
               </ol>
-              <a href="Archivos/SLC%20Desafio%202026.json" download="SLC Desafio 2026.json" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg font-bold text-sm tracking-wide transition-all shadow-md shadow-purple-200 hover:translate-y-[-2px]">
+              <a href="Archivos/SLC%20Desafio%202026v2.json" download="SLC Desafio 2026v2.json" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-lg font-bold text-sm tracking-wide transition-all shadow-md shadow-purple-200 hover:translate-y-[-2px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                Descargar SLC Desafio 2026.json
+                Descargar SLC Desafio 2026v2.json
               </a>
             </div>
           </div>`,
