@@ -776,13 +776,19 @@ void girarDerecha() {
             <p>Configuramos los pines de los motores como salidas. Los pines analógicos no necesitan configuración previa.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Como los sensores analógicos entregan valores entre 0 y 1023, usamos un <strong>umbral</strong> (ej. 500) para decidir si estamos viendo color negro o blanco.</p>
           </div>`,
-          code: `int umbral = 500; 
+          code: `int umbral = 400; 
 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
 }
 
 void loop() {
@@ -798,20 +804,26 @@ void loop() {
             <p class="font-medium text-slate-800">Verificamos que el robot avance en línea recta.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Activamos ambos motores a una potencia moderada (180 de 255) para asegurar que el hardware esté bien conectado.</p>
           </div>`,
-          code: `int umbral = 500;
+          code: `int umbral = 400;
 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
 }
 
 void loop() {
   // Avanzar
-  analogWrite(5, 180);
+  analogWrite(5, 120);
   analogWrite(6, 0);
-  analogWrite(3, 180);
+  analogWrite(3, 120);
   analogWrite(9, 0);
 }`
         },
@@ -824,20 +836,27 @@ void loop() {
             <p class="font-medium text-slate-800">Verificamos el giro hacia la izquierda.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Para girar a la izquierda, detenemos el motor de ese lado y mantenemos el derecho activo.</p>
           </div>`,
-          code: `int umbral = 500;
+          code: `int umbral = 400;
 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
 }
 
 void loop() {
-  // Girar a la izquierda
+  // Girar Rapido Izquierda (velocidadMin)
+  // Usamos -120 de velocidad minima
   analogWrite(5, 0);
-  analogWrite(6, 0);
-  analogWrite(3, 180);
+  analogWrite(6, 120); 
+  analogWrite(3, 120);
   analogWrite(9, 0);
 }`
         },
@@ -850,21 +869,27 @@ void loop() {
             <p class="font-medium text-slate-800">Verificamos el giro hacia la derecha.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Detenemos el motor derecho y activamos el izquierdo para completar las pruebas básicas de movimiento.</p>
           </div>`,
-          code: `int umbral = 500;
+          code: `int umbral = 400;
 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
 }
 
 void loop() {
-  // Girar a la derecha
-  analogWrite(5, 180);
+  // Girar Rapido Derecha (velocidadMin)
+  analogWrite(5, 120);
   analogWrite(6, 0);
   analogWrite(3, 0);
-  analogWrite(9, 0);
+  analogWrite(9, 120);
 }`
         },
         {
@@ -892,45 +917,53 @@ void loop() {
               </p>
             </div>
           </div>`,
-          code: `int umbral = 500;
+          code: `int umbral = 400;
 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+}
+
+void moverMotores(int velDer, int velIzq) {
+  if (velDer >= 0) {
+    analogWrite(5, velDer);
+    analogWrite(6, 0);
+  } else {
+    analogWrite(5, 0);
+    analogWrite(6, abs(velDer));
+  }
+  if (velIzq >= 0) {
+    analogWrite(9, velIzq);
+    analogWrite(3, 0);
+  } else {
+    analogWrite(9, 0);
+    analogWrite(3, abs(velIzq));
+  }
 }
 
 void loop() {
-++   if (analogRead(A5) > umbral) { // Centro
-++     analogWrite(5, 180);
-++     analogWrite(6, 0);
-++     analogWrite(3, 180);
-++     analogWrite(9, 0);
+++   if (analogRead(A7) < umbral) { // Extremo Izq
+++     moverMotores(120, -120);
 ++   }
-++   else if (analogRead(A6) > umbral) { // Medio Izq
-++     analogWrite(5, 90);
-++     analogWrite(6, 0);
-++     analogWrite(3, 180);
-++     analogWrite(9, 0);
+++   else if (analogRead(A3) < umbral) { // Extremo Der
+++     moverMotores(-120, 120);
 ++   }
-++   else if (analogRead(A4) > umbral) { // Medio Der
-++     analogWrite(5, 180);
-++     analogWrite(6, 0);
-++     analogWrite(3, 90);
-++     analogWrite(9, 0);
+++   else if (analogRead(A6) < umbral) { // Medio Izq
+++     moverMotores(120, 0);
 ++   }
-++   else if (analogRead(A7) > umbral) { // Extremo Izq
-++     analogWrite(5, 0);
-++     analogWrite(6, 0);
-++     analogWrite(3, 180);
-++     analogWrite(9, 0);
+++   else if (analogRead(A4) < umbral) { // Medio Der
+++     moverMotores(0, 120);
 ++   }
-++   else if (analogRead(A3) > umbral) { // Extremo Der
-++     analogWrite(5, 180);
-++     analogWrite(6, 0);
-++     analogWrite(3, 0);
-++     analogWrite(9, 0);
+++   else if (analogRead(A5) < umbral) { // Centro
+++     moverMotores(120, 120);
 ++   }
 }`
         },
@@ -943,48 +976,56 @@ void loop() {
             <p>En lugar de usar números directos, declaramos variables globales de velocidad para poder afinar el robot de manera rápida.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Con 5 sensores, necesitamos una velocidad intermedia (<code>velocidadMedia</code>) para correcciones suaves al tomar curvas de radio amplio sin perder velocidad.</p>
           </div>`,
-          code: `int umbral = 500;
-++ int velocidadMax = 180;
-++ int velocidadMedia = 90;
-++ int velocidadMin = 0;
+          code: `int umbral = 400;
+++ int velocidadMax = 120;
+++ int velocidadMedia = 0;
+++ int velocidadMin = -120;
 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+}
+
+void moverMotores(int velDer, int velIzq) {
+  if (velDer >= 0) {
+    analogWrite(5, velDer);
+    analogWrite(6, 0);
+  } else {
+    analogWrite(5, 0);
+    analogWrite(6, abs(velDer));
+  }
+  if (velIzq >= 0) {
+    analogWrite(9, velIzq);
+    analogWrite(3, 0);
+  } else {
+    analogWrite(9, 0);
+    analogWrite(3, abs(velIzq));
+  }
 }
 
 void loop() {
-  if (analogRead(A5) > umbral) { // Centro
-++     analogWrite(5, velocidadMax);
-++     analogWrite(6, velocidadMin);
-++     analogWrite(3, velocidadMax);
-++     analogWrite(9, velocidadMin);
+  if (analogRead(A7) < umbral) { // Extremo Izq
+++     moverMotores(velocidadMax, velocidadMin);
   }
-  else if (analogRead(A6) > umbral) { // Medio Izq
-++     analogWrite(5, velocidadMedia);
-++     analogWrite(6, velocidadMin);
-++     analogWrite(3, velocidadMax);
-++     analogWrite(9, velocidadMin);
+  else if (analogRead(A3) < umbral) { // Extremo Der
+++     moverMotores(velocidadMin, velocidadMax);
   }
-  else if (analogRead(A4) > umbral) { // Medio Der
-++     analogWrite(5, velocidadMax);
-++     analogWrite(6, velocidadMin);
-++     analogWrite(3, velocidadMedia);
-++     analogWrite(9, velocidadMin);
+  else if (analogRead(A6) < umbral) { // Medio Izq
+++     moverMotores(velocidadMax, velocidadMedia);
   }
-  else if (analogRead(A7) > umbral) { // Extremo Izq
-++     analogWrite(5, velocidadMin);
-++     analogWrite(6, velocidadMin);
-++     analogWrite(3, velocidadMax);
-++     analogWrite(9, velocidadMin);
+  else if (analogRead(A4) < umbral) { // Medio Der
+++     moverMotores(velocidadMedia, velocidadMax);
   }
-  else if (analogRead(A3) > umbral) { // Extremo Der
-++     analogWrite(5, velocidadMax);
-++     analogWrite(6, velocidadMin);
-++     analogWrite(3, velocidadMin);
-++     analogWrite(9, velocidadMin);
+  else if (analogRead(A5) < umbral) { // Centro
+++     moverMotores(velocidadMax, velocidadMax);
   }
 }`
         },
@@ -1000,87 +1041,60 @@ void loop() {
             <p>Usaremos <code>ultimaDir</code> para guardar el número analógico (3, 4, 5, 6, 7) que leyó la línea por última vez.</p>
             <p>Si todos están en blanco, ejecutamos la misma acción que correspondía al último sensor activo.</p>
           </div>`,
-          code: `int umbral = 500;
-int velocidadMax = 180;
-int velocidadMedia = 90;
-int velocidadMin = 0;
-++ int ultimaDir = 5; // Memoria: A3(ext der), A4(med der), A5(centro), A6(med izq), A7(ext izq)
+          code: `int umbral = 400;
+int velocidadMax = 120;
+int velocidadMedia = 0;
+int velocidadMin = -120;
+++ int ultimaDir = 5; // Memoria
 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+}
+
+void moverMotores(int velDer, int velIzq) {
+  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
+  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
+  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
+  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
 }
 
 void loop() {
-  if (analogRead(A5) > umbral) { 
-    analogWrite(5, velocidadMax);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMax);
-    analogWrite(9, velocidadMin);
-++     ultimaDir = 5;
-  }
-  else if (analogRead(A6) > umbral) { 
-    analogWrite(5, velocidadMedia);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMax);
-    analogWrite(9, velocidadMin);
-++     ultimaDir = 6;
-  }
-  else if (analogRead(A4) > umbral) { 
-    analogWrite(5, velocidadMax);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMedia);
-    analogWrite(9, velocidadMin);
-++     ultimaDir = 4;
-  }
-  else if (analogRead(A7) > umbral) {
-    analogWrite(5, velocidadMin);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMax);
-    analogWrite(9, velocidadMin);
+  if (analogRead(A7) < umbral) {
+    moverMotores(velocidadMax, velocidadMin);
 ++     ultimaDir = 7;
   }
-  else if (analogRead(A3) > umbral) {
-    analogWrite(5, velocidadMax);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMin);
-    analogWrite(9, velocidadMin);
+  else if (analogRead(A3) < umbral) {
+    moverMotores(velocidadMin, velocidadMax);
 ++     ultimaDir = 3;
   }
-++   // 6. PÉRDIDA DE LÍNEA (Todos los sensores en blanco)
-++   else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-++     if (ultimaDir == 5) {
-++       analogWrite(5, velocidadMax);
-++       analogWrite(6, velocidadMin);
-++       analogWrite(3, velocidadMax);
-++       analogWrite(9, velocidadMin);
-++     }
-++     else if (ultimaDir == 6) {
-++       analogWrite(5, velocidadMedia);
-++       analogWrite(6, velocidadMin);
-++       analogWrite(3, velocidadMax);
-++       analogWrite(9, velocidadMin);
-++     }
-++     else if (ultimaDir == 4) {
-++       analogWrite(5, velocidadMax);
-++       analogWrite(6, velocidadMin);
-++       analogWrite(3, velocidadMedia);
-++       analogWrite(9, velocidadMin);
-++     }
-++     else if (ultimaDir == 7) {
-++       analogWrite(5, velocidadMin);
-++       analogWrite(6, velocidadMin);
-++       analogWrite(3, velocidadMax);
-++       analogWrite(9, velocidadMin);
-++     }
-++     else if (ultimaDir == 3) {
-++       analogWrite(5, velocidadMax);
-++       analogWrite(6, velocidadMin);
-++       analogWrite(3, velocidadMin);
-++       analogWrite(9, velocidadMin);
-++     }
+  else if (analogRead(A6) < umbral) {
+    moverMotores(velocidadMax, velocidadMedia);
+++     ultimaDir = 6;
+  }
+  else if (analogRead(A4) < umbral) {
+    moverMotores(velocidadMedia, velocidadMax);
+++     ultimaDir = 4;
+  }
+  else if (analogRead(A5) < umbral) {
+    moverMotores(velocidadMax, velocidadMax);
+++     ultimaDir = 5;
+  }
+++   // Si pierde linea
+++   else if (analogRead(A5) >= umbral && analogRead(A6) >= umbral && analogRead(A4) >= umbral && analogRead(A7) >= umbral && analogRead(A3) >= umbral) {
+++     if (ultimaDir == 5) { moverMotores(velocidadMax, velocidadMax); }
+++     else if (ultimaDir == 6) { moverMotores(velocidadMax, velocidadMedia); }
+++     else if (ultimaDir == 4) { moverMotores(velocidadMedia, velocidadMax); }
+++     else if (ultimaDir == 7) { moverMotores(velocidadMax, velocidadMin); }
+++     else if (ultimaDir == 3) { moverMotores(velocidadMin, velocidadMax); }
 ++   }
 }`
         },
@@ -1093,10 +1107,10 @@ void loop() {
             <p class="font-medium text-slate-800">Iniciamos el cronómetro interno.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Con la variable <code>tiempoActual</code> ({millis()}) disponible en el loop, ya podemos programar eventos temporales precisos sin interrumpir la lectura de sensores.</p>
           </div>`,
-          code: `int umbral = 500;
-int velocidadMax = 180;
-int velocidadMedia = 90;
-int velocidadMin = 0;
+          code: `int umbral = 400;
+int velocidadMax = 120;
+int velocidadMedia = 0;
+int velocidadMin = -120;
 int ultimaDir = 5;
 
 void setup() {
@@ -1104,77 +1118,50 @@ void setup() {
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+}
+
+void moverMotores(int velDer, int velIzq) {
+  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
+  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
+  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
+  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
 }
 
 void loop() {
 ++   unsigned long tiempoActual = millis();
 
-  if (analogRead(A5) > umbral) { 
-    analogWrite(5, velocidadMax);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMax);
-    analogWrite(9, velocidadMin);
-    ultimaDir = 5;
-  }
-  else if (analogRead(A6) > umbral) { 
-    analogWrite(5, velocidadMedia);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMax);
-    analogWrite(9, velocidadMin);
-    ultimaDir = 6;
-  }
-  else if (analogRead(A4) > umbral) { 
-    analogWrite(5, velocidadMax);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMedia);
-    analogWrite(9, velocidadMin);
-    ultimaDir = 4;
-  }
-  else if (analogRead(A7) > umbral) {
-    analogWrite(5, velocidadMin);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMax);
-    analogWrite(9, velocidadMin);
+  if (analogRead(A7) < umbral) {
+    moverMotores(velocidadMax, velocidadMin);
     ultimaDir = 7;
   }
-  else if (analogRead(A3) > umbral) {
-    analogWrite(5, velocidadMax);
-    analogWrite(6, velocidadMin);
-    analogWrite(3, velocidadMin);
-    analogWrite(9, velocidadMin);
+  else if (analogRead(A3) < umbral) {
+    moverMotores(velocidadMin, velocidadMax);
     ultimaDir = 3;
   }
-  else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-    if (ultimaDir == 5) {
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
-    }
-    else if (ultimaDir == 6) {
-      analogWrite(5, velocidadMedia);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
-    }
-    else if (ultimaDir == 4) {
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMedia);
-      analogWrite(9, velocidadMin);
-    }
-    else if (ultimaDir == 7) {
-      analogWrite(5, velocidadMin);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
-    }
-    else if (ultimaDir == 3) {
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMin);
-      analogWrite(9, velocidadMin);
-    }
+  else if (analogRead(A6) < umbral) {
+    moverMotores(velocidadMax, velocidadMedia);
+    ultimaDir = 6;
+  }
+  else if (analogRead(A4) < umbral) {
+    moverMotores(velocidadMedia, velocidadMax);
+    ultimaDir = 4;
+  }
+  else if (analogRead(A5) < umbral) {
+    moverMotores(velocidadMax, velocidadMax);
+    ultimaDir = 5;
+  }
+  else if (analogRead(A5) >= umbral && analogRead(A6) >= umbral && analogRead(A4) >= umbral && analogRead(A7) >= umbral && analogRead(A3) >= umbral) {
+    if (ultimaDir == 5) { moverMotores(velocidadMax, velocidadMax); }
+    else if (ultimaDir == 6) { moverMotores(velocidadMax, velocidadMedia); }
+    else if (ultimaDir == 4) { moverMotores(velocidadMedia, velocidadMax); }
+    else if (ultimaDir == 7) { moverMotores(velocidadMax, velocidadMin); }
+    else if (ultimaDir == 3) { moverMotores(velocidadMin, velocidadMax); }
   }
 }`
         },
@@ -1187,10 +1174,10 @@ void loop() {
             <p class="font-medium text-slate-800">Detenemos el robot automáticamente en un tiempo determinado.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Programamos una pausa completa entre los 5 y 7 segundos de la carrera usando una condición IF con tiempoActual.</p>
           </div>`,
-          code: `int umbral = 500;
-int velocidadMax = 180;
-int velocidadMedia = 90;
-int velocidadMin = 0;
+          code: `int umbral = 400;
+int velocidadMax = 120;
+int velocidadMedia = 0;
+int velocidadMin = -120;
 int ultimaDir = 5;
 
 void setup() {
@@ -1198,84 +1185,54 @@ void setup() {
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+}
+
+void moverMotores(int velDer, int velIzq) {
+  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
+  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
+  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
+  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
 }
 
 void loop() {
   unsigned long tiempoActual = millis();
 
-++   if (tiempoActual > 5000 && tiempoActual < 7000) {
-++     analogWrite(5, 0);
-++     analogWrite(6, 0);
-++     analogWrite(3, 0);
-++     analogWrite(9, 0);
+++   if (tiempoActual > 50000 && tiempoActual < 70000) {
+++     moverMotores(0, 0);
 ++   }
 ++   else {
-    if (analogRead(A5) > umbral) { 
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
-      ultimaDir = 5;
-    }
-    else if (analogRead(A6) > umbral) { 
-      analogWrite(5, velocidadMedia);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
-      ultimaDir = 6;
-    }
-    else if (analogRead(A4) > umbral) { 
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMedia);
-      analogWrite(9, velocidadMin);
-      ultimaDir = 4;
-    }
-    else if (analogRead(A7) > umbral) {
-      analogWrite(5, velocidadMin);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
+    if (analogRead(A7) < umbral) {
+      moverMotores(velocidadMax, velocidadMin);
       ultimaDir = 7;
     }
-    else if (analogRead(A3) > umbral) {
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMin);
-      analogWrite(9, velocidadMin);
+    else if (analogRead(A3) < umbral) {
+      moverMotores(velocidadMin, velocidadMax);
       ultimaDir = 3;
     }
-    else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-      if (ultimaDir == 5) {
-        analogWrite(5, velocidadMax);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMax);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 6) {
-        analogWrite(5, velocidadMedia);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMax);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 4) {
-        analogWrite(5, velocidadMax);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMedia);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 7) {
-        analogWrite(5, velocidadMin);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMax);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 3) {
-        analogWrite(5, velocidadMax);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMin);
-        analogWrite(9, velocidadMin);
-      }
+    else if (analogRead(A6) < umbral) {
+      moverMotores(velocidadMax, velocidadMedia);
+      ultimaDir = 6;
+    }
+    else if (analogRead(A4) < umbral) {
+      moverMotores(velocidadMedia, velocidadMax);
+      ultimaDir = 4;
+    }
+    else if (analogRead(A5) < umbral) {
+      moverMotores(velocidadMax, velocidadMax);
+      ultimaDir = 5;
+    }
+    else if (analogRead(A5) >= umbral && analogRead(A6) >= umbral && analogRead(A4) >= umbral && analogRead(A7) >= umbral && analogRead(A3) >= umbral) {
+      if (ultimaDir == 5) { moverMotores(velocidadMax, velocidadMax); }
+      else if (ultimaDir == 6) { moverMotores(velocidadMax, velocidadMedia); }
+      else if (ultimaDir == 4) { moverMotores(velocidadMedia, velocidadMax); }
+      else if (ultimaDir == 7) { moverMotores(velocidadMax, velocidadMin); }
+      else if (ultimaDir == 3) { moverMotores(velocidadMin, velocidadMax); }
     }
 ++   }
 }`
@@ -1289,10 +1246,10 @@ void loop() {
             <p class="font-medium text-slate-800">Programamos un giro forzado para superar intersecciones.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">A los 10 segundos, ordenamos un giro ciego a la izquierda de 300 milisegundos, ignorando los sensores durante ese instante.</p>
           </div>`,
-          code: `int umbral = 500;
-int velocidadMax = 180;
-int velocidadMedia = 90;
-int velocidadMin = 0;
+          code: `int umbral = 400;
+int velocidadMax = 120;
+int velocidadMedia = 0;
+int velocidadMin = -120;
 int ultimaDir = 5;
 
 void setup() {
@@ -1300,91 +1257,58 @@ void setup() {
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
+
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+}
+
+void moverMotores(int velDer, int velIzq) {
+  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
+  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
+  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
+  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
 }
 
 void loop() {
   unsigned long tiempoActual = millis();
 
-  if (tiempoActual > 5000 && tiempoActual < 7000) {
-    analogWrite(5, 0);
-    analogWrite(6, 0);
-    analogWrite(3, 0);
-    analogWrite(9, 0);
+  if (tiempoActual > 50000 && tiempoActual < 70000) {
+    moverMotores(0, 0);
   }
-++   else if (tiempoActual > 10000 && tiempoActual < 10300) {
+++   else if (tiempoActual > 100000 && tiempoActual < 100300) {
 ++     // Giro ciego a la izquierda por 300ms
-++     analogWrite(5, velocidadMin);
-++     analogWrite(6, velocidadMin);
-++     analogWrite(3, velocidadMax);
-++     analogWrite(9, velocidadMin);
+++     moverMotores(velocidadMax, velocidadMin);
 ++   }
   else {
-    if (analogRead(A5) > umbral) { 
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
-      ultimaDir = 5;
-    }
-    else if (analogRead(A6) > umbral) { 
-      analogWrite(5, velocidadMedia);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
-      ultimaDir = 6;
-    }
-    else if (analogRead(A4) > umbral) { 
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMedia);
-      analogWrite(9, velocidadMin);
-      ultimaDir = 4;
-    }
-    else if (analogRead(A7) > umbral) {
-      analogWrite(5, velocidadMin);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMax);
-      analogWrite(9, velocidadMin);
+    if (analogRead(A7) < umbral) {
+      moverMotores(velocidadMax, velocidadMin);
       ultimaDir = 7;
     }
-    else if (analogRead(A3) > umbral) {
-      analogWrite(5, velocidadMax);
-      analogWrite(6, velocidadMin);
-      analogWrite(3, velocidadMin);
-      analogWrite(9, velocidadMin);
+    else if (analogRead(A3) < umbral) {
+      moverMotores(velocidadMin, velocidadMax);
       ultimaDir = 3;
     }
-    else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-      if (ultimaDir == 5) {
-        analogWrite(5, velocidadMax);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMax);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 6) {
-        analogWrite(5, velocidadMedia);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMax);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 4) {
-        analogWrite(5, velocidadMax);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMedia);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 7) {
-        analogWrite(5, velocidadMin);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMax);
-        analogWrite(9, velocidadMin);
-      }
-      else if (ultimaDir == 3) {
-        analogWrite(5, velocidadMax);
-        analogWrite(6, velocidadMin);
-        analogWrite(3, velocidadMin);
-        analogWrite(9, velocidadMin);
-      }
+    else if (analogRead(A6) < umbral) {
+      moverMotores(velocidadMax, velocidadMedia);
+      ultimaDir = 6;
+    }
+    else if (analogRead(A4) < umbral) {
+      moverMotores(velocidadMedia, velocidadMax);
+      ultimaDir = 4;
+    }
+    else if (analogRead(A5) < umbral) {
+      moverMotores(velocidadMax, velocidadMax);
+      ultimaDir = 5;
+    }
+    else if (analogRead(A5) >= umbral && analogRead(A6) >= umbral && analogRead(A4) >= umbral && analogRead(A7) >= umbral && analogRead(A3) >= umbral) {
+      if (ultimaDir == 5) { moverMotores(velocidadMax, velocidadMax); }
+      else if (ultimaDir == 6) { moverMotores(velocidadMax, velocidadMedia); }
+      else if (ultimaDir == 4) { moverMotores(velocidadMedia, velocidadMax); }
+      else if (ultimaDir == 7) { moverMotores(velocidadMax, velocidadMin); }
+      else if (ultimaDir == 3) { moverMotores(velocidadMin, velocidadMax); }
     }
   }
 }`
@@ -1398,112 +1322,97 @@ void loop() {
             <p class="font-medium text-slate-800">Encapsulamos toda la lógica de motores en funciones propias para un código limpio y legible.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Con 5 sensores más memoria y eventos de tiempo, el loop principal puede ser difícil de leer. Usando funciones, el loop vuelve a ser una historia corta y clara de acciones.</p>
           </div>`,
-          code: `int umbral = 500;
-int velocidadMax = 180;
-int velocidadMedia = 90;
-int velocidadMin = 0;
+          code: `int umbral = 400; 
+int velocidadMax = 120;
+int velocidadMedia = 0;
+int velocidadMin = -120; //puede ser negativa
 int ultimaDir = 5;
-
+ 
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
-}
 
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
+
+}
+ 
 void loop() {
   unsigned long tiempoActual = millis();
-
-  if (tiempoActual > 5000 && tiempoActual < 7000) {
+ 
+  if (tiempoActual > 50000 && tiempoActual < 70000) {
     detenerse();
   }
-  else if (tiempoActual > 10000 && tiempoActual < 10300) {
-    girarRapidoIzq();
-  }
   else {
-    if (analogRead(A5) > umbral) {
-      avanzar();
-      ultimaDir = 5;
-    }
-    else if (analogRead(A6) > umbral) {
-      curvaSuaveIzq();
-      ultimaDir = 6;
-    }
-    else if (analogRead(A4) > umbral) {
-      curvaSuaveDer();
-      ultimaDir = 4;
-    }
-    else if (analogRead(A7) > umbral) {
+    // --- LÓGICA CON PRIORIDAD EN EXTREMOS (Para curvas de 90°) ---
+    
+    // 1. Prioridad Máxima: Sensores Exteriores (Giro agresivo)
+    if (analogRead(A7) < umbral) { // Extremo Izquierdo
       girarRapidoIzq();
       ultimaDir = 7;
     }
-    else if (analogRead(A3) > umbral) {
+    else if (analogRead(A3) < umbral) { // Extremo Derecho
       girarRapidoDer();
       ultimaDir = 3;
     }
-    else if (analogRead(A5) <= umbral && analogRead(A6) <= umbral && analogRead(A4) <= umbral && analogRead(A7) <= umbral && analogRead(A3) <= umbral) {
-if (ultimaDir == 5) {
-        avanzar();
-      }
-else if (ultimaDir == 6) {
-        curvaSuaveIzq();
-      }
-else if (ultimaDir == 4) {
-        curvaSuaveDer();
-      }
-else if (ultimaDir == 7) {
-        girarRapidoIzq();
-      }
-else if (ultimaDir == 3) {
-        girarRapidoDer();
-      }
+    // 2. Prioridad Media: Sensores Internos (Curva suave)
+    else if (analogRead(A6) < umbral) { // Izquierdo Interno
+      curvaSuaveIzq();
+      ultimaDir = 6;
+    }
+    else if (analogRead(A4) < umbral) { // Derecho Interno
+      curvaSuaveDer();
+      ultimaDir = 4;
+    }
+    // 3. Prioridad Baja: Sensor Central (Línea recta)
+    else if (analogRead(A5) < umbral) { 
+      avanzar();
+      ultimaDir = 5;
+    }
+    // 4. Si se sale de la línea, usar memoria
+    else if (analogRead(A5) >= umbral && analogRead(A6) >= umbral && analogRead(A4) >= umbral && analogRead(A7) >= umbral && analogRead(A3) >= umbral) {
+      if (ultimaDir == 5) { avanzar(); }
+      else if (ultimaDir == 6) { curvaSuaveIzq(); }
+      else if (ultimaDir == 4) { curvaSuaveDer(); }
+      else if (ultimaDir == 7) { girarRapidoIzq(); }
+      else if (ultimaDir == 3) { girarRapidoDer(); }
     }
   }
 }
 
-// === FUNCIONES DE CONTROL DE MOTORES ===
+// === FUNCIÓN MAESTRA DE MOTORES (Maneja Reversa con Negativos) ===
+void moverMotores(int velDer, int velIzq) {
+  // Motor Derecho (Pines 5 y 6)
+  if (velDer >= 0) {
+    analogWrite(5, velDer);
+    analogWrite(6, 0);
+  } else {
+    analogWrite(5, 0);
+    analogWrite(6, abs(velDer));
+  }
 
-void detenerse() {
-  analogWrite(5, velocidadMin);
-  analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMin);
-  analogWrite(9, velocidadMin);
+  // Motor Izquierdo (Pines 9 y 3)
+  if (velIzq >= 0) {
+    analogWrite(9, velIzq);
+    analogWrite(3, 0);
+  } else {
+    analogWrite(9, 0);
+    analogWrite(3, abs(velIzq));
+  }
 }
 
-void avanzar() {
-  analogWrite(5, velocidadMax);
-  analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMax);
-  analogWrite(9, velocidadMin);
-}
-
-void curvaSuaveIzq() {
-  analogWrite(5, velocidadMedia);
-  analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMax);
-  analogWrite(9, velocidadMin);
-}
-
-void curvaSuaveDer() {
-  analogWrite(5, velocidadMax);
-  analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMedia);
-  analogWrite(9, velocidadMin);
-}
-
-void girarRapidoIzq() {
-  analogWrite(5, velocidadMin);
-  analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMax);
-  analogWrite(9, velocidadMin);
-}
-
-void girarRapidoDer() {
-  analogWrite(5, velocidadMax);
-  analogWrite(6, velocidadMin);
-  analogWrite(3, velocidadMin);
-  analogWrite(9, velocidadMin);
-}`
+// === FUNCIONES DE CONTROL ===
+void detenerse() { moverMotores(0, 0); }
+void avanzar() { moverMotores(velocidadMax, velocidadMax); }
+void curvaSuaveIzq() { moverMotores(velocidadMax, velocidadMedia); }
+void curvaSuaveDer() { moverMotores(velocidadMedia, velocidadMax); }
+void girarRapidoIzq() { moverMotores(velocidadMax, velocidadMin); } // velocidadMin es negativa
+void girarRapidoDer() { moverMotores(velocidadMin, velocidadMax); }`
         }
       ]
     },
