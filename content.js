@@ -2224,6 +2224,640 @@ void loop() {
     }
   }
 }`
+        },
+      ]
+    },
+    {
+      id: "sl-seguidor-2026",
+      title: "Robot Seguidor de Pared",
+      description: "Navegación autónoma usando sensores ultrasónicos para mantener distancias constantes de las paredes.",
+      icon: "Shield",
+      color: "emerald",
+      classes: [
+        {
+          id: "wf-intro",
+          title: "Descripción Física: Navegación Ultrasónica",
+          subtitle: "Preparación",
+          icon: "Layout",
+          explanation: `<div class="space-y-4">
+            <p>El robot seguidor de pared utiliza sensores de ultrasonido para "sentir" los obstáculos sin tocarlos.</p>
+            <ul class="space-y-2 text-[15px] list-disc ml-4 text-slate-700">
+              <li><strong>Sensores Ultrasónicos:</strong> Lleva 3 sensores HC-SR04 (Frontal, Derecho e Izquierdo) que funcionan emitiendo ondas de sonido.</li>
+              <li><strong>Cerebro:</strong> Un Arduino NANO procesa el eco recibido y calcula la distancia en centímetros.</li>
+              <li><strong>Movimiento:</strong> Dos motores DC permiten al robot corregir su trayectoria para alejarse o acercarse a la pared.</li>
+            </ul>
+            <p>Este tipo de navegación es ideal para laberintos o pasillos donde no hay una línea pintada en el suelo.</p>
+          </div>`,
+          code: `// --- COMPONENTES DEL SEGUIDOR DE PARED ---
+// 3x Sensores Ultrasónicos HC-SR04 (F, D, I)
+// 1x Arduino NANO
+// 1x Driver de Motores MX1616
+// 2x Motores DC con Ruedas
+
+// Objetivo: Mantener una distancia ideal de la pared derecha.`
+        },
+        {
+          id: "wf-libreria",
+          title: "Librería NewPing y Configuración",
+          subtitle: "Paso 1",
+          icon: "Settings",
+          explanation: `<div class="space-y-4">
+            <p>Para manejar los sensores de ultrasonido de forma eficiente, usamos la librería <code>NewPing.h</code>.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Esta librería nos permite leer los sensores sin bloquear el programa. Configuramos los pines de los motores como salidas y definimos los sensores con sus respectivos pines de conexión.</p>
+          </div>`,
+          code: `++ #include <NewPing.h>
+++ 
+++ const int IN1 = 5; const int IN2 = 6; 
+++ const int IN3 = 9; const int IN4 = 10; 
+++ 
+++ #define MAX_DIST 100 
+++ NewPing sensorF(2, 4, MAX_DIST);  
+++ NewPing sensorD(7, 8, MAX_DIST);  
+++ NewPing sensorI(12, 13, MAX_DIST); 
+++ 
+++ void setup() {
+++   pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+++   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+++   Serial.begin(115200);
+++ }
+++ 
+++ void loop() {
+++ }`
+        },
+        {
+          id: "wf-parametros",
+          title: "Parámetros Ajustables",
+          subtitle: "Paso 2",
+          icon: "Settings",
+          explanation: `<div class="space-y-4">
+            <p>Antes de programar la lógica, definimos las variables que controlarán el comportamiento del robot.</p>
+            <ul class="list-disc ml-5 space-y-2 text-slate-700">
+              <li><code>velCrucero</code>: Velocidad normal de avance.</li>
+              <li><code>distanciaIdeal</code>: Los centímetros que queremos mantener respecto a la pared.</li>
+              <li><code>umbralFreno</code>: Distancia crítica para evitar chocar de frente.</li>
+            </ul>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+              <p class="text-blue-800 text-sm italic">Ajustar estos valores es clave para que el robot navegue con fluidez sin chocar ni perderse.</p>
+            </div>
+          </div>`,
+          code: `#include <NewPing.h>
+
+++ // ==========================================
+++ // PARAMETROS AJUSTABLES (Configuración)
+++ // ==========================================
+++ int velCrucero = 100;      
+++ int velReducida = 40;      
+++ int tiempoGiroCiego = 150; 
+++ int umbralFreno = 10;      
+++ int distanciaIdeal = 15;   
+++ // ==========================================
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+}`
+        },
+        {
+          id: "wf-lectura",
+          title: "Lectura de Distancias",
+          subtitle: "Paso 3",
+          icon: "RefreshCw",
+          explanation: `<div class="space-y-4">
+            <p>Dentro del <code>loop</code>, leemos constantemente los tres sensores para conocer nuestro entorno.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Un detalle importante: si el sensor no detecta nada (está fuera de rango), devuelve un <code>0</code>. Interpretamos ese 0 como la distancia máxima (<code>MAX_DIST</code>) para evitar errores de cálculo.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// Parámetros...
+int velCrucero = 100; int velReducida = 40;
+int tiempoGiroCiego = 150; int umbralFreno = 10;
+int distanciaIdeal = 15;
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+++   // 1. LEO SENSORES (Distancia en cm)
+++   int distF = sensorF.ping_cm();
+++   int distD = sensorD.ping_cm();
+++   int distI = sensorI.ping_cm(); 
+++ 
+++   // Limpieza de datos (0 = Fuera de rango)
+++   if (distF == 0) distF = MAX_DIST;
+++   if (distD == 0) distD = MAX_DIST;
+++   if (distI == 0) distI = MAX_DIST;
+}`
+        },
+        {
+          id: "wf-emergencia",
+          title: "Lógica de Emergencia: Pared Frontal",
+          subtitle: "Paso 4",
+          icon: "Move",
+          explanation: `<div class="space-y-4">
+            <p>La prioridad es evitar colisiones frontales.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Si el sensor frontal (<code>distF</code>) detecta un objeto por debajo del <code>umbralFreno</code>, el robot realiza un giro rápido para esquivar el obstáculo. En este paso usamos control directo de los pines.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// Parámetros Ajustables...
+int velCrucero = 100; int velReducida = 40;
+int tiempoGiroCiego = 150; int umbralFreno = 10;
+int distanciaIdeal = 15;
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  int distF = sensorF.ping_cm();
+  int distD = sensorD.ping_cm();
+  int distI = sensorI.ping_cm(); 
+
+  if (distF == 0) distF = MAX_DIST;
+  if (distD == 0) distD = MAX_DIST;
+  if (distI == 0) distI = MAX_DIST;
+
+++   // --- CASO A: EMERGENCIA (Pared frontal) ---
+++   if (distF < umbralFreno) {
+++     // Girar a la izquierda (Motor Der adelante, Motor Izq parado)
+++     analogWrite(5, 0); 
+++     digitalWrite(6, LOW);
+++     analogWrite(9, velCrucero);
+++     digitalWrite(10, LOW);
+++     delay(tiempoGiroCiego);
+++   }
+}`
+        },
+        {
+          id: "wf-seguidor",
+          title: "Lógica del Seguidor de Pared",
+          subtitle: "Paso 5",
+          icon: "Trophy",
+          explanation: `<div class="space-y-4">
+            <p>Si el camino frontal está despejado, el robot se concentra en la pared derecha usando lógica directa.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Calculamos la <code>diferencia</code> entre la distancia actual y la ideal para decidir si acercarnos o alejarnos. Notarás que el código se vuelve repetitivo al escribir cada comando de motor individualmente.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// Parámetros...
+int velCrucero = 100; int velReducida = 40;
+int tiempoGiroCiego = 150; int umbralFreno = 10;
+int distanciaIdeal = 15;
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  int distF = sensorF.ping_cm();
+  int distD = sensorD.ping_cm();
+  int distI = sensorI.ping_cm(); 
+
+  if (distF == 0) distF = MAX_DIST;
+  if (distD == 0) distD = MAX_DIST;
+  if (distI == 0) distI = MAX_DIST;
+
+  if (distF < umbralFreno) {
+    analogWrite(5, 0); digitalWrite(6, LOW);
+    analogWrite(9, velCrucero); digitalWrite(10, LOW);
+    delay(tiempoGiroCiego);
+  }
+++   // --- CASO B: SEGUIDOR DE PARED DERECHA ---
+++   else {
+++     int diferencia = distD - distanciaIdeal;
+++ 
+++     if (diferencia == 0) { // Recto
+++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++     } 
+++     else if (diferencia < 0) { // Muy cerca -> Alejarse
+++       analogWrite(5, velReducida); digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++     } 
+++     else if (diferencia > 0) { // Muy lejos -> Acercarse
+++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
+++       analogWrite(9, velReducida); digitalWrite(10, LOW);
+++     }
+++   }
+}`
+        },
+        {
+          id: "wf-funciones",
+          title: "Organización Profesional con Funciones",
+          subtitle: "Final",
+          icon: "Code",
+          explanation: `<div class="space-y-4">
+            <p>Para finalizar, refactorizamos el código usando la función <code>moverMotores</code>. Esto hace que el <code>loop</code> sea mucho más legible y profesional.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Al abstraer el movimiento de los motores, podemos cambiar la lógica de navegación sin preocuparnos por los pines individuales en cada línea del programa.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// Parámetros...
+int velCrucero = 100; int velReducida = 40;
+int tiempoGiroCiego = 150; int umbralFreno = 10;
+int distanciaIdeal = 15;
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  int distF = sensorF.ping_cm();
+  int distD = sensorD.ping_cm();
+  int distI = sensorI.ping_cm(); 
+
+  if (distF == 0) distF = MAX_DIST;
+  if (distD == 0) distD = MAX_DIST;
+  if (distI == 0) distI = MAX_DIST;
+
+  if (distF < umbralFreno) {
+    moverMotores(0, velCrucero); 
+    delay(tiempoGiroCiego);
+  }
+  else {
+    int diferencia = distD - distanciaIdeal;
+
+    if (diferencia == 0) moverMotores(velCrucero, velCrucero);
+    else if (diferencia < 0) moverMotores(velReducida, velCrucero);
+    else if (diferencia > 0) moverMotores(velCrucero, velReducida);
+  }
+}
+
+void moverMotores(int vI, int vD) {
+  analogWrite(5, vI);
+  digitalWrite(6, LOW);
+  analogWrite(9, vD);
+  digitalWrite(10, LOW);
+}
+`
+        }
+      ]
+    },
+    {
+      id: "sl-pasillos-2026",
+      title: "Seguidor de Pasillos Simple",
+      description: "Navegación equilibrada en corredores usando sensores laterales para mantenerse en el centro.",
+      icon: "Columns",
+      color: "blue",
+      classes: [
+        {
+          id: "wf-pasillo-intro",
+          title: "Navegación en Pasillos",
+          subtitle: "Introducción",
+          icon: "Layout",
+          explanation: `<div class="space-y-4">
+            <p>En un pasillo, el robot debe mantenerse equidistante de ambas paredes. Usaremos los sensores laterales para detectar si nos desviamos hacia un lado u otro.</p>
+            <ul class="space-y-2 text-[15px] list-disc ml-4 text-slate-700">
+              <li><strong>Centrado:</strong> El robot compara las distancias izquierda y derecha.</li>
+              <li><strong>Seguridad:</strong> El sensor frontal evita choques si el pasillo termina o tiene una curva cerrada.</li>
+            </ul>
+          </div>`,
+          code: `// --- SEGUIDOR DE PASILLOS SIMPLE ---
+// El objetivo es mantenerse en el centro del corredor.
+// Usamos distD y distI para equilibrar el movimiento.`
+        },
+        {
+          id: "wf-pasillo-libreria",
+          title: "Configuración de Sensores",
+          subtitle: "Paso 1",
+          icon: "Settings",
+          explanation: `<div class="space-y-4">
+            <p>Configuramos los tres sensores ultrasónicos (Frontal, Derecho, Izquierdo) necesarios para navegar en el pasillo.</p>
+          </div>`,
+          code: `++ #include <NewPing.h>
+++ 
+++ const int IN1 = 5; const int IN2 = 6; 
+++ const int IN3 = 9; const int IN4 = 10; 
+++ 
+++ #define MAX_DIST 100 
+++ NewPing sensorF(2, 4, MAX_DIST);  
+++ NewPing sensorD(7, 8, MAX_DIST);  
+++ NewPing sensorI(12, 13, MAX_DIST); 
+++ 
+++ void setup() {
+++   pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+++   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+++   Serial.begin(115200);
+++ }
+++ 
+++ void loop() {
+++ }`
+        },
+        {
+          id: "wf-pasillo-parametros",
+          title: "Parámetros de Navegación",
+          subtitle: "Paso 2",
+          icon: "Settings",
+          explanation: `<div class="space-y-4">
+            <p>Definimos las velocidades. En este caso, <code>distanciaIdeal</code> representará el margen de seguridad que queremos mantener de cada pared.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+++ // ==========================================
+++ // PARAMETROS AJUSTABLES (Configuración)
+++ // ==========================================
+++ int velCrucero = 100;      
+++ int velReducida = 40;      
+++ int tiempoGiroCiego = 150; 
+++ int umbralFreno = 10;      
+++ int distanciaIdeal = 15;   
+++ // ==========================================
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+}`
+        },
+        {
+          id: "wf-pasillo-lectura",
+          title: "Lectura de Entorno",
+          subtitle: "Paso 3",
+          icon: "RefreshCw",
+          explanation: `<div class="space-y-4">
+            <p>Leemos las distancias a las tres paredes. Es vital procesar los tres sensores para poder calcular el centro del pasillo.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// Parámetros...
+int velCrucero = 100; int velReducida = 40;
+int tiempoGiroCiego = 150; int umbralFreno = 10;
+int distanciaIdeal = 15;
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+++   // 1. LEO SENSORES
+++   int distF = sensorF.ping_cm();
+++   int distD = sensorD.ping_cm();
+++   int distI = sensorI.ping_cm(); 
+++ 
+++   if (distF == 0) distF = MAX_DIST;
+++   if (distD == 0) distD = MAX_DIST;
+++   if (distI == 0) distI = MAX_DIST;
+}`
+        },
+        {
+          id: "wf-pasillo-emergencia",
+          title: "Maniobra de Curva Frontal",
+          subtitle: "Paso 4",
+          icon: "Move",
+          explanation: `<div class="space-y-4">
+            <p>Si el pasillo tiene una pared al fondo, el robot debe girar. Usamos los pines directamente para un giro rápido.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// Parámetros...
+int velCrucero = 100; int velReducida = 40;
+int tiempoGiroCiego = 150; int umbralFreno = 10;
+int distanciaIdeal = 15;
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  int distF = sensorF.ping_cm();
+  int distD = sensorD.ping_cm();
+  int distI = sensorI.ping_cm(); 
+
+  if (distF == 0) distF = MAX_DIST;
+  if (distD == 0) distD = MAX_DIST;
+  if (distI == 0) distI = MAX_DIST;
+
+++   // 2. LÓGICA DE MOVIMIENTO
+++ 
+++   // --- CASO A: EMERGENCIA (Pared frontal) ---
+++   if (distF < umbralFreno) {
+++     // Giro de escape (control directo)
+++     analogWrite(5, 0); digitalWrite(6, LOW);
+++     analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++     delay(tiempoGiroCiego);
+++   }
+}`
+        },
+        {
+          id: "wf-pasillo-logica",
+          title: "Lógica de Centrado Directa",
+          subtitle: "Paso 5",
+          icon: "Trophy",
+          explanation: `<div class="space-y-4">
+            <p>Comparamos las distancias laterales. Si el robot está muy cerca de una pared, corregimos hacia el lado opuesto para volver al centro del pasillo.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// Parámetros...
+int velCrucero = 100; int velReducida = 40;
+int tiempoGiroCiego = 150; int umbralFreno = 10;
+int distanciaIdeal = 15;
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  int distF = sensorF.ping_cm();
+  int distD = sensorD.ping_cm();
+  int distI = sensorI.ping_cm(); 
+
+  if (distF == 0) distF = MAX_DIST;
+  if (distD == 0) distD = MAX_DIST;
+  if (distI == 0) distI = MAX_DIST;
+
+  if (distF < umbralFreno) {
+    analogWrite(5, 0); digitalWrite(6, LOW);
+    analogWrite(9, velCrucero); digitalWrite(10, LOW);
+    delay(tiempoGiroCiego);
+  }
+++   // --- CASO B: SEGUIDOR DE PASILLO (Centrado) ---
+++   else {
+++     // Calculamos la diferencia entre paredes
+++     int diferencia = distD - distI;
+++ 
+++     if (diferencia == 0) { // Estamos en el centro exacto
+++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++     } 
+++     else if (diferencia < 0) { // Más cerca de la derecha -> Corregir a Izquierda
+++       analogWrite(5, velReducida); digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++     } 
+++     else if (diferencia > 0) { // Más cerca de la izquierda -> Corregir a Derecha
+++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
+++       analogWrite(9, velReducida); digitalWrite(10, LOW);
+++     }
+++   }
+}`
+        },
+        {
+          id: "wf-pasillo-funciones",
+          title: "Código Final Optimizado",
+          subtitle: "Final",
+          icon: "Code",
+          explanation: `<div class="space-y-4">
+            <p>Refactorizamos el seguimiento de pasillo usando la función <code>moverMotores</code>. Esto permite que el robot navegue de forma fluida y profesional.</p>
+          </div>`,
+          code: `#include <NewPing.h>
+
+// ==========================================
+// PARAMETROS AJUSTABLES (Configuración)
+// ==========================================
+int velCrucero = 100;      
+int velReducida = 40;      
+int tiempoGiroCiego = 150; 
+int umbralFreno = 10;      
+int distanciaIdeal = 15;   
+// ==========================================
+
+const int IN1 = 5; const int IN2 = 6; 
+const int IN3 = 9; const int IN4 = 10; 
+
+#define MAX_DIST 100 
+NewPing sensorF(2, 4, MAX_DIST);  
+NewPing sensorD(7, 8, MAX_DIST);  
+NewPing sensorI(12, 13, MAX_DIST); 
+
+void setup() {
+  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  // 1. LEO SENSORES
+  int distF = sensorF.ping_cm();
+  int distD = sensorD.ping_cm();
+  int distI = sensorI.ping_cm(); 
+
+  if (distF == 0) distF = MAX_DIST;
+  if (distD == 0) distD = MAX_DIST;
+  if (distI == 0) distI = MAX_DIST;
+
+  // 2. LÓGICA DE MOVIMIENTO
+
+++   // --- CASO A: EMERGENCIA (Pared frontal) ---
+++   if (distF < umbralFreno) {
+++     moverMotores(0, velCrucero); 
+++     delay(tiempoGiroCiego);
+++   }
+++   // --- CASO B: SEGUIDOR DE PASILLO (Centrado) ---
+++   else {
+++     int diferencia = distD - distI;
+++ 
+++     if (diferencia == 0) {
+++       moverMotores(velCrucero, velCrucero);
+++     } 
+++     else if (diferencia < 0) {
+++       moverMotores(velReducida, velCrucero); 
+++     } 
+++     else if (diferencia > 0) {
+++       moverMotores(velCrucero, velReducida);
+++     }
+++   }
+}
+
+++ void moverMotores(int vI, int vD) {
+++   analogWrite(5, vI);
+++   digitalWrite(6, LOW);
+++   analogWrite(9, vD);
+++   digitalWrite(10, LOW);
+++ }`
         }
       ]
     }
