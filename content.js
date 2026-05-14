@@ -3226,13 +3226,13 @@ void loop() {
 
 void setup() {
   Serial.begin(9600);
-  pinMode(botonPin, INPUT); // Configuramos el pin del botón como entrada
+  pinMode(botonPin, INPUT_PULLUP); // Resistencia interna activada
 }
 
 void loop() {
-  int estadoBoton = digitalRead(botonPin); // Leemos el estado digital (0 o 1)
+  int estadoBoton = digitalRead(botonPin); // Leemos el estado digital
   
-  if (estadoBoton == HIGH) {
+  if (estadoBoton == LOW) { // Con PULLUP, presionado es LOW
     Serial.println("¡El botón está PRESIONADO!");
   } else {
     Serial.println("El botón está SUELTO");
@@ -3251,33 +3251,34 @@ void loop() {
             <p class="text-[15px] text-slate-600 leading-relaxed">Para lograr esto, usamos <strong>variables de estado</strong> que recuerdan en qué estado estamos y detectamos el momento exacto en que el botón pasa de suelto a presionado. Al alternar el estado, imprimiremos un mensaje distinto en el Monitor Serial.</p>
           </div>`,
           code: `int botonPin = 12;
-
-bool sistemaEncendido = false; // Estado alterno que cambiará
-int estadoAnteriorBoton = LOW; // Memoria del último estado leído
+bool estadoSistema = false; // Estado alterno
+int estadoAnteriorBoton = HIGH; // En PULLUP el estado normal es HIGH
 
 void setup() {
   Serial.begin(9600);
-  pinMode(botonPin, INPUT);
+  pinMode(botonPin, INPUT_PULLUP);
 }
 
 void loop() {
   int estadoActualBoton = digitalRead(botonPin);
   
-  // Si se presiona el botón (transición de LOW a HIGH)
-  if (estadoActualBoton == HIGH && estadoAnteriorBoton == LOW) {
-    
-    sistemaEncendido = !sistemaEncendido; // Cambiamos el estado (Toggle)
-    
-    if (sistemaEncendido == true) {
-      Serial.println("¡SISTEMA ENCENDIDO!");
-    } else {
-      Serial.println("sistema apagado...");
-    }
-    
-    delay(50); // Antirrebote
+  // 1. Detectar si el botón acaba de ser presionado (transición de HIGH a LOW)
+  if (estadoActualBoton == LOW && estadoAnteriorBoton == HIGH) {
+    estadoSistema = !estadoSistema; // Cambiamos el estado (Toggle)
+    delay(50); // Pequeño antirrebote
   }
   
+  // Guardamos el estado para la próxima lectura
   estadoAnteriorBoton = estadoActualBoton;
+  
+  // 2. Lógica separada: Actuar según el estado
+  if (estadoSistema == true) {
+    Serial.println("SISTEMA ACTIVO: Ejecutando rutina A...");
+  } else {
+    Serial.println("sistema en espera: Ejecutando rutina B...");
+  }
+  
+  delay(500); // Pausa para no saturar el monitor serial
 }`
         },
         {
@@ -3443,7 +3444,7 @@ void setup() {
   pinMode(ena, OUTPUT);
   pinMode(ledEstado, OUTPUT);
   pinMode(ledAlerta, OUTPUT);
-  pinMode(botonPin, INPUT);
+  pinMode(botonPin, INPUT_PULLUP);
   pinMode(buzzerPin, OUTPUT);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -3463,7 +3464,7 @@ void loop() {
   int estadoBoton = digitalRead(botonPin);
   
   // 1. INICIAR SISTEMA AL PULSAR EL BOTÓN
-  if (estadoBoton == HIGH && !sistemaActivo && !enReversa) {
+  if (estadoBoton == LOW && !sistemaActivo && !enReversa) {
     sistemaActivo = true;
     digitalWrite(ledEstado, HIGH);
     
