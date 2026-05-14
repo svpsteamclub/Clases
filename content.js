@@ -442,11 +442,20 @@ void loop() {
   }
   else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
     if (ultimaDir == 2) { 
-      analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+      analogWrite(5, velocidadMin);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMax);
+      analogWrite(10, velocidadMin);
     } else if (ultimaDir == 4) {
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMin); analogWrite(10, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMin);
+      analogWrite(10, velocidadMin);
     } else if (ultimaDir == 3) {
-      analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+      analogWrite(5, velocidadMax);
+      analogWrite(6, velocidadMin);
+      analogWrite(9, velocidadMax);
+      analogWrite(10, velocidadMin);
     }
   }
 }`
@@ -509,11 +518,20 @@ void loop() {
     }
     else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
       if (ultimaDir == 2) { 
-        analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+        analogWrite(5, velocidadMin);
+        analogWrite(6, velocidadMin);
+        analogWrite(9, velocidadMax);
+        analogWrite(10, velocidadMin);
       } else if (ultimaDir == 4) {
-        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMin); analogWrite(10, velocidadMin);
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(9, velocidadMin);
+        analogWrite(10, velocidadMin);
       } else if (ultimaDir == 3) {
-        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(9, velocidadMax);
+        analogWrite(10, velocidadMin);
       }
     }
 ++   }
@@ -583,11 +601,20 @@ void loop() {
     }
     else if (digitalRead(2) == LOW && digitalRead(3) == LOW && digitalRead(4) == LOW) {
       if (ultimaDir == 2) { 
-        analogWrite(5, velocidadMin); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+        analogWrite(5, velocidadMin);
+        analogWrite(6, velocidadMin);
+        analogWrite(9, velocidadMax);
+        analogWrite(10, velocidadMin);
       } else if (ultimaDir == 4) {
-        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMin); analogWrite(10, velocidadMin);
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(9, velocidadMin);
+        analogWrite(10, velocidadMin);
       } else if (ultimaDir == 3) {
-        analogWrite(5, velocidadMax); analogWrite(6, velocidadMin); analogWrite(9, velocidadMax); analogWrite(10, velocidadMin);
+        analogWrite(5, velocidadMax);
+        analogWrite(6, velocidadMin);
+        analogWrite(9, velocidadMax);
+        analogWrite(10, velocidadMin);
       }
     }
   }
@@ -1061,10 +1088,18 @@ void setup() {
 }
 
 void moverMotores(int velDer, int velIzq) {
-  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
-  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
-  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
-  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
+  if (velDer >= 0) { analogWrite(5, velDer);
+  analogWrite(6, 0);
+  }
+  else { analogWrite(5, 0);
+  analogWrite(6, abs(velDer));
+  }
+  if (velIzq >= 0) { analogWrite(9, velIzq);
+  analogWrite(3, 0);
+  }
+  else { analogWrite(9, 0);
+  analogWrite(3, abs(velIzq));
+  }
 }
 
 void loop() {
@@ -1127,10 +1162,18 @@ void setup() {
 }
 
 void moverMotores(int velDer, int velIzq) {
-  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
-  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
-  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
-  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
+  if (velDer >= 0) { analogWrite(5, velDer);
+  analogWrite(6, 0);
+  }
+  else { analogWrite(5, 0);
+  analogWrite(6, abs(velDer));
+  }
+  if (velIzq >= 0) { analogWrite(9, velIzq);
+  analogWrite(3, 0);
+  }
+  else { analogWrite(9, 0);
+  analogWrite(3, abs(velIzq));
+  }
 }
 
 void loop() {
@@ -1194,10 +1237,18 @@ void setup() {
 }
 
 void moverMotores(int velDer, int velIzq) {
-  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
-  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
-  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
-  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
+  if (velDer >= 0) { analogWrite(5, velDer);
+  analogWrite(6, 0);
+  }
+  else { analogWrite(5, 0);
+  analogWrite(6, abs(velDer));
+  }
+  if (velIzq >= 0) { analogWrite(9, velIzq);
+  analogWrite(3, 0);
+  }
+  else { analogWrite(9, 0);
+  analogWrite(3, abs(velIzq));
+  }
 }
 
 void loop() {
@@ -1266,10 +1317,18 @@ void setup() {
 }
 
 void moverMotores(int velDer, int velIzq) {
-  if (velDer >= 0) { analogWrite(5, velDer); analogWrite(6, 0); }
-  else { analogWrite(5, 0); analogWrite(6, abs(velDer)); }
-  if (velIzq >= 0) { analogWrite(9, velIzq); analogWrite(3, 0); }
-  else { analogWrite(9, 0); analogWrite(3, abs(velIzq)); }
+  if (velDer >= 0) { analogWrite(5, velDer);
+  analogWrite(6, 0);
+  }
+  else { analogWrite(5, 0);
+  analogWrite(6, abs(velDer));
+  }
+  if (velIzq >= 0) { analogWrite(9, velIzq);
+  analogWrite(3, 0);
+  }
+  else { analogWrite(9, 0);
+  analogWrite(3, abs(velIzq));
+  }
 }
 
 void loop() {
@@ -1639,7 +1698,9 @@ String uidRetorno = "";     // Tag que indica "invertir marcha"
           </div>`,
           code: `void loop() {
   // PASO 1: ¿Estamos en el menú interactivo?
-  if (enMenu) { ejecutarMenu(); return; }
+  if (enMenu) { ejecutarMenu();
+  return;
+  }
 
   // PASO 2: Navegar por la pista (siempre activo)
   navegacionBasica();
@@ -1654,7 +1715,9 @@ String uidRetorno = "";     // Tag que indica "invertir marcha"
     if (tag == uidInicio) {
       frenar();
       mostrarPantalla("FIN", "MISION OK");
-      for(int i=0; i<4; i++) pedidos[i]=0;
+      for(int i=0;
+      i<4;
+      i++) pedidos[i]=0;
       delay(3000);
       enMenu = true;
     }
@@ -1929,12 +1992,20 @@ const int IN3 = 3; // Izquierdo ADELANTE
 const int IN4 = 2; // Izquierdo ATRÁS
 
 // Sensores
-const int S_A_IZQ = 38; const int S_A_CEN = 40; const int S_A_DER = 36;
-const int S_B_DER = 34; const int S_B_CEN = 32; const int S_B_IZQ = 30;
+const int S_A_IZQ = 38;
+const int S_A_CEN = 40;
+const int S_A_DER = 36;
+const int S_B_DER = 34;
+const int S_B_CEN = 32;
+const int S_B_IZQ = 30;
 
 // Botones e Interfaz
-const int BTN_SEL = 22; const int BTN_INC = 24; const int BTN_OK = 26; const int BTN_CLR = 28;
-const int LED_A = 44; const int LED_B = 45;
+const int BTN_SEL = 22;
+const int BTN_INC = 24;
+const int BTN_OK = 26;
+const int BTN_CLR = 28;
+const int LED_A = 44;
+const int LED_B = 45;
 
 // ====================================================================
 // 2. VARIABLES GLOBALES Y PARÁMETROS
@@ -1989,8 +2060,11 @@ void mostrarPantalla(String l1, String l2) {
   pantalla.clearDisplay();
   pantalla.setTextSize(1);
   pantalla.setTextColor(SSD1306_WHITE);
-  pantalla.setCursor(0, 0); pantalla.println(l1);
-  pantalla.setCursor(0, 30); pantalla.setTextSize(2); pantalla.println(l2);
+  pantalla.setCursor(0, 0);
+  pantalla.println(l1);
+  pantalla.setCursor(0, 30);
+  pantalla.setTextSize(2);
+  pantalla.println(l2);
   pantalla.display();
 }
 
@@ -2027,17 +2101,30 @@ String leerTag() {
 void mover(int vI, int vD) {
   int realI = caraA_Activa ? vI : -vD;
   int realD = caraA_Activa ? vD : -vI;
-  if (realI >= 0) { analogWrite(IN3, constrain(realI, 0, 80)); analogWrite(IN4, 0); }
-  else { analogWrite(IN3, 0); analogWrite(IN4, constrain(abs(realI), 0, 80)); }
-  if (realD >= 0) { analogWrite(IN1, constrain(realD, 0, 80)); analogWrite(IN2, 0); }
-  else { analogWrite(IN1, 0); analogWrite(IN2, constrain(abs(realD), 0, 80)); }
+  if (realI >= 0) { analogWrite(IN3, constrain(realI, 0, 80));
+  analogWrite(IN4, 0);
+  }
+  else { analogWrite(IN3, 0);
+  analogWrite(IN4, constrain(abs(realI), 0, 80));
+  }
+  if (realD >= 0) { analogWrite(IN1, constrain(realD, 0, 80));
+  analogWrite(IN2, 0);
+  }
+  else { analogWrite(IN1, 0);
+  analogWrite(IN2, constrain(abs(realD), 0, 80));
+  }
 }
 
 void frenar() {
-  analogWrite(IN1, 255); analogWrite(IN2, 255); analogWrite(IN3, 255); analogWrite(IN4, 255);
+  analogWrite(IN1, 255);
+  analogWrite(IN2, 255);
+  analogWrite(IN3, 255);
+  analogWrite(IN4, 255);
   delay(100);
-  analogWrite(IN1,0); analogWrite(IN2,0);
-  analogWrite(IN3,0); analogWrite(IN4,0);
+  analogWrite(IN1,0);
+  analogWrite(IN2,0);
+  analogWrite(IN3,0);
+  analogWrite(IN4,0);
 }
 
 // Ver explicaciones de navegacionBasica(),
@@ -2049,11 +2136,23 @@ void frenar() {
 
 void navegacionBasica() {
   int izq, cen, der;
-  if (caraA_Activa) { izq = digitalRead(S_A_IZQ); cen = digitalRead(S_A_CEN); der = digitalRead(S_A_DER); }
-  else { izq = digitalRead(S_B_IZQ); cen = digitalRead(S_B_CEN); der = digitalRead(S_B_DER); }
-  if (cen == 1) { mover(velBase, velBase); memoriaLado = 0; }
-  else if (izq == 1) { mover(velCorreccion, velBase); memoriaLado = 1; }
-  else if (der == 1) { mover(velBase, velCorreccion); memoriaLado = 2; }
+  if (caraA_Activa) { izq = digitalRead(S_A_IZQ);
+  cen = digitalRead(S_A_CEN);
+  der = digitalRead(S_A_DER);
+  }
+  else { izq = digitalRead(S_B_IZQ);
+  cen = digitalRead(S_B_CEN);
+  der = digitalRead(S_B_DER);
+  }
+  if (cen == 1) { mover(velBase, velBase);
+  memoriaLado = 0;
+  }
+  else if (izq == 1) { mover(velCorreccion, velBase);
+  memoriaLado = 1;
+  }
+  else if (der == 1) { mover(velBase, velCorreccion);
+  memoriaLado = 2;
+  }
   else {
     if (memoriaLado == 1) mover(velCorreccion2, velBase);
     else if (memoriaLado == 2) mover(velBase, velCorreccion2);
@@ -2064,10 +2163,12 @@ void navegacionBasica() {
 void girar(int grados) {
   frenar();
   if (grados == 180) {
-    mover(velGiro, -velGiro); delay(800);
+    mover(velGiro, -velGiro);
+    delay(800);
     while (digitalRead(S_A_CEN) == 0) mover(velGiro, -velGiro);
   } else {
-    mover(velGiro, -velGiro); delay(400);
+    mover(velGiro, -velGiro);
+    delay(400);
     while (digitalRead(caraA_Activa ? S_A_CEN : S_B_CEN) == 0) mover(velGiro, -velGiro);
   }
   frenar();
@@ -2078,13 +2179,19 @@ void secuenciaEntrega(int id) {
   girar(90);
   while (pedidos[id] > 0) {
     while (digitalRead(S_A_IZQ) == 0) mover(30, 30);
-    frenar(); delay(1000);
+    frenar();
+    delay(1000);
     pedidos[id]--;
-    if (pedidos[id] > 0) { mover(-30, -30); delay(300); frenar(); }
+    if (pedidos[id] > 0) { mover(-30, -30);
+    delay(300);
+    frenar();
+    }
   }
   caraA_Activa = !caraA_Activa;
-  digitalWrite(LED_A, caraA_Activa); digitalWrite(LED_B, !caraA_Activa);
-  mover(35, 35); delay(500);
+  digitalWrite(LED_A, caraA_Activa);
+  digitalWrite(LED_B, !caraA_Activa);
+  mover(35, 35);
+  delay(500);
   while (digitalRead(caraA_Activa ? S_A_CEN : S_B_CEN) == 0) navegacionBasica();
   girar(90);
   tiempoBloqueoRFID = millis();
@@ -2100,11 +2207,15 @@ void iniciarEscaneo() {
   unsigned long tiempoUltimaPantalla = 0;
   while (true) {
     if (digitalRead(BTN_CLR) == LOW) {
-      frenar(); mostrarPantalla("ATENCION", "CANCELADO!"); delay(1500); break;
+      frenar();
+      mostrarPantalla("ATENCION", "CANCELADO!");
+      delay(1500);
+      break;
     }
     navegacionBasica();
     if (millis() - tiempoUltimaPantalla > 300) {
-      mostrarProgresoEscaneo(tags, n); tiempoUltimaPantalla = millis();
+      mostrarProgresoEscaneo(tags, n);
+      tiempoUltimaPantalla = millis();
     }
     String tag = leerTag();
     if (tag != "" && tag != ultimoUID) {
@@ -2124,7 +2235,8 @@ void iniciarEscaneo() {
           if (i < (n - 2)) uidPila[i] = tags[i + 1];
           else uidPila[i] = "";
         }
-        delay(2000); break;
+        delay(2000);
+        break;
       }
     }
   }
@@ -2136,26 +2248,47 @@ void iniciarEscaneo() {
 // ====================================================================
 
 void ejecutarMenu() {
-  if (digitalRead(BTN_SEL) == LOW) { menuSeleccion++; if(menuSeleccion > 8) menuSeleccion = 0; delay(200); }
+  if (digitalRead(BTN_SEL) == LOW) { menuSeleccion++;
+  if(menuSeleccion > 8) menuSeleccion = 0;
+  delay(200);
+  }
   if (digitalRead(BTN_INC) == LOW) {
     if(menuSeleccion < 4) { pedidos[menuSeleccion] = (pedidos[menuSeleccion] + 1) % 6; }
-    else if(menuSeleccion == 5) { velBase += 5; guardarAjustes(); }
-    else if(menuSeleccion == 6) { velCorreccion += 5; guardarAjustes(); }
-    else if(menuSeleccion == 7) { velCorreccion2 += 5; guardarAjustes(); }
+    else if(menuSeleccion == 5) { velBase += 5;
+    guardarAjustes();
+    }
+    else if(menuSeleccion == 6) { velCorreccion += 5;
+    guardarAjustes();
+    }
+    else if(menuSeleccion == 7) { velCorreccion2 += 5;
+    guardarAjustes();
+    }
     delay(200);
   }
   if (digitalRead(BTN_CLR) == LOW) {
     if(menuSeleccion < 4) { for (int i = 0; i < 4; i++) pedidos[i] = 0; mostrarPantalla("LISTA", "BORRADA"); delay(500); }
-    else if(menuSeleccion == 5) { velBase -= 5; if(velBase < 0) velBase = 0; guardarAjustes(); }
-    else if(menuSeleccion == 6) { velCorreccion -= 5; guardarAjustes(); }
-    else if(menuSeleccion == 7) { velCorreccion2 -= 5; guardarAjustes(); }
+    else if(menuSeleccion == 5) { velBase -= 5;
+    if(velBase < 0) velBase = 0;
+    guardarAjustes();
+    }
+    else if(menuSeleccion == 6) { velCorreccion -= 5;
+    guardarAjustes();
+    }
+    else if(menuSeleccion == 7) { velCorreccion2 -= 5;
+    guardarAjustes();
+    }
     delay(200);
   }
   if (digitalRead(BTN_OK) == LOW) {
     if (menuSeleccion == 4) iniciarEscaneo();
     else if (menuSeleccion == 8 || menuSeleccion < 4) {
-      if (uidInicio != "") { enMenu = false; mostrarPantalla("AGV", "GO!"); delay(1000); }
-      else { mostrarPantalla("ERROR", "ESCANEAR!"); delay(1000); }
+      if (uidInicio != "") { enMenu = false;
+      mostrarPantalla("AGV", "GO!");
+      delay(1000);
+      }
+      else { mostrarPantalla("ERROR", "ESCANEAR!");
+      delay(1000);
+      }
     }
     return;
   }
@@ -2166,20 +2299,32 @@ void ejecutarMenu() {
   if (menuSeleccion < 5) {
     pantalla.println("== PEDIDOS (PAG 1) ==");
     for (int i = 0; i < 4; i++) {
-      if (i == menuSeleccion) pantalla.print("> "); else pantalla.print("  ");
-      pantalla.print("TOLVA "); pantalla.print(i + 1); pantalla.print(": "); pantalla.println(pedidos[i]);
+      if (i == menuSeleccion) pantalla.print("> ");
+      else pantalla.print("  ");
+      pantalla.print("TOLVA ");
+      pantalla.print(i + 1);
+      pantalla.print(": ");
+      pantalla.println(pedidos[i]);
     }
-    if (menuSeleccion == 4) pantalla.println("> MODO ESCANEO"); else pantalla.println("  MODO ESCANEO");
+    if (menuSeleccion == 4) pantalla.println("> MODO ESCANEO");
+    else pantalla.println("  MODO ESCANEO");
   } else {
     pantalla.println("== AJUSTES (PAG 2) ==");
-    if (menuSeleccion == 5) pantalla.print("> "); else pantalla.print("  ");
-    pantalla.print("VelBase: "); pantalla.println(velBase);
-    if (menuSeleccion == 6) pantalla.print("> "); else pantalla.print("  ");
-    pantalla.print("V.Corr1: "); pantalla.println(velCorreccion);
-    if (menuSeleccion == 7) pantalla.print("> "); else pantalla.print("  ");
-    pantalla.print("V.Corr2: "); pantalla.println(velCorreccion2);
+    if (menuSeleccion == 5) pantalla.print("> ");
+    else pantalla.print("  ");
+    pantalla.print("VelBase: ");
+    pantalla.println(velBase);
+    if (menuSeleccion == 6) pantalla.print("> ");
+    else pantalla.print("  ");
+    pantalla.print("V.Corr1: ");
+    pantalla.println(velCorreccion);
+    if (menuSeleccion == 7) pantalla.print("> ");
+    else pantalla.print("  ");
+    pantalla.print("V.Corr2: ");
+    pantalla.println(velCorreccion2);
     pantalla.println("");
-    if (menuSeleccion == 8) pantalla.println("> INICIAR MISION!"); else pantalla.println("  INICIAR MISION!");
+    if (menuSeleccion == 8) pantalla.println("> INICIAR MISION!");
+    else pantalla.println("  INICIAR MISION!");
   }
   pantalla.display();
 }
@@ -2189,34 +2334,53 @@ void ejecutarMenu() {
 // ====================================================================
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT); pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
-  pinMode(S_A_IZQ, INPUT); pinMode(S_A_CEN, INPUT); pinMode(S_A_DER, INPUT);
-  pinMode(S_B_IZQ, INPUT); pinMode(S_B_CEN, INPUT); pinMode(S_B_DER, INPUT);
-  pinMode(BTN_SEL, INPUT_PULLUP); pinMode(BTN_INC, INPUT_PULLUP);
-  pinMode(BTN_OK, INPUT_PULLUP); pinMode(BTN_CLR, INPUT_PULLUP);
-  pinMode(LED_A, OUTPUT); pinMode(LED_B, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(S_A_IZQ, INPUT);
+  pinMode(S_A_CEN, INPUT);
+  pinMode(S_A_DER, INPUT);
+  pinMode(S_B_IZQ, INPUT);
+  pinMode(S_B_CEN, INPUT);
+  pinMode(S_B_DER, INPUT);
+  pinMode(BTN_SEL, INPUT_PULLUP);
+  pinMode(BTN_INC, INPUT_PULLUP);
+  pinMode(BTN_OK, INPUT_PULLUP);
+  pinMode(BTN_CLR, INPUT_PULLUP);
+  pinMode(LED_A, OUTPUT);
+  pinMode(LED_B, OUTPUT);
   cargarAjustes();
   SPI.begin();
   mfrc522.PCD_Init();
   mfrc522.PCD_SetAntennaGain(mfrc522.RxGain_max);
   Wire.begin();
-  if(!pantalla.begin(SSD1306_SWITCHCAPVCC, DIRECCION_PANTALLA)) { for(;;); }
+  if(!pantalla.begin(SSD1306_SWITCHCAPVCC, DIRECCION_PANTALLA)) { for(;;);
+  }
   digitalWrite(LED_A, HIGH);
   mostrarPantalla("SVP STEAM", "Larense listo");
   delay(2000);
 }
 
 void loop() {
-  if (enMenu) { ejecutarMenu(); return; }
+  if (enMenu) { ejecutarMenu();
+  return;
+  }
   navegacionBasica();
   String tag = leerTag();
   if (tag != "") {
     if (tag == uidInicio) {
-      frenar(); mostrarPantalla("FIN", "MISION OK");
-      for(int i=0; i<4; i++) pedidos[i]=0;
-      delay(3000); enMenu = true;
+      frenar();
+      mostrarPantalla("FIN", "MISION OK");
+      for(int i=0;
+      i<4;
+      i++) pedidos[i]=0;
+      delay(3000);
+      enMenu = true;
     }
-    else if (tag == uidRetorno && !caraA_Activa) { girar(180); caraA_Activa = true; }
+    else if (tag == uidRetorno && !caraA_Activa) { girar(180);
+    caraA_Activa = true;
+    }
     else {
       for (int i = 0; i < 4; i++) {
         if (tag == uidPila[i] && pedidos[i] > 0) secuenciaEntrega(i);
@@ -2267,8 +2431,12 @@ void loop() {
           </div>`,
           code: `++ #include <NewPing.h>
 ++ 
-++ const int IN1 = 5; const int IN2 = 6; 
-++ const int IN3 = 9; const int IN4 = 10; 
+++ const int IN1 = 5;
+++ const int IN2 = 6;
+++ 
+++ const int IN3 = 9;
+++ const int IN4 = 10;
+++ 
 ++ 
 ++ #define MAX_DIST 100 
 ++ NewPing sensorF(2, 4, MAX_DIST);  
@@ -2276,8 +2444,10 @@ void loop() {
 ++ NewPing sensorI(12, 13, MAX_DIST); 
 ++ 
 ++ void setup() {
-++   pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-++   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+++   pinMode(IN1, OUTPUT);
+++   pinMode(IN2, OUTPUT);
+++   pinMode(IN3, OUTPUT);
+++   pinMode(IN4, OUTPUT);
 ++   Serial.begin(115200);
 ++ }
 ++ 
@@ -2312,8 +2482,12 @@ void loop() {
 ++ int distanciaIdeal = 15;   
 ++ // ==========================================
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2321,8 +2495,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2341,12 +2517,18 @@ void loop() {
           code: `#include <NewPing.h>
 
 // Parámetros...
-int velCrucero = 100; int velReducida = 40;
-int tiempoGiroCiego = 150; int umbralFreno = 10;
+int velCrucero = 100;
+int velReducida = 40;
+int tiempoGiroCiego = 150;
+int umbralFreno = 10;
 int distanciaIdeal = 15;
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2354,8 +2536,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2383,12 +2567,18 @@ void loop() {
           code: `#include <NewPing.h>
 
 // Parámetros Ajustables...
-int velCrucero = 100; int velReducida = 40;
-int tiempoGiroCiego = 150; int umbralFreno = 10;
+int velCrucero = 100;
+int velReducida = 40;
+int tiempoGiroCiego = 150;
+int umbralFreno = 10;
 int distanciaIdeal = 15;
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2396,8 +2586,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2433,12 +2625,18 @@ void loop() {
           code: `#include <NewPing.h>
 
 // Parámetros...
-int velCrucero = 100; int velReducida = 40;
-int tiempoGiroCiego = 150; int umbralFreno = 10;
+int velCrucero = 100;
+int velReducida = 40;
+int tiempoGiroCiego = 150;
+int umbralFreno = 10;
 int distanciaIdeal = 15;
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2446,8 +2644,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2461,8 +2661,10 @@ void loop() {
   if (distI == 0) distI = MAX_DIST;
 
   if (distF < umbralFreno) {
-    analogWrite(5, 0); digitalWrite(6, LOW);
-    analogWrite(9, velCrucero); digitalWrite(10, LOW);
+    analogWrite(5, 0);
+    digitalWrite(6, LOW);
+    analogWrite(9, velCrucero);
+    digitalWrite(10, LOW);
     delay(tiempoGiroCiego);
   }
 ++   // --- CASO B: SEGUIDOR DE PARED DERECHA ---
@@ -2470,16 +2672,22 @@ void loop() {
 ++     int diferencia = distD - distanciaIdeal;
 ++ 
 ++     if (diferencia == 0) { // Recto
-++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
-++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++       analogWrite(5, velCrucero);
+++       digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero);
+++       digitalWrite(10, LOW);
 ++     } 
 ++     else if (diferencia < 0) { // Muy cerca -> Alejarse
-++       analogWrite(5, velReducida); digitalWrite(6, LOW);
-++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++       analogWrite(5, velReducida);
+++       digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero);
+++       digitalWrite(10, LOW);
 ++     } 
 ++     else if (diferencia > 0) { // Muy lejos -> Acercarse
-++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
-++       analogWrite(9, velReducida); digitalWrite(10, LOW);
+++       analogWrite(5, velCrucero);
+++       digitalWrite(6, LOW);
+++       analogWrite(9, velReducida);
+++       digitalWrite(10, LOW);
 ++     }
 ++   }
 }`
@@ -2496,12 +2704,18 @@ void loop() {
           code: `#include <NewPing.h>
 
 // Parámetros...
-int velCrucero = 100; int velReducida = 40;
-int tiempoGiroCiego = 150; int umbralFreno = 10;
+int velCrucero = 100;
+int velReducida = 40;
+int tiempoGiroCiego = 150;
+int umbralFreno = 10;
 int distanciaIdeal = 15;
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2509,8 +2723,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2579,8 +2795,12 @@ void moverMotores(int vI, int vD) {
           </div>`,
           code: `++ #include <NewPing.h>
 ++ 
-++ const int IN1 = 5; const int IN2 = 6; 
-++ const int IN3 = 9; const int IN4 = 10; 
+++ const int IN1 = 5;
+++ const int IN2 = 6;
+++ 
+++ const int IN3 = 9;
+++ const int IN4 = 10;
+++ 
 ++ 
 ++ #define MAX_DIST 100 
 ++ NewPing sensorF(2, 4, MAX_DIST);  
@@ -2588,8 +2808,10 @@ void moverMotores(int vI, int vD) {
 ++ NewPing sensorI(12, 13, MAX_DIST); 
 ++ 
 ++ void setup() {
-++   pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-++   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+++   pinMode(IN1, OUTPUT);
+++   pinMode(IN2, OUTPUT);
+++   pinMode(IN3, OUTPUT);
+++   pinMode(IN4, OUTPUT);
 ++   Serial.begin(115200);
 ++ }
 ++ 
@@ -2616,8 +2838,12 @@ void moverMotores(int vI, int vD) {
 ++ int distanciaIdeal = 15;   
 ++ // ==========================================
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2625,8 +2851,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2644,12 +2872,18 @@ void loop() {
           code: `#include <NewPing.h>
 
 // Parámetros...
-int velCrucero = 100; int velReducida = 40;
-int tiempoGiroCiego = 150; int umbralFreno = 10;
+int velCrucero = 100;
+int velReducida = 40;
+int tiempoGiroCiego = 150;
+int umbralFreno = 10;
 int distanciaIdeal = 15;
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2657,8 +2891,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2684,12 +2920,18 @@ void loop() {
           code: `#include <NewPing.h>
 
 // Parámetros...
-int velCrucero = 100; int velReducida = 40;
-int tiempoGiroCiego = 150; int umbralFreno = 10;
+int velCrucero = 100;
+int velReducida = 40;
+int tiempoGiroCiego = 150;
+int umbralFreno = 10;
 int distanciaIdeal = 15;
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2697,8 +2939,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2716,8 +2960,10 @@ void loop() {
 ++   // --- CASO A: EMERGENCIA (Pared frontal) ---
 ++   if (distF < umbralFreno) {
 ++     // Giro de escape (control directo)
-++     analogWrite(5, 0); digitalWrite(6, LOW);
-++     analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++     analogWrite(5, 0);
+++     digitalWrite(6, LOW);
+++     analogWrite(9, velCrucero);
+++     digitalWrite(10, LOW);
 ++     delay(tiempoGiroCiego);
 ++   }
 }`
@@ -2733,12 +2979,18 @@ void loop() {
           code: `#include <NewPing.h>
 
 // Parámetros...
-int velCrucero = 100; int velReducida = 40;
-int tiempoGiroCiego = 150; int umbralFreno = 10;
+int velCrucero = 100;
+int velReducida = 40;
+int tiempoGiroCiego = 150;
+int umbralFreno = 10;
 int distanciaIdeal = 15;
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2746,8 +2998,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2761,8 +3015,10 @@ void loop() {
   if (distI == 0) distI = MAX_DIST;
 
   if (distF < umbralFreno) {
-    analogWrite(5, 0); digitalWrite(6, LOW);
-    analogWrite(9, velCrucero); digitalWrite(10, LOW);
+    analogWrite(5, 0);
+    digitalWrite(6, LOW);
+    analogWrite(9, velCrucero);
+    digitalWrite(10, LOW);
     delay(tiempoGiroCiego);
   }
 ++   // --- CASO B: SEGUIDOR DE PASILLO (Centrado) ---
@@ -2771,16 +3027,22 @@ void loop() {
 ++     int diferencia = distD - distI;
 ++ 
 ++     if (diferencia == 0) { // Estamos en el centro exacto
-++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
-++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++       analogWrite(5, velCrucero);
+++       digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero);
+++       digitalWrite(10, LOW);
 ++     } 
 ++     else if (diferencia < 0) { // Más cerca de la derecha -> Corregir a Izquierda
-++       analogWrite(5, velReducida); digitalWrite(6, LOW);
-++       analogWrite(9, velCrucero); digitalWrite(10, LOW);
+++       analogWrite(5, velReducida);
+++       digitalWrite(6, LOW);
+++       analogWrite(9, velCrucero);
+++       digitalWrite(10, LOW);
 ++     } 
 ++     else if (diferencia > 0) { // Más cerca de la izquierda -> Corregir a Derecha
-++       analogWrite(5, velCrucero); digitalWrite(6, LOW);
-++       analogWrite(9, velReducida); digitalWrite(10, LOW);
+++       analogWrite(5, velCrucero);
+++       digitalWrite(6, LOW);
+++       analogWrite(9, velReducida);
+++       digitalWrite(10, LOW);
 ++     }
 ++   }
 }`
@@ -2805,8 +3067,12 @@ int umbralFreno = 10;
 int distanciaIdeal = 15;   
 // ==========================================
 
-const int IN1 = 5; const int IN2 = 6; 
-const int IN3 = 9; const int IN4 = 10; 
+const int IN1 = 5;
+const int IN2 = 6;
+
+const int IN3 = 9;
+const int IN4 = 10;
+
 
 #define MAX_DIST 100 
 NewPing sensorF(2, 4, MAX_DIST);  
@@ -2814,8 +3080,10 @@ NewPing sensorD(7, 8, MAX_DIST);
 NewPing sensorI(12, 13, MAX_DIST); 
 
 void setup() {
-  pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
   Serial.begin(115200);
 }
 
@@ -2861,6 +3129,398 @@ void loop() {
         }
       ]
     }
+    ,
+    {
+      id: "entrenamiento-placa-pruebas",
+      title: "Entrenamiento en Placa de Pruebas",
+      description: "Aprende a usar paso a paso múltiples componentes electrónicos conectados a tu placa y comunícate mediante el Monitor Serial.",
+      icon: "Layers",
+      color: "emerald",
+      classes: [
+        {
+          id: "intro-conexiones",
+          title: "Conexiones Físicas de la Placa",
+          subtitle: "Preparación",
+          icon: "Layout",
+          explanation: `<div class="space-y-4">
+            <p>Aquí conoceremos todos los componentes que están conectados a nuestra placa de pruebas. Aprender a usarlos de manera individual nos preparará para combinarlos más adelante.</p>
+            <ul class="space-y-2 text-[15px] list-disc ml-4 text-slate-700">
+              <li><strong>Motores y Actuadores:</strong> Motor DC, Servo Motor, Buzzer.</li>
+              <li><strong>Sensores y Entradas:</strong> Botones, Potenciómetro, Sensor de Temperatura, LDR, Sensor Ultrasónico.</li>
+              <li><strong>Indicadores Visuales:</strong> LEDs y Pantalla LCD.</li>
+            </ul>
+          </div>`,
+          code: `// --- MAPEO DE PINES DE LA PLACA DE PRUEBAS ---
+// D2 -> Motor DC IN1
+// D3 -> Motor DC ENA (Velocidad PWM)
+// D4 -> Motor DC IN2
+// D5 -> LED 3
+// D6 -> Servo Motor
+// D7 -> Botón 3
+// D8 -> Botón 4
+// D9 -> Buzzer
+// D10 -> Sensor Distancia (Trig)
+// D11 -> Sensor Distancia (Echo)
+// D12 -> Botón 2 (Sistema)
+// D13 -> LED 2 (Estado)
+
+// A0 -> Potenciómetro
+// A1 -> Sensor Temperatura
+// A2 -> Fotoresistencia (LDR)
+// A3 -> LED 1 (Alerta Pot)
+// A4 -> Pantalla LCD (SDA)
+// A5 -> Pantalla LCD (SCL)`
+        },
+        {
+          id: "hola-mundo-led",
+          title: "Hola Mundo: Encender un LED",
+          subtitle: "Paso 1",
+          icon: "Zap",
+          explanation: `<div class="space-y-4">
+            <p>Vamos a empezar por lo más sencillo: encender y apagar el <strong>LED 2 (Estado)</strong> que está conectado al pin 13 de nuestra placa.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Con las funciones <code>digitalWrite</code> indicamos si queremos enviar voltaje (HIGH) o quitarlo (LOW). Usamos <code>delay</code> para hacer una pausa en milisegundos.</p>
+          </div>`,
+          code: `void setup() {
+  pinMode(13, OUTPUT); // Configuramos el pin 13 como salida
+}
+
+void loop() {
+  digitalWrite(13, HIGH); // Encendemos el LED 2
+  delay(1000);            // Esperamos 1 segundo
+  digitalWrite(13, LOW);  // Apagamos el LED 2
+  delay(1000);            // Esperamos 1 segundo
+}`
+        },
+        {
+          id: "monitor-serial",
+          title: "Comunicación: El Monitor Serial",
+          subtitle: "Paso 2",
+          icon: "Terminal",
+          explanation: `<div class="space-y-4">
+            <p>El <strong>Monitor Serial</strong> es nuestra ventana para ver qué está pasando dentro del Arduino. Es la herramienta más útil para detectar errores y ver el valor de nuestros sensores.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Para usarlo, debemos iniciarlo en el <code>setup()</code> indicando la velocidad de comunicación en baudios (usaremos 9600).</p>
+          </div>`,
+          code: `void setup() {
+  // Iniciamos la comunicación serial a 9600 baudios
+  Serial.begin(9600); 
+}
+
+void loop() {
+  // Imprimimos un mensaje que enviará el Arduino a la computadora
+  Serial.println("¡Hola desde el Arduino!");
+  
+  // Esperamos 2 segundos antes de volver a enviar el mensaje
+  delay(2000); 
+}`
+        },
+        {
+          id: "entrada-boton",
+          title: "Entradas Digitales: Uso de un Botón",
+          subtitle: "Paso 3",
+          icon: "ToggleRight",
+          explanation: `<div class="space-y-4">
+            <p>A diferencia de un LED que es una "salida", un botón es una "entrada" porque nos da información.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Usaremos el <strong>Botón 2 (Sistema)</strong> conectado en el pin 12. Imprimiremos su estado en el monitor serial para ver cuándo está presionado (HIGH) y cuándo está suelto (LOW).</p>
+          </div>`,
+          code: `int botonPin = 12;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(botonPin, INPUT); // Configuramos el pin del botón como entrada
+}
+
+void loop() {
+  int estadoBoton = digitalRead(botonPin); // Leemos el estado digital (0 o 1)
+  
+  if (estadoBoton == HIGH) {
+    Serial.println("¡El botón está PRESIONADO!");
+  } else {
+    Serial.println("El botón está SUELTO");
+  }
+  
+  delay(200); // Una pequeña pausa para no saturar el monitor serial
+}`
+        },
+        {
+          id: "entrada-boton-toggle",
+          title: "Lógica Avanzada: Botón como Interruptor (Toggle)",
+          subtitle: "Paso 3.1",
+          icon: "Power",
+          explanation: `<div class="space-y-4">
+            <p>A veces no queremos mantener el botón presionado. Queremos que funcione como un interruptor: un toque activa, otro toque desactiva.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Para lograr esto, usamos <strong>variables de estado</strong> que recuerdan en qué estado estamos y detectamos el momento exacto en que el botón pasa de suelto a presionado. Al alternar el estado, imprimiremos un mensaje distinto en el Monitor Serial.</p>
+          </div>`,
+          code: `int botonPin = 12;
+
+bool sistemaEncendido = false; // Estado alterno que cambiará
+int estadoAnteriorBoton = LOW; // Memoria del último estado leído
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(botonPin, INPUT);
+}
+
+void loop() {
+  int estadoActualBoton = digitalRead(botonPin);
+  
+  // Si se presiona el botón (transición de LOW a HIGH)
+  if (estadoActualBoton == HIGH && estadoAnteriorBoton == LOW) {
+    
+    sistemaEncendido = !sistemaEncendido; // Cambiamos el estado (Toggle)
+    
+    if (sistemaEncendido == true) {
+      Serial.println("¡SISTEMA ENCENDIDO!");
+    } else {
+      Serial.println("sistema apagado...");
+    }
+    
+    delay(50); // Antirrebote
+  }
+  
+  estadoAnteriorBoton = estadoActualBoton;
+}`
+        },
+        {
+          id: "entrada-analogica-pot",
+          title: "Entradas Analógicas: El Potenciómetro",
+          subtitle: "Paso 4",
+          icon: "Activity",
+          explanation: `<div class="space-y-4">
+            <p>Un botón sólo tiene dos estados (0 o 1). Un <strong>potenciómetro</strong> es una entrada analógica, es decir, nos da un rango de valores dependiendo de qué tanto lo giremos.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Lo leeremos desde el pin A0 usando la función <code>analogRead()</code>, la cual nos devolverá un valor entre 0 y 1023.</p>
+          </div>`,
+          code: `int potPin = A0;
+
+void setup() {
+  Serial.begin(9600);
+  // Los pines analógicos (A0-A5) no necesitan pinMode
+}
+
+void loop() {
+  int valorPot = analogRead(potPin); // Leemos el valor (0 a 1023)
+  
+  Serial.print("Valor del potenciómetro: ");
+  Serial.println(valorPot);
+  
+  delay(200); // Pausa de lectura
+}`
+        },
+        {
+          id: "actuador-buzzer",
+          title: "Emisión de Sonidos: El Buzzer",
+          subtitle: "Paso 5",
+          icon: "Volume2",
+          explanation: `<div class="space-y-4">
+            <p>El <strong>Buzzer</strong> es un pequeño altavoz que puede emitir tonos de diferentes frecuencias.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Está conectado al pin 9. Usaremos la función <code>tone(pin, frecuencia)</code> para emitir un pitido de alerta.</p>
+          </div>`,
+          code: `int buzzerPin = 9;
+
+void setup() {
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+  tone(buzzerPin, 1000); // Emitir un sonido a 1000 Hz
+  delay(500);            // Durante medio segundo
+  
+  noTone(buzzerPin);     // Detener el sonido
+  delay(500);            // Pausa de medio segundo
+}`
+        },
+        {
+          id: "motor-dc",
+          title: "Actuadores de Potencia: Motor DC",
+          subtitle: "Paso 6",
+          icon: "Settings",
+          explanation: `<div class="space-y-4">
+            <p>Para mover un <strong>Motor DC</strong> necesitamos controlar tanto su <em>dirección</em> como su <em>velocidad</em> usando un puente H (driver de motor).</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">En nuestro esquema: IN1 está en D2, IN2 en D4 (para la dirección) y ENA en D3 (para la velocidad).</p>
+          </div>`,
+          code: `int in1 = 2;
+int in2 = 4;
+int ena = 3; // Motor
+
+void setup() {
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(ena, OUTPUT);
+}
+
+void loop() {
+  // 1. Configurar dirección hacia adelante
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  
+  // 2. Ajustar la velocidad enviando un valor PWM (0 a 255)
+  analogWrite(ena, 200); 
+  delay(2000); // Avanzar por 2 segundos
+  
+  // 3. Detener el motor
+  analogWrite(ena, 0);
+  delay(1000);
+}`
+        },
+        {
+          id: "sensor-ultrasonico",
+          title: "Medir Distancias: Sensor Ultrasónico",
+          subtitle: "Paso 7",
+          icon: "Eye",
+          explanation: `<div class="space-y-4">
+            <p>El <strong>Sensor Ultrasónico</strong> usa el rebote del sonido (como un murciélago) para medir la distancia de un objeto.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">El pin <strong>Trig (emisor)</strong> en D10 grita el sonido, y el pin <strong>Echo (receptor)</strong> en D11 escucha cuándo regresa el eco. Al calcular el tiempo de ida y vuelta, podemos obtener la distancia en centímetros.</p>
+          </div>`,
+          code: `int trigPin = 10;
+int echoPin = 11;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+  // Enviar un pulso corto de sonido (Ping)
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Medir el tiempo de respuesta del Eco
+  long duracion = pulseIn(echoPin, HIGH);
+  
+  // Calcular la distancia en cm
+  long distancia = duracion * 0.034 / 2;
+  
+  Serial.print("Distancia al obstáculo: ");
+  Serial.print(distancia);
+  Serial.println(" cm");
+  
+  delay(500); // Esperar medio segundo antes de medir de nuevo
+}`
+        },
+        {
+          id: "proyecto-final-combinado",
+          title: "Proyecto Final: Lógica Combinada",
+          subtitle: "Reto Final",
+          icon: "Trophy",
+          explanation: `<div class="space-y-4">
+            <p>¡Llegó la hora de juntar las piezas! Vamos a programar una lógica estructurada utilizando lo que aprendimos.</p>
+            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl mt-4">
+              <h4 class="font-bold text-indigo-800 mb-2">Comportamiento del Sistema:</h4>
+              <ol class="list-decimal ml-5 text-sm text-indigo-900 space-y-2">
+                <li>El sistema estará en reposo hasta que se presione el <strong>Botón 2</strong>.</li>
+                <li>Al presionar, se enciende el <strong>LED 2 (Estado)</strong> y el <strong>Motor</strong> avanza.</li>
+                <li>El motor avanzará hasta que el <strong>Sensor Ultrasónico</strong> detecte un objeto a menos de <strong>100 cm</strong>.</li>
+                <li>Al detectar el obstáculo, el motor se apaga y el <strong>Buzzer</strong> suena como alerta.</li>
+                <li>El motor entonces invierte su dirección durante un tiempo para alejarse, mientras se enciende el <strong>LED 3</strong> (alerta visual) y espera que el sensor quede despejado.</li>
+                <li>Finalmente, se apaga todo y el sistema espera que se presione el botón para volver a iniciar.</li>
+              </ol>
+            </div>
+          </div>`,
+          code: `// --- PINES DE LOS COMPONENTES ---
+int in1 = 2;
+int in2 = 4;
+int ena = 3; // Motor
+
+int ledEstado = 13;
+int ledAlerta = 5; // LEDs
+
+int botonPin = 12;
+int buzzerPin = 9; // Botón y Buzzer
+
+int trigPin = 10;
+int echoPin = 11; // Sensor Ultrasónico
+
+// --- VARIABLES DE ESTADO ---
+bool sistemaActivo = false;
+bool enReversa = false;
+
+void setup() {
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(ena, OUTPUT);
+  pinMode(ledEstado, OUTPUT);
+  pinMode(ledAlerta, OUTPUT);
+  pinMode(botonPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+// Función auxiliar para leer la distancia del sensor ultrasónico
+long leerDistancia() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  return (pulseIn(echoPin, HIGH) * 0.034) / 2;
+}
+
+void loop() {
+  int estadoBoton = digitalRead(botonPin);
+  
+  // 1. INICIAR SISTEMA AL PULSAR EL BOTÓN
+  if (estadoBoton == HIGH && !sistemaActivo && !enReversa) {
+    sistemaActivo = true;
+    digitalWrite(ledEstado, HIGH);
+    
+    // Encender Motor hacia adelante
+    digitalWrite(in1, HIGH); 
+    digitalWrite(in2, LOW);
+    analogWrite(ena, 200); 
+    
+    delay(500); // Pequeña pausa para no detectar doble pulsación
+  }
+  
+  // 2. MIENTRAS EL SISTEMA AVANZA (Buscando obstáculos)
+  if (sistemaActivo) {
+    long distancia = leerDistancia();
+    
+    // Si hay un objeto a menos de 100 cm
+    if (distancia > 0 && distancia < 100) { 
+      
+      analogWrite(ena, 0); // Apagar motor de inmediato
+      tone(buzzerPin, 1000); // Sonar alarma
+      delay(500);            // Sonar por medio segundo
+      noTone(buzzerPin);     // Apagar alarma
+      
+      // Cambiar de estado
+      sistemaActivo = false;
+      enReversa = true;
+      
+      // Apagar LED estado y encender LED alerta
+      digitalWrite(ledEstado, LOW);
+      digitalWrite(ledAlerta, HIGH);
+      
+      // Invertir motor para alejarse
+      digitalWrite(in1, LOW); 
+      digitalWrite(in2, HIGH);
+      analogWrite(ena, 200); 
+    }
+  }
+  
+  // 3. MIENTRAS EL SISTEMA RETROCEDE (Alejándose)
+  if (enReversa) {
+    long distancia = leerDistancia();
+    
+    // Verificamos si ya nos alejamos (distancia mayor a 100cm o nada enfrente)
+    if (distancia >= 100 || distancia == 0) {
+      delay(1000); // Retrocedemos 1 segundo más por seguridad
+      
+      analogWrite(ena, 0); // Apagar motor
+      digitalWrite(ledAlerta, LOW); // Apagar LED de alerta
+      
+      enReversa = false; // Sistema en reposo, listo para presionar el botón
+    }
+  }
+}`
+        }
+      ]
+    }
+
   ]
 };
 
