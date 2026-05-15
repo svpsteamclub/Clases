@@ -3131,6 +3131,7 @@ void loop() {
     }
     ,
     {
+
       id: "entrenamiento-placa-pruebas",
       title: "Entrenamiento en Placa de Pruebas",
       description: "Aprende a usar paso a paso múltiples componentes electrónicos conectados a tu placa y comunícate mediante el Monitor Serial.",
@@ -3174,7 +3175,7 @@ void loop() {
         {
           id: "hola-mundo-led",
           title: "Hola Mundo: Encender un LED",
-          subtitle: "Paso 1",
+          subtitle: "Nivel Aventura",
           icon: "Zap",
           explanation: `<div class="space-y-4">
             <p>Vamos a empezar por lo más sencillo: encender y apagar el <strong>LED 2 (Estado)</strong> que está conectado al pin 13 de nuestra placa.</p>
@@ -3186,130 +3187,34 @@ void loop() {
 
 void loop() {
   digitalWrite(13, HIGH); // Encendemos el LED 2
-  delay(1000);            // Esperamos 1 segundo
-  digitalWrite(13, LOW);  // Apagamos el LED 2
-  delay(1000);            // Esperamos 1 segundo
+  delay(1000); // Esperamos 1 segundo
+  
+  digitalWrite(13, LOW); // Apagamos el LED 2
+  delay(1000); // Esperamos 1 segundo
 }`
         },
         {
           id: "monitor-serial",
           title: "Comunicación: El Monitor Serial",
-          subtitle: "Paso 2",
+          subtitle: "Nivel Aventura",
           icon: "Terminal",
           explanation: `<div class="space-y-4">
             <p>El <strong>Monitor Serial</strong> es nuestra ventana para ver qué está pasando dentro del Arduino. Es la herramienta más útil para detectar errores y ver el valor de nuestros sensores.</p>
             <p class="text-[15px] text-slate-600 leading-relaxed">Para usarlo, debemos iniciarlo en el <code>setup()</code> indicando la velocidad de comunicación en baudios (usaremos 9600).</p>
           </div>`,
           code: `void setup() {
-  // Iniciamos la comunicación serial a 9600 baudios
-  Serial.begin(9600); 
+  Serial.begin(9600); // Iniciamos la comunicación
 }
 
 void loop() {
-  // Imprimimos un mensaje que enviará el Arduino a la computadora
-  Serial.println("¡Hola desde el Arduino!");
-  
-  // Esperamos 2 segundos antes de volver a enviar el mensaje
-  delay(2000); 
-}`
-        },
-        {
-          id: "entrada-boton",
-          title: "Entradas Digitales: Uso de un Botón",
-          subtitle: "Paso 3",
-          icon: "ToggleRight",
-          explanation: `<div class="space-y-4">
-            <p>A diferencia de un LED que es una "salida", un botón es una "entrada" porque nos da información.</p>
-            <p class="text-[15px] text-slate-600 leading-relaxed">Usaremos el <strong>Botón 2 (Sistema)</strong> conectado en el pin 12. Imprimiremos su estado en el monitor serial para ver cuándo está presionado (HIGH) y cuándo está suelto (LOW).</p>
-          </div>`,
-          code: `int botonPin = 12;
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(botonPin, INPUT_PULLUP); // Resistencia interna activada
-}
-
-void loop() {
-  int estadoBoton = digitalRead(botonPin); // Leemos el estado digital
-  
-  if (estadoBoton == LOW) { // Con PULLUP, presionado es LOW
-    Serial.println("¡El botón está PRESIONADO!");
-  } else {
-    Serial.println("El botón está SUELTO");
-  }
-  
-  delay(200); // Una pequeña pausa para no saturar el monitor serial
-}`
-        },
-        {
-          id: "entrada-boton-toggle",
-          title: "Lógica Avanzada: Botón como Interruptor (Toggle)",
-          subtitle: "Paso 3.1",
-          icon: "Power",
-          explanation: `<div class="space-y-4">
-            <p>A veces no queremos mantener el botón presionado. Queremos que funcione como un interruptor: un toque activa, otro toque desactiva.</p>
-            <p class="text-[15px] text-slate-600 leading-relaxed">Para lograr esto, usamos <strong>variables de estado</strong> que recuerdan en qué estado estamos y detectamos el momento exacto en que el botón pasa de suelto a presionado. Al alternar el estado, imprimiremos un mensaje distinto en el Monitor Serial.</p>
-          </div>`,
-          code: `int botonPin = 12;
-bool estadoSistema = false; // Estado alterno
-int estadoAnteriorBoton = HIGH; // En PULLUP el estado normal es HIGH
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(botonPin, INPUT_PULLUP);
-}
-
-void loop() {
-  int estadoActualBoton = digitalRead(botonPin);
-  
-  // 1. Detectar si el botón acaba de ser presionado (transición de HIGH a LOW)
-  if (estadoActualBoton == LOW && estadoAnteriorBoton == HIGH) {
-    estadoSistema = !estadoSistema; // Cambiamos el estado (Toggle)
-    delay(50); // Pequeño antirrebote
-  }
-  
-  // Guardamos el estado para la próxima lectura
-  estadoAnteriorBoton = estadoActualBoton;
-  
-  // 2. Lógica separada: Actuar según el estado
-  if (estadoSistema == true) {
-    Serial.println("SISTEMA ACTIVO: Ejecutando rutina A...");
-  } else {
-    Serial.println("sistema en espera: Ejecutando rutina B...");
-  }
-  
-  delay(500); // Pausa para no saturar el monitor serial
-}`
-        },
-        {
-          id: "entrada-analogica-pot",
-          title: "Entradas Analógicas: El Potenciómetro",
-          subtitle: "Paso 4",
-          icon: "Activity",
-          explanation: `<div class="space-y-4">
-            <p>Un botón sólo tiene dos estados (0 o 1). Un <strong>potenciómetro</strong> es una entrada analógica, es decir, nos da un rango de valores dependiendo de qué tanto lo giremos.</p>
-            <p class="text-[15px] text-slate-600 leading-relaxed">Lo leeremos desde el pin A0 usando la función <code>analogRead()</code>, la cual nos devolverá un valor entre 0 y 1023.</p>
-          </div>`,
-          code: `int potPin = A0;
-
-void setup() {
-  Serial.begin(9600);
-  // Los pines analógicos (A0-A5) no necesitan pinMode
-}
-
-void loop() {
-  int valorPot = analogRead(potPin); // Leemos el valor (0 a 1023)
-  
-  Serial.print("Valor del potenciómetro: ");
-  Serial.println(valorPot);
-  
-  delay(200); // Pausa de lectura
+  Serial.println("¡Hola desde el Arduino!"); // Imprimir texto
+  delay(2000); // Pausa
 }`
         },
         {
           id: "actuador-buzzer",
           title: "Emisión de Sonidos: El Buzzer",
-          subtitle: "Paso 5",
+          subtitle: "Nivel Aventura",
           icon: "Volume2",
           explanation: `<div class="space-y-4">
             <p>El <strong>Buzzer</strong> es un pequeño altavoz que puede emitir tonos de diferentes frecuencias.</p>
@@ -3322,25 +3227,24 @@ void setup() {
 }
 
 void loop() {
-  tone(buzzerPin, 1000); // Emitir un sonido a 1000 Hz
-  delay(500);            // Durante medio segundo
+  tone(buzzerPin, 1000); // Sonido agudo
+  delay(500); 
   
-  noTone(buzzerPin);     // Detener el sonido
-  delay(500);            // Pausa de medio segundo
+  noTone(buzzerPin); // Detener sonido
+  delay(500); 
 }`
         },
         {
           id: "motor-dc",
           title: "Actuadores de Potencia: Motor DC",
-          subtitle: "Paso 6",
+          subtitle: "Nivel Aventura",
           icon: "Settings",
           explanation: `<div class="space-y-4">
-            <p>Para mover un <strong>Motor DC</strong> necesitamos controlar tanto su <em>dirección</em> como su <em>velocidad</em> usando un puente H (driver de motor).</p>
-            <p class="text-[15px] text-slate-600 leading-relaxed">En nuestro esquema: IN1 está en D2, IN2 en D4 (para la dirección) y ENA en D3 (para la velocidad).</p>
+            <p>Para mover un <strong>Motor DC</strong> necesitamos controlar su dirección usando IN1 (D2) e IN2 (D4), y su velocidad usando ENA (D3).</p>
           </div>`,
           code: `int in1 = 2;
 int in2 = 4;
-int ena = 3; // Motor
+int ena = 3; 
 
 void setup() {
   pinMode(in1, OUTPUT);
@@ -3349,27 +3253,296 @@ void setup() {
 }
 
 void loop() {
-  // 1. Configurar dirección hacia adelante
+  // Configurar dirección hacia adelante
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   
-  // 2. Ajustar la velocidad enviando un valor PWM (0 a 255)
+  // Ajustar velocidad (0 a 255)
   analogWrite(ena, 200); 
   delay(2000); // Avanzar por 2 segundos
   
-  // 3. Detener el motor
+  // Detener el motor
   analogWrite(ena, 0);
   delay(1000);
 }`
         },
         {
+          id: "servo-motor",
+          title: "Actuadores Precisos: Servo Motor",
+          subtitle: "Nivel Aventura",
+          icon: "RotateCw",
+          explanation: `<div class="space-y-4">
+            <p>Un <strong>Servo Motor</strong> nos permite girar a ángulos exactos (de 0 a 180 grados). Requiere incluir la librería <code>Servo.h</code>.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Lo controlaremos usando el pin 6.</p>
+          </div>`,
+          code: `#include <Servo.h>
+
+Servo miServo; // Creamos el objeto servo
+int servoPin = 6;
+
+void setup() {
+  miServo.attach(servoPin); // Conectamos el servo al pin
+}
+
+void loop() {
+  miServo.write(0); // Posición inicial
+  delay(1000);
+  
+  miServo.write(90); // Mover a 90 grados
+  delay(1000);
+  
+  miServo.write(180); // Mover a 180 grados
+  delay(1000);
+}`
+        },
+        {
+          id: "proyecto-aventura",
+          title: "Proyecto Aventura: Secuencia Ciega",
+          subtitle: "Nivel Aventura",
+          icon: "PlayCircle",
+          explanation: `<div class="space-y-4">
+            <p>¡Integramos nuestras salidas! Programaremos una secuencia paso a paso utilizando pausas (<code>delay</code>).</p>
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl mt-4">
+              <h4 class="font-bold text-blue-800 mb-2">Comportamiento:</h4>
+              <ol class="list-decimal ml-5 text-sm text-blue-900 space-y-2">
+                <li>Se enciende el <strong>LED 2</strong>.</li>
+                <li>El <strong>Motor</strong> gira durante 2 segundos.</li>
+                <li>El Motor se detiene.</li>
+                <li>El <strong>Servo</strong> se mueve de 0 a 90 grados.</li>
+                <li>Se apaga el <strong>LED 2</strong> y hay una pausa antes de repetir.</li>
+              </ol>
+            </div>
+          </div>`,
+          code: `#include <Servo.h>
+
+Servo miServo;
+int servoPin = 6;
+int ledEstado = 13;
+int in1 = 2;
+int in2 = 4;
+int ena = 3;
+
+void setup() {
+  miServo.attach(servoPin);
+  pinMode(ledEstado, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(ena, OUTPUT);
+  
+  miServo.write(0); // Servo en posición inicial
+}
+
+void loop() {
+  // 1. Encender LED
+  digitalWrite(ledEstado, HIGH);
+  delay(500);
+  
+  // 2. Motor gira 2 segundos
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  analogWrite(ena, 200);
+  delay(2000);
+  
+  // 3. Detener Motor
+  analogWrite(ena, 0);
+  delay(500);
+  
+  // 4. Mover Servo
+  miServo.write(90);
+  delay(1000);
+  
+  // 5. Apagar LED y resetear
+  digitalWrite(ledEstado, LOW);
+  miServo.write(0);
+  delay(2000);
+}`
+        },
+        {
+          id: "entrada-boton",
+          title: "Entradas Digitales: Uso de un Botón",
+          subtitle: "Nivel Desafío",
+          icon: "ToggleRight",
+          explanation: `<div class="space-y-4">
+            <p>Un botón es una "entrada". Usaremos el <strong>Botón 2 (Sistema)</strong> en el pin 12 con la resistencia interna <code>INPUT_PULLUP</code>.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Con PULLUP, el botón descansa en HIGH. Al presionarlo, baja a LOW.</p>
+          </div>`,
+          code: `int botonPin = 12;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(botonPin, INPUT_PULLUP); // Resistencia interna activada
+}
+
+void loop() {
+  int estadoBoton = digitalRead(botonPin);
+  
+  if (estadoBoton == LOW) { // LOW significa presionado
+    Serial.println("¡El botón está PRESIONADO!");
+  } else {
+    Serial.println("El botón está SUELTO");
+  }
+  
+  delay(200); // Pausa de lectura
+}`
+        },
+        {
+          id: "entrada-boton-toggle",
+          title: "Lógica Avanzada: Botón como Interruptor (Toggle)",
+          subtitle: "Nivel Desafío",
+          icon: "Power",
+          explanation: `<div class="space-y-4">
+            <p>Queremos que el botón funcione como un interruptor: un toque activa, otro toque desactiva.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Para lograr esto, separamos la lógica en dos partes: 1) Actualizar la memoria del estado y 2) Actuar dependiendo de esa memoria.</p>
+          </div>`,
+          code: `int botonPin = 12;
+bool estadoSistema = false; 
+int estadoAnteriorBoton = HIGH; 
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(botonPin, INPUT_PULLUP);
+}
+
+void loop() {
+  int estadoActualBoton = digitalRead(botonPin);
+  
+  // 1. Detectar transición (HIGH a LOW)
+  if (estadoActualBoton == LOW && estadoAnteriorBoton == HIGH) {
+    estadoSistema = !estadoSistema; // Alternar estado
+    delay(50); // Antirrebote
+  }
+  
+  estadoAnteriorBoton = estadoActualBoton;
+  
+  // 2. Actuar según estado
+  if (estadoSistema == true) {
+    Serial.println("SISTEMA ACTIVO: Rutina A");
+  } else {
+    Serial.println("sistema en espera: Rutina B");
+  }
+  
+  delay(500); 
+}`
+        },
+        {
+          id: "proyecto-desafio",
+          title: "Proyecto Desafío: Secuencia a Demanda",
+          subtitle: "Nivel Desafío",
+          icon: "Play",
+          explanation: `<div class="space-y-4">
+            <p>Le daremos el control al usuario. Ejecutaremos la misma secuencia del Nivel Aventura, pero <strong>solo cuando se presione el botón</strong>.</p>
+          </div>`,
+          code: `#include <Servo.h>
+
+Servo miServo;
+int servoPin = 6;
+int ledEstado = 13;
+int in1 = 2;
+int in2 = 4;
+int ena = 3;
+int botonPin = 12;
+
+void setup() {
+  miServo.attach(servoPin);
+  pinMode(ledEstado, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(ena, OUTPUT);
+  pinMode(botonPin, INPUT_PULLUP);
+  
+  miServo.write(0); 
+}
+
+void loop() {
+  int estadoBoton = digitalRead(botonPin);
+  
+  // Ejecutar secuencia si se presiona el botón
+  if (estadoBoton == LOW) {
+    
+    // Secuencia
+    digitalWrite(ledEstado, HIGH);
+    delay(500);
+    
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    analogWrite(ena, 200);
+    delay(2000);
+    
+    analogWrite(ena, 0);
+    delay(500);
+    
+    miServo.write(90);
+    delay(1000);
+    
+    digitalWrite(ledEstado, LOW);
+    miServo.write(0);
+    
+    // Esperar a soltar el botón
+    delay(500);
+  }
+}`
+        },
+        {
+          id: "entrada-analogica-pot",
+          title: "Entradas Analógicas: El Potenciómetro",
+          subtitle: "Nivel Innovación",
+          icon: "Activity",
+          explanation: `<div class="space-y-4">
+            <p>Un <strong>potenciómetro</strong> nos da un rango de valores dependiendo de qué tanto lo giremos.</p>
+            <p class="text-[15px] text-slate-600 leading-relaxed">Lo leeremos desde el pin A0 usando <code>analogRead()</code> (valor entre 0 y 1023).</p>
+          </div>`,
+          code: `int potPin = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int valorPot = analogRead(potPin); 
+  
+  Serial.print("Valor del potenciómetro: ");
+  Serial.println(valorPot);
+  
+  delay(200); 
+}`
+        },
+        {
+          id: "sensor-temperatura",
+          title: "Entradas Analógicas: Temperatura",
+          subtitle: "Nivel Innovación",
+          icon: "Thermometer",
+          explanation: `<div class="space-y-4">
+            <p>El sensor de temperatura conectado en A1 nos entrega voltaje que podemos convertir a grados Celsius usando matemáticas básicas.</p>
+          </div>`,
+          code: `int tempPin = A1;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int lectura = analogRead(tempPin);
+  
+  // Conversión a voltaje (5V)
+  float voltaje = lectura * (5.0 / 1023.0); 
+  
+  // Conversión a grados (Dependiendo del sensor: LM35 = 10mV/°C)
+  float temperatura = voltaje * 100.0;
+  
+  Serial.print("Temperatura: ");
+  Serial.print(temperatura);
+  Serial.println(" C");
+  
+  delay(1000); 
+}`
+        },
+        {
           id: "sensor-ultrasonico",
           title: "Medir Distancias: Sensor Ultrasónico",
-          subtitle: "Paso 7",
+          subtitle: "Nivel Innovación",
           icon: "Eye",
           explanation: `<div class="space-y-4">
-            <p>El <strong>Sensor Ultrasónico</strong> usa el rebote del sonido (como un murciélago) para medir la distancia de un objeto.</p>
-            <p class="text-[15px] text-slate-600 leading-relaxed">El pin <strong>Trig (emisor)</strong> en D10 grita el sonido, y el pin <strong>Echo (receptor)</strong> en D11 escucha cuándo regresa el eco. Al calcular el tiempo de ida y vuelta, podemos obtener la distancia en centímetros.</p>
+            <p>El <strong>Sensor Ultrasónico</strong> usa el rebote del sonido. El pin <strong>Trig (D10)</strong> emite, y <strong>Echo (D11)</strong> escucha.</p>
           </div>`,
           code: `int trigPin = 10;
 int echoPin = 11;
@@ -3381,147 +3554,141 @@ void setup() {
 }
 
 void loop() {
-  // Enviar un pulso corto de sonido (Ping)
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
+  
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
+  
   digitalWrite(trigPin, LOW);
   
-  // Medir el tiempo de respuesta del Eco
   long duracion = pulseIn(echoPin, HIGH);
+  long distancia = duracion * 0.034 / 2; // Fórmula
   
-  // Calcular la distancia en cm
-  long distancia = duracion * 0.034 / 2;
-  
-  Serial.print("Distancia al obstáculo: ");
+  Serial.print("Distancia: ");
   Serial.print(distancia);
   Serial.println(" cm");
   
-  delay(500); // Esperar medio segundo antes de medir de nuevo
+  delay(500); 
 }`
         },
         {
-          id: "proyecto-final-combinado",
-          title: "Proyecto Final: Lógica Combinada",
+          id: "proyecto-innovacion",
+          title: "Proyecto Innovación: Autonomía Total",
           subtitle: "Reto Final",
           icon: "Trophy",
           explanation: `<div class="space-y-4">
-            <p>¡Llegó la hora de juntar las piezas! Vamos a programar una lógica estructurada utilizando lo que aprendimos.</p>
+            <p>El robot ahora tomará decisiones en tiempo real, sin bloquearse ciegamente con pausas (delays).</p>
             <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl mt-4">
-              <h4 class="font-bold text-indigo-800 mb-2">Comportamiento del Sistema:</h4>
+              <h4 class="font-bold text-indigo-800 mb-2">Comportamiento:</h4>
               <ol class="list-decimal ml-5 text-sm text-indigo-900 space-y-2">
-                <li>El sistema estará en reposo hasta que se presione el <strong>Botón 2</strong>.</li>
-                <li>Al presionar, se enciende el <strong>LED 2 (Estado)</strong> y el <strong>Motor</strong> avanza.</li>
-                <li>El motor avanzará hasta que el <strong>Sensor Ultrasónico</strong> detecte un objeto a menos de <strong>100 cm</strong>.</li>
-                <li>Al detectar el obstáculo, el motor se apaga y el <strong>Buzzer</strong> suena como alerta.</li>
-                <li>El motor entonces invierte su dirección durante un tiempo para alejarse, mientras se enciende el <strong>LED 3</strong> (alerta visual) y espera que el sensor quede despejado.</li>
-                <li>Finalmente, se apaga todo y el sistema espera que se presione el botón para volver a iniciar.</li>
+                <li>El sistema espera la pulsación del <strong>Botón 2</strong>.</li>
+                <li>Al activarse, el <strong>Motor</strong> avanza hacia adelante.</li>
+                <li>El <strong>Sensor Ultrasónico</strong> vigila constantemente.</li>
+                <li>Si lee una distancia menor a <strong>15 cm</strong>, el motor se detiene y suena el <strong>Buzzer</strong>.</li>
+                <li>Se activa el <strong>Servo</strong> a 90 grados (como golpear algo).</li>
+                <li>El motor retrocede para liberarse.</li>
+                <li>El sistema vuelve a estado de reposo a esperar el botón.</li>
               </ol>
             </div>
           </div>`,
-          code: `// --- PINES DE LOS COMPONENTES ---
+          code: `#include <Servo.h>
+
+Servo miServo;
 int in1 = 2;
 int in2 = 4;
-int ena = 3; // Motor
-
+int ena = 3; 
 int ledEstado = 13;
-int ledAlerta = 5; // LEDs
-
 int botonPin = 12;
-int buzzerPin = 9; // Botón y Buzzer
-
+int buzzerPin = 9;
 int trigPin = 10;
-int echoPin = 11; // Sensor Ultrasónico
+int echoPin = 11;
+int servoPin = 6;
 
-// --- VARIABLES DE ESTADO ---
 bool sistemaActivo = false;
-bool enReversa = false;
+int estadoAnterior = HIGH;
 
 void setup() {
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
   pinMode(ena, OUTPUT);
   pinMode(ledEstado, OUTPUT);
-  pinMode(ledAlerta, OUTPUT);
   pinMode(botonPin, INPUT_PULLUP);
   pinMode(buzzerPin, OUTPUT);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+  
+  miServo.attach(servoPin);
+  miServo.write(0);
 }
 
-// Función auxiliar para leer la distancia del sensor ultrasónico
 long leerDistancia() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
+  
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
+  
   digitalWrite(trigPin, LOW);
   return (pulseIn(echoPin, HIGH) * 0.034) / 2;
 }
 
 void loop() {
-  int estadoBoton = digitalRead(botonPin);
+  int estadoActual = digitalRead(botonPin);
   
-  // 1. INICIAR SISTEMA AL PULSAR EL BOTÓN
-  if (estadoBoton == LOW && !sistemaActivo && !enReversa) {
+  // Iniciar al pulsar
+  if (estadoActual == LOW && estadoAnterior == HIGH) {
     sistemaActivo = true;
     digitalWrite(ledEstado, HIGH);
-    
-    // Encender Motor hacia adelante
-    digitalWrite(in1, HIGH); 
-    digitalWrite(in2, LOW);
-    analogWrite(ena, 200); 
-    
-    delay(500); // Pequeña pausa para no detectar doble pulsación
+    delay(50);
   }
+  estadoAnterior = estadoActual;
   
-  // 2. MIENTRAS EL SISTEMA AVANZA (Buscando obstáculos)
-  if (sistemaActivo) {
+  // Ejecución si está activo
+  if (sistemaActivo == true) {
+    
+    // Vigilar distancia
     long distancia = leerDistancia();
     
-    // Si hay un objeto a menos de 100 cm
-    if (distancia > 0 && distancia < 100) { 
+    if (distancia > 0 && distancia < 15) {
       
-      analogWrite(ena, 0); // Apagar motor de inmediato
-      tone(buzzerPin, 1000); // Sonar alarma
-      delay(500);            // Sonar por medio segundo
-      noTone(buzzerPin);     // Apagar alarma
+      // 1. Detener
+      analogWrite(ena, 0);
       
-      // Cambiar de estado
-      sistemaActivo = false;
-      enReversa = true;
+      // 2. Alarma
+      tone(buzzerPin, 1000);
+      delay(500);
+      noTone(buzzerPin);
       
-      // Apagar LED estado y encender LED alerta
-      digitalWrite(ledEstado, LOW);
-      digitalWrite(ledAlerta, HIGH);
+      // 3. Golpe de Servo
+      miServo.write(90);
+      delay(500);
+      miServo.write(0);
       
-      // Invertir motor para alejarse
-      digitalWrite(in1, LOW); 
+      // 4. Retroceder
+      digitalWrite(in1, LOW);
       digitalWrite(in2, HIGH);
-      analogWrite(ena, 200); 
-    }
-  }
-  
-  // 3. MIENTRAS EL SISTEMA RETROCEDE (Alejándose)
-  if (enReversa) {
-    long distancia = leerDistancia();
-    
-    // Verificamos si ya nos alejamos (distancia mayor a 100cm o nada enfrente)
-    if (distancia >= 100 || distancia == 0) {
-      delay(1000); // Retrocedemos 1 segundo más por seguridad
+      analogWrite(ena, 150);
+      delay(1000);
       
-      analogWrite(ena, 0); // Apagar motor
-      digitalWrite(ledAlerta, LOW); // Apagar LED de alerta
+      // 5. Apagar todo y reiniciar
+      analogWrite(ena, 0);
+      digitalWrite(ledEstado, LOW);
+      sistemaActivo = false; 
       
-      enReversa = false; // Sistema en reposo, listo para presionar el botón
+    } else {
+      
+      // Avanzar normal si no hay peligro
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(ena, 200);
+      
     }
   }
 }`
         }
       ]
     }
-
   ]
 };
 
