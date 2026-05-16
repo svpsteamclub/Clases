@@ -439,7 +439,10 @@
                            <Icon name={course.icon} size={32} />
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">{course.title}</h2>
-                        <p className="text-slate-500 text-lg font-medium leading-relaxed mb-8">{course.description}</p>
+                        <p className="text-slate-500 text-lg font-medium leading-relaxed mb-4">{course.description}</p>
+                        {course.intro && (
+                            <div className="explanation-content text-sm" dangerouslySetInnerHTML={{ __html: course.intro }} />
+                        )}
                         {course.image && (
                             <div className="rounded-2xl overflow-hidden mb-5 border border-slate-100 shadow-md">
                                 <ZoomableImage src={course.image} alt={course.title} className="w-full h-48 object-cover" onImageClick={onImageClick} />

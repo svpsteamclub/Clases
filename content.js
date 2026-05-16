@@ -3143,7 +3143,22 @@ void loop() {
       icon: "Layers",
       color: "emerald",
       image: "Imagenes/course_placa.png",
+      intro: `<div class="space-y-3 mt-2">
+        <div class="bg-slate-100 border border-slate-200 p-3 rounded-xl text-sm leading-relaxed text-slate-700">
+          <h4 class="font-bold text-slate-800 mb-1">📚 ¿Cómo funciona este curso?</h4>
+          <p>Aprenderás a controlar <strong>cada componente por separado</strong>, paso a paso, integrando lógica de control progresivamente hasta llegar a proyectos completos. Al terminar, sabrás exactamente cómo funciona cada pieza de la placa.</p>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-sm leading-relaxed">
+          <h4 class="font-bold text-emerald-800 mb-1">🏁 ¿Cómo será en competencia?</h4>
+          <p class="text-emerald-900">Te entregarán una <strong>placa ya armada</strong> con sus componentes, una <strong>tabla de conexiones</strong> (qué pin controla qué) y un <strong>enunciado</strong> con la lógica que debes programar. Tu trabajo: leer esa tabla y traducirla a código.</p>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl text-sm leading-relaxed">
+          <h4 class="font-bold text-blue-800 mb-1">🔌 ¿Con qué placa funciona?</h4>
+          <p class="text-blue-900">Todo lo aprendido aquí funciona con <strong>cualquier placa compatible con el Arduino IDE</strong>. Usamos un <strong>Arduino UNO</strong> en los ejemplos, pero en competencia puede aparecer otra placa — mismo método, solo debes <strong>ajustar los pines</strong> según la tabla que te entreguen.</p>
+        </div>
+      </div>`,
       classes: [
+
         {
           id: "intro-conexiones",
           title: "Conexiones Físicas de la Placa",
@@ -3306,17 +3321,36 @@ void loop() {
           title: "Proyecto Aventura: Secuencia Ciega",
           subtitle: "Nivel Aventura",
           icon: "PlayCircle",
-          explanation: `<div class="space-y-4">
-            <p>¡Integramos nuestras salidas! Programaremos una secuencia paso a paso utilizando pausas (<code>delay</code>).</p>
-            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl mt-4">
-              <h4 class="font-bold text-blue-800 mb-2">Comportamiento:</h4>
-              <ol class="list-decimal ml-5 text-sm text-blue-900 space-y-2">
-                <li>Se enciende el <strong>LED 2</strong>.</li>
-                <li>El <strong>Motor</strong> gira durante 2 segundos.</li>
-                <li>El Motor se detiene.</li>
-                <li>El <strong>Servo</strong> se mueve de 0 a 90 grados.</li>
-                <li>Se apaga el <strong>LED 2</strong> y hay una pausa antes de repetir.</li>
-              </ol>
+          explanation: `<div class="space-y-5">
+
+            <div class="bg-slate-100 border border-slate-200 p-4 rounded-xl text-sm leading-relaxed text-slate-700">
+              <h4 class="font-bold text-slate-800 mb-2">📚 ¿De qué trata este curso?</h4>
+              <p>En este entrenamiento aprenderás a controlar <strong>cada componente electrónico por separado</strong>, paso a paso, e irás integrando lógica de control progresivamente hasta llegar a proyectos completos. La idea es que cuando llegues a una competencia, ya sepas cómo funciona cada pieza.</p>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-sm leading-relaxed">
+              <h4 class="font-bold text-blue-800 mb-2">🏁 ¿Cómo funciona en competencia?</h4>
+              <p class="text-blue-900">En las competencias te suministrarán una <strong>placa ya armada</strong> con todos los componentes conectados, junto con una <strong>tabla de conexiones</strong> (qué pin controla qué componente) y un <strong>enunciado</strong> que describe la lógica que debes programar. Tu trabajo es leer esa tabla y ese enunciado, y traducirlo a código Arduino.</p>
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+              <p class="text-sm font-bold text-blue-700 uppercase tracking-widest mb-2">📋 Enunciado de este ejemplo</p>
+              <p class="text-blue-900 leading-relaxed">Al encender la placa, la secuencia <strong>comienza de inmediato</strong> y de forma automática: primero se <strong>enciende el LED 2</strong>, luego el <strong>Motor gira durante 2 segundos</strong>, se <strong>detiene</strong>, el <strong>Servo se mueve a 90°</strong>, y finalmente el <strong>LED se apaga</strong> y el servo vuelve a 0°. Después de una pausa, la secuencia <strong>se repite sola</strong> indefinidamente.</p>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm">
+              <h4 class="font-bold text-slate-700 mb-1">🔑 ¿Cómo lo logramos?</h4>
+              <p class="text-slate-600 leading-relaxed">Escribimos cada acción una debajo de la otra en el <code>loop()</code>, y usamos <code>delay(ms)</code> como separador entre ellas. El número dentro del delay controla cuánto dura esa acción en milisegundos. Puedes cambiarlo libremente.</p>
+            </div>
+
+            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-sm">
+              <h4 class="font-bold text-emerald-800 mb-1">🔌 ¿Con qué placa funciona esto?</h4>
+              <p class="text-emerald-900 leading-relaxed">Todo lo que aprendas aquí y el código que escribas <strong>funciona con cualquier placa compatible con el Arduino IDE</strong>. En este curso usamos un <strong>Arduino UNO</strong>, pero en competencia puede aparecer otra placa diferente. No importa: el método es exactamente el mismo, solo debes <strong>ajustar los números de pin</strong> según la tabla de conexiones que te entreguen.</p>
+            </div>
+
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+              <h4 class="font-bold text-amber-800 mb-1">⚠️ En tu competencia será distinto</h4>
+              <p class="text-sm text-amber-900 leading-relaxed">El enunciado real pedirá <strong>otros componentes, otros tiempos y otro orden</strong>. Lo que debes dominar es la <strong>estructura</strong>: acción → <code>delay</code> → siguiente acción → <code>delay</code>... y así hasta completar lo que te pidan.</p>
             </div>
           </div>`,
           code: `#include <Servo.h>
@@ -3452,7 +3486,20 @@ void loop() {
           subtitle: "Nivel Desafío",
           icon: "Play",
           explanation: `<div class="space-y-4">
-            <p>Le daremos el control al usuario. Ejecutaremos la misma secuencia del Nivel Aventura, pero <strong>solo cuando se presione el botón</strong>.</p>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+              <p class="text-sm font-bold text-blue-700 uppercase tracking-widest mb-2">📋 Enunciado del reto</p>
+              <p class="text-blue-900 leading-relaxed">Al encender la placa, <strong>no pasa nada</strong>. Al <strong>pulsar el Botón 2</strong>, comienza la secuencia: se <strong>enciende el LED 2</strong>, el <strong>Motor gira 2 segundos</strong>, se <strong>pausa</strong>, el <strong>Servo se mueve a 90°</strong>, el <strong>LED se apaga</strong> y el servo vuelve a 0°. El sistema queda en <strong>standby</strong> hasta que se pulse el botón de nuevo.</p>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm">
+              <h4 class="font-bold text-slate-700 mb-1">🔑 ¿Cómo lo logramos?</h4>
+              <p class="text-slate-600 leading-relaxed">En el <code>loop()</code> leemos el botón constantemente. Cuando detectamos que está presionado (<code>LOW</code>), entramos al bloque de la secuencia y ejecutamos cada acción con su <code>delay</code>. Al terminar, el sistema simplemente espera la próxima pulsación.</p>
+            </div>
+
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+              <h4 class="font-bold text-amber-800 mb-1">⚠️ En tu competencia será distinto</h4>
+              <p class="text-sm text-amber-900 leading-relaxed">El enunciado real pedirá <strong>su propia secuencia</strong> de componentes y tiempos. Lo que debes dominar es el patrón: <strong>botón como disparador</strong> + acciones con <code>delay</code> dentro del bloque <code>if</code>.</p>
+            </div>
           </div>`,
           code: `#include <Servo.h>
 
@@ -3600,18 +3647,19 @@ void loop() {
           subtitle: "Reto Final",
           icon: "Trophy",
           explanation: `<div class="space-y-4">
-            <p>El robot ahora tomará decisiones en tiempo real, sin bloquearse ciegamente con pausas (delays).</p>
-            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl mt-4">
-              <h4 class="font-bold text-indigo-800 mb-2">Comportamiento:</h4>
-              <ol class="list-decimal ml-5 text-sm text-indigo-900 space-y-2">
-                <li>El sistema espera la pulsación del <strong>Botón 2</strong>.</li>
-                <li>Al activarse, el <strong>Motor</strong> avanza hacia adelante.</li>
-                <li>El <strong>Sensor Ultrasónico</strong> vigila constantemente.</li>
-                <li>Si lee una distancia menor a <strong>15 cm</strong>, el motor se detiene y suena el <strong>Buzzer</strong>.</li>
-                <li>Se activa el <strong>Servo</strong> a 90 grados (como golpear algo).</li>
-                <li>El motor retrocede para liberarse.</li>
-                <li>El sistema vuelve a estado de reposo a esperar el botón.</li>
-              </ol>
+            <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-xl">
+              <p class="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-2">📋 Enunciado del reto</p>
+              <p class="text-indigo-900 leading-relaxed">Al encender la placa, <strong>no pasa nada</strong>. Al <strong>pulsar el Botón 2</strong> (que actúa como interruptor toggle), el sistema se activa y el <strong>Motor avanza</strong> continuamente. Mientras avanza, el <strong>Sensor Ultrasónico vigila</strong> constantemente: si detecta un objeto a menos de <strong>15 cm</strong>, el motor se detiene, el <strong>Buzzer suena</strong>, el <strong>Servo golpea</strong> y el motor <strong>retrocede</strong>. Luego el sistema vuelve a <strong>standby</strong>. Si se pulsa el botón de nuevo, el sistema se apaga inmediatamente.</p>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-sm">
+              <h4 class="font-bold text-slate-700 mb-1">🔑 ¿Cómo es diferente al Nivel Desafío?</h4>
+              <p class="text-slate-600 leading-relaxed">En el Desafío, el botón dispara una secuencia ciega con delays. Aquí, el motor corre <strong>en paralelo</strong> mientras el sensor vigila en cada vuelta del <code>loop</code>. Cuando se cumple la condición, reacciona. Es un sistema <strong>reactivo</strong>, no una secuencia fija.</p>
+            </div>
+
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+              <h4 class="font-bold text-amber-800 mb-1">⚠️ En tu competencia será distinto</h4>
+              <p class="text-sm text-amber-900 leading-relaxed">Tu reto real usará <strong>otras condiciones y otros componentes</strong>. Lo que debes dominar es la estructura reactiva: <strong>algo corre continuamente</strong> + <strong>un sensor vigila</strong> + <strong>una acción se dispara cuando se cumple la condición</strong>.</p>
             </div>
           </div>`,
           code: `#include <Servo.h>
