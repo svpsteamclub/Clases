@@ -59,7 +59,7 @@
         };
 
         const { 
-            Zap, Settings, Move, Trophy, Cpu, Code, Info, Layout, CheckCircle, RefreshCw, ChevronLeft, ChevronRight, Search, Menu, X, Clock, Timer, RotateCcw
+            Zap, Settings, Move, Trophy, Cpu, Code, Info, Layout, CheckCircle, RefreshCw, ChevronLeft, ChevronRight, Search, Menu, X, Clock, Timer, RotateCcw, Monitor, Camera
         } = Lucide;
 
         const Nav = ({ onGoHome, courseTitle, classTitle }) => (
@@ -441,7 +441,7 @@
                         <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">{course.title}</h2>
                         <p className="text-slate-500 text-lg font-medium leading-relaxed mb-4">{course.description}</p>
                         {course.intro && (
-                            <div className="explanation-content text-sm" dangerouslySetInnerHTML={{ __html: course.intro }} />
+                            <div className="explanation-content text-sm mb-6" dangerouslySetInnerHTML={{ __html: course.intro }} />
                         )}
                         {course.image && (
                             <div className="rounded-2xl overflow-hidden mb-5 border border-slate-100 shadow-md">
@@ -449,8 +449,8 @@
                             </div>
                         )}
                         {course.image && (
-                            <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm opacity-60">
-                                <ZoomableImage src={course.image} alt={`${course.title} detalle`} className="w-full h-32 object-cover scale-110 object-bottom" onImageClick={onImageClick} />
+                            <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-md">
+                                <ZoomableImage src={course.image} alt={`${course.title} detalle`} className="w-full h-48 object-cover" onImageClick={onImageClick} />
                             </div>
                         )}
                     </div>
@@ -650,24 +650,67 @@
                                 onClick={handleContentClick}
                             />
                             <div className="mt-8">
-                                <ZoomableImage
-                                    src={topicImage}
-                                    alt={classData.title}
-                                    className="w-full rounded-2xl object-cover shadow-md border border-slate-100 max-h-72"
-                                    onImageClick={onImageClick}
-                                />
+                                {classData.diagramImage ? (
+                                    <div className="space-y-3">
+                                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                            <Layout size={14} /> Diagrama Electrónico
+                                        </span>
+                                        <ZoomableImage
+                                            src={classData.diagramImage}
+                                            alt="Diagrama Electrónico"
+                                            className="w-full rounded-2xl object-contain shadow-md border border-slate-100 max-h-72 bg-white"
+                                            onImageClick={onImageClick}
+                                        />
+                                    </div>
+                                ) : (
+                                    <ZoomableImage
+                                        src={topicImage}
+                                        alt={classData.title}
+                                        className="w-full rounded-2xl object-cover shadow-md border border-slate-100 max-h-72"
+                                        onImageClick={onImageClick}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
 
                     <div className="lg:w-1/2">
                         <div className="sticky top-24">
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                    <Code size={14} /> Código de Arduino
-                                </span>
-                            </div>
-                            <CodeBlock code={classData.code} />
+                            {classData.simulationImage && classData.realityImage ? (
+                                <div className="space-y-8">
+                                    <div className="space-y-3">
+                                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                            <Monitor size={14} /> Simulación
+                                        </span>
+                                        <ZoomableImage
+                                            src={classData.simulationImage}
+                                            alt="Simulación"
+                                            className="w-full rounded-2xl object-cover shadow-md border border-slate-100 max-h-64 bg-white"
+                                            onImageClick={onImageClick}
+                                        />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                            <Camera size={14} /> Realidad
+                                        </span>
+                                        <ZoomableImage
+                                            src={classData.realityImage}
+                                            alt="Realidad"
+                                            className="w-full rounded-2xl object-cover shadow-md border border-slate-100 max-h-64 bg-white"
+                                            onImageClick={onImageClick}
+                                        />
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                            <Code size={14} /> Código de Arduino
+                                        </span>
+                                    </div>
+                                    <CodeBlock code={classData.code} />
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
