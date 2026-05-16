@@ -2,7 +2,7 @@ const content = {
   title: "SVP Steam Club",
   subtitle: "Contenido",
   courses: [
-        {
+            {
       id: "electronica-discreta",
       title: "Electrónica Discreta",
       description: "Aprende los fundamentos de la electrónica componente a componente, desde LEDs hasta transistores.",
@@ -115,6 +115,10 @@ const content = {
           <h4 class="font-bold text-indigo-800 mb-1">💻 Simulador en Tinkercad</h4>
           <p class="text-indigo-900">Puedes explorar esta placa completa en línea: <a href="https://www.tinkercad.com/things/jXqMikxzo6j-placa-de-pruebas-ind-programacion" target="_blank" class="font-bold underline hover:text-indigo-600 transition-colors">Abrir proyecto en Tinkercad</a></p>
         </div>
+        <div class="bg-indigo-50 border border-indigo-200 p-3 rounded-xl text-sm leading-relaxed mt-3">
+          <h4 class="font-bold text-indigo-800 mb-1">💻 Simulador en Tinkercad</h4>
+          <p class="text-indigo-900">Puedes explorar esta placa completa en línea: <a href="https://www.tinkercad.com/things/jXqMikxzo6j-placa-de-pruebas-ind-programacion" target="_blank" class="font-bold underline hover:text-indigo-600 transition-colors">Abrir proyecto en Tinkercad</a></p>
+        </div>
       </div>`,
       classes: [
 
@@ -220,7 +224,16 @@ void loop() {
           subtitle: "Nivel Aventura",
           icon: "Settings",
           explanation: `<div class="space-y-4">
-            <p>Para mover un <strong>Motor DC</strong> necesitamos controlar su dirección usando IN1 (D2) e IN2 (D4), y su velocidad usando ENA (D3).</p>
+            <p>Para mover un <strong>Motor DC</strong> necesitamos controlar su dirección usando dos pines de control (<strong>IN1</strong> y <strong>IN2</strong>).</p>
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl">
+              <h4 class="font-bold text-blue-800 mb-2">🔄 Controlando la Dirección</h4>
+              <p class="text-sm text-blue-900 leading-relaxed">Los pines de control actúan como si fueran los cables del motor. En la vida real, para que un motor gire al revés, tendrías que desconectar los cables e invertirlos físicamente. Aquí, lo hacemos por código: si escribes <code class="bg-blue-100 px-1 rounded">HIGH</code> en uno y <code class="bg-blue-100 px-1 rounded">LOW</code> en el otro el motor gira en un sentido. Si los inviertes, el motor gira al revés.</p>
+            </div>
+            <p>El tercer pin (<strong>ENA</strong>) se usa exclusivamente para controlar la <strong>velocidad</strong> mandando una señal PWM.</p>
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl mt-2">
+              <h4 class="font-bold text-slate-700 mb-1">💡 Nota sobre los métodos de control</h4>
+              <p class="text-sm text-slate-600 leading-relaxed">En esta placa de pruebas usamos el método de <strong>3 pines por motor</strong> (dos para dirección y uno para velocidad). Sin embargo, notarás que en los robots usamos otro método: <strong>2 pines PWM por motor</strong>. Ambos métodos son completamente válidos y muy comunes en robótica.</p>
+            </div>
           </div>`,
           code: `int in1 = 2;
 int in2 = 4;
@@ -281,16 +294,6 @@ void loop() {
           subtitle: "Nivel Aventura",
           icon: "PlayCircle",
           explanation: `<div class="space-y-5">
-
-            <div class="bg-slate-100 border border-slate-200 p-4 rounded-xl text-sm leading-relaxed text-slate-700">
-              <h4 class="font-bold text-slate-800 mb-2">📚 ¿De qué trata este curso?</h4>
-              <p>En este entrenamiento aprenderás a controlar <strong>cada componente electrónico por separado</strong>, paso a paso, e irás integrando lógica de control progresivamente hasta llegar a proyectos completos. La idea es que cuando llegues a una competencia, ya sepas cómo funciona cada pieza.</p>
-            </div>
-
-            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-sm leading-relaxed">
-              <h4 class="font-bold text-blue-800 mb-2">🏁 ¿Cómo funciona en competencia?</h4>
-              <p class="text-blue-900">En las competencias te suministrarán una <strong>placa ya armada</strong> con todos los componentes conectados, junto con una <strong>tabla de conexiones</strong> (qué pin controla qué componente) y un <strong>enunciado</strong> que describe la lógica que debes programar. Tu trabajo es leer esa tabla y ese enunciado, y traducirlo a código Arduino.</p>
-            </div>
 
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
               <p class="text-sm font-bold text-blue-700 uppercase tracking-widest mb-2">📋 Enunciado de este ejemplo</p>
@@ -363,7 +366,14 @@ void loop() {
           icon: "ToggleRight",
           explanation: `<div class="space-y-4">
             <p>Un botón es una "entrada". Usaremos el <strong>Botón 2 (Sistema)</strong> en el pin 12 con la resistencia interna <code>INPUT_PULLUP</code>.</p>
-            <p class="text-[15px] text-slate-600 leading-relaxed">Con PULLUP, el botón descansa en HIGH. Al presionarlo, baja a LOW.</p>
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl mt-2">
+              <h4 class="font-bold text-slate-700 mb-2">🔌 ¿Pull-Up Interno o Externo?</h4>
+              <p class="text-sm text-slate-600 leading-relaxed">Normalmente, al conectar un botón se necesita agregar físicamente una <strong>resistencia externa</strong> (pull-down o pull-up) para evitar que el pin lea "ruido" cuando el botón no está presionado.</p>
+              <p class="text-sm text-slate-600 leading-relaxed mt-2">En nuestras placas de pruebas utilizamos <code>INPUT_PULLUP</code> por <strong>simplicidad</strong>. Esto activa una resistencia que ya viene dentro del Arduino, ahorrándonos componentes y conexiones extras en el circuito.</p>
+            </div>
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-3 rounded-r-xl">
+              <p class="text-[14px] text-blue-900 leading-relaxed"><strong>¡Ojo a la lógica invertida!</strong> Al usar PULLUP, el pin descansa en <code class="bg-blue-100 px-1 rounded">HIGH</code>. Al presionar el botón, el pin se conecta a tierra y baja a <code class="bg-blue-100 px-1 rounded">LOW</code>.</p>
+            </div>
           </div>`,
           code: `int botonPin = 12;
 
@@ -4220,6 +4230,94 @@ void loop() {
 ++   analogWrite(9, vD);
 ++   digitalWrite(10, LOW);
 ++ }`
+        }
+      ]
+    },
+{
+      id: "electronica-discreta",
+      title: "Electrónica Discreta",
+      description: "Aprende los fundamentos de la electrónica componente a componente, desde LEDs hasta transistores.",
+      icon: "Cpu",
+      color: "amber",
+      image: "Imagenes/topic_sensor.png",
+      classes: [
+        {
+          id: "paso-1-led-resistencia",
+          title: "Paso 1: LED y Resistencia",
+          subtitle: "Fundamentos",
+          icon: "Zap",
+          explanation: `<div class="space-y-4">
+            <p>El primer paso es entender cómo encender un LED correctamente con una batería de 5V.</p>
+            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mt-2">
+              <h4 class="font-bold text-amber-800 mb-2">⚠️ Importancia de la Resistencia</h4>
+              <p class="text-sm text-amber-900 leading-relaxed">Si conectamos el LED directamente a los 5V, la corriente será tan alta que el LED <strong>se quemará al instante</strong>. La resistencia limita esa corriente a un nivel seguro.</p>
+            </div>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl mt-2">
+              <h4 class="font-bold text-blue-800 mb-2">💡 Diagrama vs Protoboard</h4>
+              <p class="text-sm text-blue-900 leading-relaxed">No trates de replicar la forma o figura geométrica del diagrama electrónico en el protoboard. En electrónica, <strong>la forma no importa, lo único que importa es el camino y las conexiones</strong> entre los componentes.</p>
+            </div>
+            <p>En el diagrama puedes ver que la resistencia va en serie con el LED. No importa si va antes o después del LED, lo importante es que estén en el mismo camino.</p>
+          </div>`,
+          diagramImage: "Imagenes/ElecDiscretaPaso1Circuito.jpg",
+          simulationImage: "Imagenes/ElecDiscretaPaso1Sim.jpg",
+          realityImage: "Imagenes/realidad_placeholder.png"
+        },
+        {
+          id: "paso-2-pulsador",
+          title: "Paso 2: Pulsador en Serie",
+          subtitle: "Control Básico",
+          icon: "Power",
+          explanation: `<div class="space-y-4">
+            <p>Ahora agregamos un <strong>pulsador</strong> en serie con nuestro circuito para poder encender y apagar el LED manualmente.</p>
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl mt-2">
+              <h4 class="font-bold text-slate-700 mb-2">⚡ Limitaciones de la conexión en serie</h4>
+              <p class="text-sm text-slate-600 leading-relaxed">En este circuito, <strong>toda la energía que consume el LED pasa físicamente a través del pulsador</strong>. Para un LED pequeño no hay problema porque consume muy poco.</p>
+              <p class="text-sm text-slate-600 leading-relaxed mt-2">Sin embargo, si quisieras controlar algo que consume mucha más energía (como un motor grande o un bombillo de casa), el switch se derretiría porque no está diseñado para soportar tanta corriente. Lo ideal es que el switch de control no esté en el mismo camino de alta corriente que la carga pesada.</p>
+            </div>
+          </div>`,
+          diagramImage: "Imagenes/ElecDiscretaPaso2Circuito.jpg",
+          simulationImage: "Imagenes/ElecDiscretaPaso2Sim.jpg",
+          realityImage: "Imagenes/realidad_placeholder.png"
+        },
+        {
+          id: "paso-3-transistor-teoria",
+          title: "Paso 3: El Transistor",
+          subtitle: "Teoría",
+          icon: "Cpu",
+          explanation: `<div class="space-y-4">
+            <p>Aquí es donde entra el <strong>Transistor</strong>. Es un componente que funciona como un switch, pero en lugar de presionarlo con el dedo, se "presiona" usando una pequeña corriente eléctrica.</p>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                    <h4 class="font-bold text-blue-800 text-sm mb-1">Transistor NPN</h4>
+                    <p class="text-[12px] text-blue-900 leading-relaxed">Se activa cuando le aplicamos voltaje POSITIVO a su base. Es el más usado para controlar cargas desde un microcontrolador como Arduino.</p>
+                </div>
+                <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                    <h4 class="font-bold text-emerald-800 text-sm mb-1">Transistor PNP</h4>
+                    <p class="text-[12px] text-emerald-900 leading-relaxed">Se activa cuando le quitamos el voltaje positivo a su base (con voltaje negativo/GND). Funciona al revés que el NPN.</p>
+                </div>
+            </div>
+            <p class="mt-4">El transistor tiene 3 patas: <strong>Base</strong> (el botón), <strong>Colector</strong> (por donde entra la corriente principal) y <strong>Emisor</strong> (por donde sale).</p>
+          </div>`,
+          diagramImage: "Imagenes/ElecDiscretaPaso3Circuito.jpg",
+          simulationImage: "Imagenes/ElecDiscretaPaso3Sim.jpg",
+          realityImage: "Imagenes/realidad_placeholder.png"
+        },
+        {
+          id: "paso-4-circuito-transistor",
+          title: "Paso 4: Transistor + LED",
+          subtitle: "Práctica",
+          icon: "Zap",
+          explanation: `<div class="space-y-4">
+            <p>Vamos a armar el circuito usando un transistor NPN. El pulsador ya no estará en serie con el LED, sino que estará conectado a la <strong>Base</strong> del transistor.</p>
+            <div class="bg-indigo-50 border-l-4 border-indigo-400 p-4 rounded-r-xl mt-2">
+              <h4 class="font-bold text-indigo-800 mb-2">🎯 ¿Por qué hacer esto?</h4>
+              <p class="text-sm text-indigo-900 leading-relaxed">Si bien usar un transistor para encender un solo LED parece innecesario, <strong>esta es la base de todo</strong>.</p>
+              <p class="text-sm text-indigo-900 leading-relaxed mt-2">Imagina que reemplazas el LED por un motor gigante. Ahora, tu pequeño pulsador (o un Arduino) envía una señal débil a la Base del transistor, y el transistor se encarga de dejar pasar la corriente gigante desde la batería hasta el motor, sin que esa energía dañe tu botón o tu placa.</p>
+            </div>
+          </div>`,
+          diagramImage: "Imagenes/ElecDiscretaPaso4Circuito.jpg",
+          simulationImage: "Imagenes/ElecDiscretaPaso4Sim.jpg",
+          realityImage: "Imagenes/realidad_placeholder.png"
         }
       ]
     }
