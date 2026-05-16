@@ -215,7 +215,42 @@
           );
         };
 
-        const LandingPage = ({ courses, onSelectCourse }) => (
+        // Mapeo icon/subtitle -> imagen temática de clase
+        const getClassImage = (classData) => {
+          if (classData.image) return classData.image;
+          const icon = (classData.icon || '').toLowerCase();
+          const title = (classData.title || '').toLowerCase();
+          const subtitle = (classData.subtitle || '').toLowerCase();
+          if (icon === 'monitor' || title.includes('lcd') || title.includes('pantalla')) return 'Imagenes/topic_lcd.png';
+          if (icon === 'sun' || title.includes('ldr') || title.includes('luz')) return 'Imagenes/topic_led.png';
+          if (icon === 'zap' || title.includes('led')) return 'Imagenes/topic_led.png';
+          if (icon === 'terminal' || title.includes('serial')) return 'Imagenes/topic_code.png';
+          if (icon === 'volume2' || title.includes('buzzer') || title.includes('sonido')) return 'Imagenes/topic_led.png';
+          if (icon === 'settings' || title.includes('motor dc') || title.includes('actuador')) return 'Imagenes/topic_motor.png';
+          if (icon === 'rotatecw' || title.includes('servo')) return 'Imagenes/topic_servo.png';
+          if (icon === 'toggleright' || icon === 'power' || icon === 'toggleleft' || title.includes('botón') || title.includes('boton') || title.includes('button')) return 'Imagenes/topic_button.png';
+          if (icon === 'eye' || title.includes('ultrason') || title.includes('distancia')) return 'Imagenes/topic_ultrasonic.png';
+          if (icon === 'activity' || title.includes('potenciómetro') || title.includes('temperatura') || title.includes('analóg')) return 'Imagenes/topic_sensor.png';
+          if (icon === 'layout' || icon === 'cpu' || title.includes('conexion') || title.includes('físic') || title.includes('esquema')) return 'Imagenes/topic_sensor.png';
+          if (icon === 'playcircle' || icon === 'play' || icon === 'trophy' || subtitle.includes('reto') || subtitle.includes('proyecto') || title.includes('proyecto')) return 'Imagenes/topic_project.png';
+          if (icon === 'code' || title.includes('función') || title.includes('organiz') || title.includes('variable')) return 'Imagenes/topic_code.png';
+          if (icon === 'move' || title.includes('avanzar') || title.includes('motor') || title.includes('movimiento')) return 'Imagenes/topic_motor.png';
+          if (title.includes('sensor') || title.includes('línea') || title.includes('linea')) return 'Imagenes/topic_sensor.png';
+          return 'Imagenes/topic_code.png'; // fallback
+        };
+
+        // Componente imagen con overlay de expand
+        const ZoomableImage = ({ src, alt, className, onImageClick }) => (
+          <div className="relative group/img cursor-pointer" onClick={() => onImageClick(src)}>
+            <img src={src} alt={alt} className={className} />
+            <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors rounded-inherit" />
+            <div className="absolute top-3 right-3 w-8 h-8 bg-slate-900/70 backdrop-blur-sm rounded-lg flex items-center justify-center text-white opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </div>
+          </div>
+        );
+
+        const LandingPage = ({ courses, onSelectCourse, onImageClick }) => (
             <div className="fade-in max-w-7xl mx-auto px-6 py-12 md:py-20">
                 <header className="mb-16 text-center md:text-left">
                     <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 tracking-tighter leading-none">
@@ -242,7 +277,12 @@
                                    <Icon name={course.icon} size={28} />
                                 </div>
                                 <h3 className="text-2xl font-black text-slate-800 mb-4 group-hover:text-blue-600 transition-colors">{course.title}</h3>
-                                <p className="text-slate-500 mb-8 font-medium leading-relaxed">{course.description}</p>
+                                <p className="text-slate-500 mb-4 font-medium leading-relaxed">{course.description}</p>
+                                {course.image && (
+                                    <div className="rounded-2xl overflow-hidden mb-6 border border-slate-100 shadow-sm">
+                                        <ZoomableImage src={course.image} alt={course.title} className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500" onImageClick={onImageClick} />
+                                    </div>
+                                )}
                                 <div className="mt-auto flex items-center justify-between">
                                     <div className="flex items-center gap-2 text-sm font-bold text-blue-600">
                                         Ver Curso <ChevronRight size={16} />
@@ -384,7 +424,7 @@
           });
         };
 
-        const CoursePage = ({ course, onSelectClass, onGoBack }) => (
+        const CoursePage = ({ course, onSelectClass, onGoBack, onImageClick }) => (
             <div className="fade-in max-w-7xl mx-auto px-6 py-12 md:py-20">
                 <button 
                     onClick={onGoBack}
@@ -400,6 +440,16 @@
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">{course.title}</h2>
                         <p className="text-slate-500 text-lg font-medium leading-relaxed mb-8">{course.description}</p>
+                        {course.image && (
+                            <div className="rounded-2xl overflow-hidden mb-5 border border-slate-100 shadow-md">
+                                <ZoomableImage src={course.image} alt={course.title} className="w-full h-48 object-cover" onImageClick={onImageClick} />
+                            </div>
+                        )}
+                        {course.image && (
+                            <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm opacity-60">
+                                <ZoomableImage src={course.image} alt={`${course.title} detalle`} className="w-full h-32 object-cover scale-110 object-bottom" onImageClick={onImageClick} />
+                            </div>
+                        )}
                     </div>
 
                     <div className="lg:w-2/3 space-y-4">
@@ -559,18 +609,17 @@
             );
         };
 
-        const ClassPage = ({ classData, onGoBack, onNext, onPrev, hasNext, hasPrev }) => {
-            const [modalImage, setModalImage] = React.useState(null);
-
+        const ClassPage = ({ classData, onGoBack, onNext, onPrev, hasNext, hasPrev, onImageClick }) => {
             const handleContentClick = (e) => {
                 if (e.target.tagName === 'IMG') {
-                    setModalImage(e.target.src);
+                    onImageClick(e.target.src);
                 }
             };
 
+            const topicImage = getClassImage(classData);
+
             return (
             <div className="fade-in max-w-7xl mx-auto px-6 py-12 md:py-20">
-                {modalImage && <ImageModal src={modalImage} onClose={() => setModalImage(null)} />}
                 
                 <button 
                     onClick={onGoBack}
@@ -597,6 +646,14 @@
                                 dangerouslySetInnerHTML={{ __html: classData.explanation }}
                                 onClick={handleContentClick}
                             />
+                            <div className="mt-8">
+                                <ZoomableImage
+                                    src={topicImage}
+                                    alt={classData.title}
+                                    className="w-full rounded-2xl object-cover shadow-md border border-slate-100 max-h-72"
+                                    onImageClick={onImageClick}
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -634,9 +691,12 @@
     };
 
     const App = () => {
-            const [view, setView] = React.useState('landing'); // landing, course, class
+            const [view, setView] = React.useState('landing');
             const [selectedCourse, setSelectedCourse] = React.useState(null);
             const [selectedClass, setSelectedClass] = React.useState(null);
+            const [modalImage, setModalImage] = React.useState(null);
+
+            const handleImageClick = (src) => setModalImage(src);
 
             const handleGoHome = () => {
                 setView('landing');
@@ -682,6 +742,7 @@
 
             return (
                 <div className="min-h-screen bg-[#fcfdfe] text-slate-900 selection:bg-blue-100 selection:text-blue-700">
+                    {modalImage && <ImageModal src={modalImage} onClose={() => setModalImage(null)} />}
                     <Nav 
                         onGoHome={handleGoHome} 
                         courseTitle={selectedCourse?.title}
@@ -692,7 +753,8 @@
                         {view === 'landing' && (
                             <LandingPage 
                                 courses={appContent.courses} 
-                                onSelectCourse={handleSelectCourse} 
+                                onSelectCourse={handleSelectCourse}
+                                onImageClick={handleImageClick}
                             />
                         )}
                         {view === 'course' && (
@@ -700,6 +762,7 @@
                                 course={selectedCourse} 
                                 onSelectClass={handleSelectClass}
                                 onGoBack={handleGoHome}
+                                onImageClick={handleImageClick}
                             />
                         )}
                         {view === 'class' && (
@@ -710,6 +773,7 @@
                                 onPrev={handlePrevClass}
                                 hasNext={hasNext}
                                 hasPrev={hasPrev}
+                                onImageClick={handleImageClick}
                             />
                         )}
                     </main>
